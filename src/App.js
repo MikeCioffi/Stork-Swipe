@@ -69,7 +69,7 @@ function App() {
         <div onClick={() => setNavState('Home')} className={navState === 'Home' ?
           'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-blue-500'
           : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
-          <FaBabyCarriage /> <button className='ml-2'>Home</button> </div>
+          <FaBabyCarriage /> <button className='ml-2'>Names</button> </div>
         <div onClick={() => setNavState('Partner')} className={navState === 'Partner' ?
           'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-blue-500'
           : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50 '}><BsFillPersonFill /><button className='ml-2'>Partners</button></div>
@@ -82,7 +82,7 @@ function App() {
       {navState === 'Home' ?
 
         <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center flex-row flex-wrap">
-          <div className='flex w-full justify-center m-auto'>
+          <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
             <button onClick={() => setListKey('boys')} className={listKey === 'boys' ?
               'p-4 m-4 bg-blue-300 rounded-full text-white' :
               'p-4 m-4 bg-blue-100 rounded-full text-white hover:bg-blue-200'}>
@@ -104,7 +104,7 @@ function App() {
         : navState === 'Partner' ?
           // partner container
           <div className="mt-4 min-h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-start items-center flex-col">
-            <div className='border-b-2 p-4 w-full' >
+            <div className='border-b-2 border-gray-100 p-4 w-full' >
               <div className='flex flex-col jusify-center items-center m-auto' >
                 <h4>send an invite</h4>
                 <div className='flex flex-row md:flex-row w-full sm:w-3/4 items-center'>
@@ -136,23 +136,23 @@ function App() {
             </div>
           </div>
           : navState === 'Matches' ?
-            <div className="mt-12 min-h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col sm:flex-row">
+            <div className="mt-12 min-h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col sm:flex-row">
               <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2' /> Liked</div>
 
-                <div className='flex  flex-wrap text-center justify-center'>{likedGirlNames.map((name) =>
-                  <span className='p-4 m-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </span>
+                <div className='flex  flex-wrap text-center justify-around'>{likedGirlNames.map((name) =>
+                  <div className='p-4 w-5/12 mt-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </div>
                 )}</div>
-                <div className='flex  flex-wrap text-center'> {likedBoyNames.map((name) =>
-                  <span className='p-4 m-2 rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </span>
+                <div className='flex  flex-wrap  text-center justify-around'> {likedBoyNames.map((name) =>
+                  <div className='p-4 w-5/12 mt-2  rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </div>
                 )}</div>
               </div>
               <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2' /> Dislike</div>
 
-                <div className='flex  flex-wrap text-center'> {disLikedGirlNames.map((name) =>
-                  <span className='p-4 m-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </span>
+                <div className='flex  flex-wrap text-center justify-around'> {disLikedGirlNames.map((name) =>
+                  <div className='p-4 w-5/12 mt-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </div>
                 )}</div>
-                <div className='flex  flex-wrap text-center'> {disLikedBoyNames.map((name) =>
-                  <span className='p-4 m-2 rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </span>
+                <div className='flex  flex-wrap text-center justify-around'> {disLikedBoyNames.map((name) =>
+                  <div className='p-4 w-5/12 mt-2  rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </div>
                 )}</div>
               </div>
 
