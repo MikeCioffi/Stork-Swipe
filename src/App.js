@@ -13,6 +13,7 @@ import { RiCheckboxMultipleLine } from 'react-icons/ri'
 import { MdCancel } from 'react-icons/md'
 import { CiAirportSign1 } from 'react-icons/ci'
 import { AiOutlineCheckCircle } from 'react-icons/ai'
+import { TbGenderDemigirl, TbGenderMale } from 'react-icons/tb'
 
 
 // Be able to find partners
@@ -20,29 +21,19 @@ import { AiOutlineCheckCircle } from 'react-icons/ai'
 //  show dashboard of partners and names you like
 
 function App() {
-  const [nameIndex, setNameIndex] = useState(1)
-
+  const [nameIndex, setNameIndex] = useState(0)
+  const [listKey, setListKey] = useState('boys')
   const [navState, setNavState] = useState('Home')
-
   const [likedNames, setLikedNames] = useState([])
   const [disLikedNames, setDisLikedNames] = useState([])
-
-  console.log(likedNames)
-  console.log(disLikedNames)
-
   const handleclick = (event) => {
-
     if (event === 'liked') {
-
-      setLikedNames(current => [...current, names.names[nameIndex]])
+      setLikedNames(current => [...current, names[listKey][nameIndex]])
       setNameIndex(nameIndex + 1)
-
-
     }
     if (event === 'disliked') {
-      setDisLikedNames(current => [...current, names.names[nameIndex]])
+      setDisLikedNames(current => [...current, names[listKey][nameIndex]])
       setNameIndex(nameIndex + 1)
-
     }
 
     // update liked or disliked
@@ -62,17 +53,30 @@ function App() {
       </nav>
 
       {navState === 'Home' ?
-        <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/4 flex shadow-xl  justify-center flex-row">
+
+        <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center flex-row flex-wrap">
+          <div className='flex w-full justify-center m-auto'>
+            <button onClick={() => setListKey('boys')} className={listKey === 'boys' ?
+              'p-4 m-4 bg-blue-300 rounded-full text-white' :
+              'p-4 m-4 bg-blue-100 rounded-full text-white hover:bg-blue-200'}>
+              <TbGenderMale /></button>
+            <button onClick={() => setListKey('girls')} className={listKey === 'girls' ?
+              'p-4 m-4  bg-pink-300 rounded-full text-white' :
+              'p-4 m-4  bg-pink-100 rounded-full text-white hover:bg-pink-200'} >
+              <TbGenderDemigirl /></button>
+
+          </div>
           <div onClick={() => handleclick('disliked')} className='w-1/6 md:1/12 items-center justify-center flex flex-col cursor-pointer hover:bg-red-100 rounded-lg'><FcCancel /></div>
-          <div className='w-3/4 md:10/12 justify-center items-center flex flex-col'>
+          <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
             <h1 className='-mt-4 text-sm'>Name</h1>
-            <h3 className='text-5xl'>{names.names[nameIndex]}</h3>
+            <h3 className='text-5xl'>{names[listKey][nameIndex]}</h3>
           </div>
           <div onClick={() => handleclick('liked')} className='w-1/6 md:1/12 items-center justify-center   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><FcCheckmark /></div>
+
         </div>
         : navState === 'Partner' ?
           // partner container
-          <div className="mt-12 min-h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/4 flex shadow-xl  justify-start items-center flex-col">
+          <div className="mt-12 min-h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-start items-center flex-col">
             <div className='border-b-2 p-4 w-full' >
               <div className='flex flex-col jusify-center items-center m-auto' >
                 <h4>send an invite</h4>
@@ -105,7 +109,7 @@ function App() {
             </div>
           </div>
           : navState === 'Matches' ?
-            <div className="mt-12 min-h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/4 flex shadow-xl  justify-center flex-row">
+            <div className="mt-12 min-h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center flex-row">
               <div className='w-full flex flex-row'>
                 <div className='w-1/2 flex justify-start items-center flex-col'> Liked
                   <div className='flex  flex-wrap text-center'>{likedNames.map((name) =>
