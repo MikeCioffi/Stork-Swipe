@@ -55,20 +55,20 @@ function App() {
   return (
     <div className="flex h-full w-full items-center flex-col">
       <nav className='flex items-center justify-center'>
-        <div onClick={() => setNavState('Home')} className='flex items-center mr-4 p-4 cursor-pointer'> <FaBabyCarriage /> <button className='ml-2'>Home</button> </div>
-        <div onClick={() => setNavState('Partner')} className='flex items-center m-4 p-4 cursor-pointer'><BsFillPersonFill /><button className='ml-2'>Partners</button></div>
-        <div onClick={() => setNavState('Matches')} className='flex items-center m-4 p-4 cursor-pointer'><RiCheckboxMultipleLine /><button className='ml-2'>Matches</button></div>
+        <div onClick={() => setNavState('Home')} className='flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer'> <FaBabyCarriage /> <button className='ml-2'>Home</button> </div>
+        <div onClick={() => setNavState('Partner')} className='flex items-center m-2 p-2 md:mr-4 md:p-4 cursor-pointer'><BsFillPersonFill /><button className='ml-2'>Partners</button></div>
+        <div onClick={() => setNavState('Matches')} className='flex items-center m-2 p-2 md:mr-4 md:p-4  cursor-pointer'><RiCheckboxMultipleLine /><button className='ml-2'>Matches</button></div>
 
       </nav>
 
       {navState === 'Home' ?
-        <div className="mt-12 h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/4 flex shadow-xl  justify-center flex-row">
-          <div onClick={() => handleclick('disliked')} className='w-1/12 items-center justify-center flex flex-col cursor-pointer hover:bg-red-100 rounded-lg'><FcCancel /></div>
-          <div className='w-10/12 justify-center items-center flex flex-col'>
+        <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/4 flex shadow-xl  justify-center flex-row">
+          <div onClick={() => handleclick('disliked')} className='w-1/6 md:1/12 items-center justify-center flex flex-col cursor-pointer hover:bg-red-100 rounded-lg'><FcCancel /></div>
+          <div className='w-3/4 md:10/12 justify-center items-center flex flex-col'>
             <h1 className='-mt-4 text-sm'>Name</h1>
             <h3 className='text-5xl'>{names.names[nameIndex]}</h3>
           </div>
-          <div onClick={() => handleclick('liked')} className='w-1/12 items-center justify-center   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><FcCheckmark /></div>
+          <div onClick={() => handleclick('liked')} className='w-1/6 md:1/12 items-center justify-center   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><FcCheckmark /></div>
         </div>
         : navState === 'Partner' ?
           // partner container
