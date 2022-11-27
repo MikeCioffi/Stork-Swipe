@@ -4,8 +4,8 @@ import { FcCheckmark, FcCancel } from 'react-icons/fc';
 import { FaBabyCarriage } from 'react-icons/fa';
 import { BsFillPersonFill, BsSearch } from 'react-icons/bs'
 import { RiCheckboxMultipleLine } from 'react-icons/ri'
-
-
+import { MdCancel } from 'react-icons/md'
+import { CiAirportSign1 } from 'react-icons/ci'
 // Be able to find partners
 // show matching matching partners
 //  show dashboard of partners and names you like
@@ -42,17 +42,31 @@ function App() {
                 <h4>send an invite</h4>
                 <div className='flex flex-row w-3/4 items-center'>
                   <BsSearch className='mr-2' />
-                  <input placeholder='enter an email' className='flex-grow shadow p-2 outline-none' type='email'></input>
+                  <input placeholder='enter an email' className='flex-grow shadow p-2 outline-none rounded-lg' type='email'></input>
                   <span className='ml-2 p-2 rounded-lg shadow cursor-pointer'>send</span>
                 </div>
               </div>
             </div>
-            <div className='flex flex-col m-auto' >
-
-              <div>connected partners</div>
-
+            <div className='w-full' >
+              <div className='flex flex-col items-center'>
+                <h4>connected partners</h4>
+                <div className='w-3/4 m-2 p-4 shadow rounded-lg flex items-center'>
+                  <span className='mr-2'><FcCheckmark /></span>
+                  <span className='flex-grow'>abby.cioffi@gmail.com</span>
+                  <span><MdCancel className='text-red-400' /></span>
+                </div>
+                <div className='w-3/4 m-2 p-4 shadow rounded-lg flex items-center'>
+                  <span className='mr-2'><CiAirportSign1 className='text-yellow-400' /></span>
+                  <span className='flex-grow'>julie.cioffi@gmail.com</span>
+                  <span><MdCancel className='text-red-400' /></span>
+                </div>
+                <div className='w-3/4 m-2 p-4 shadow rounded-lg flex items-center'>
+                  <span className='mr-2'><CiAirportSign1 className='text-yellow-400' /></span>
+                  <span className='flex-grow'>laura.cioffi@gmail.com</span>
+                  <span><MdCancel className='text-red-400' /></span>
+                </div>
+              </div>
             </div>
-
           </div>
           : navState === 'Matches' ?
             <div className="mt-12 h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/4 flex shadow-xl  justify-center flex-row">
@@ -61,7 +75,7 @@ function App() {
             :
             <></>
       }
-    </div>
+    </div >
   );
 }
 
