@@ -17,6 +17,12 @@ import { TbGenderDemigirl, TbGenderMale } from 'react-icons/tb'
 import { SlLike, SlDislike } from 'react-icons/sl'
 
 
+// 
+import { GoogleLogin } from '@react-oauth/google';
+
+
+
+
 // Be able to find partners
 // show matching matching partners
 //  show dashboard of partners and names you like
@@ -24,6 +30,9 @@ import { SlLike, SlDislike } from 'react-icons/sl'
 function App() {
   const [nameIndex, setNameIndex] = useState(0)
   const [listKey, setListKey] = useState('boys')
+
+  const [userEmail, setUserEmail] = useState('')
+
   const [navState, setNavState] = useState('Home')
   const [likedBoyNames, setLikedBoyNames] = useState([])
   const [likedGirlNames, setLikedGirlNames] = useState([])
@@ -31,7 +40,18 @@ function App() {
   const [disLikedBoyNames, setDisLikedBoyNames] = useState([])
   const [disLikedGirlNames, setDisLikedGirlNames] = useState([])
 
+  console.log(userEmail)
 
+
+  function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  };
   const handleclick = (event, listKey) => {
     if (event === 'liked' && listKey === 'boys') {
       setLikedBoyNames(current => [...current, names[listKey][nameIndex]])
@@ -60,21 +80,30 @@ function App() {
 
   return (
     <div className="flex h-full w-full items-center flex-col">
-      <nav className='flex items-center justify-center'>
-        <div onClick={() => setNavState('Home')} className={navState === 'Home' ?
+      <nav className='flex items-center w-full justify-center'>
+
+        <div onClick={() => setNavState('Names')} className={navState === 'Names' ?
           'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-blue-500'
           : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
           <FaBabyCarriage /> <button className='ml-2'>Names</button> </div>
         <div onClick={() => setNavState('Partner')} className={navState === 'Partner' ?
           'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-blue-500'
-          : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50 '}><BsFillPersonFill /><button className='ml-2'>Partners</button></div>
+          : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50 '}>
+          <BsFillPersonFill /><button className='ml-2'>Partners</button></div>
         <div onClick={() => setNavState('Matches')} className={navState === 'Matches' ?
           'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-blue-500'
-          : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}><RiCheckboxMultipleLine /><button className='ml-2'>Matches</button></div>
+          : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
+          <RiCheckboxMultipleLine /><button className='ml-2'>Matches</button>
 
+        </div>
+        <div className=''>
+          {userEmail !== '' ?
+            <button className='absolute right-5 top-5 shadow p-2' onClick={() => setUserEmail('')}>Sign Out</button> : <></>
+          }
+        </div>
       </nav >
 
-      {navState === 'Home' ?
+      {navState === 'Names' && userEmail !== '' ?
 
         <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center flex-row flex-wrap">
           <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
@@ -96,64 +125,80 @@ function App() {
           <div onClick={() => handleclick('liked', listKey)} className='w-1/6 md:1/12 items-center justify-center   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><FcCheckmark /></div>
 
         </div>
-        : navState === 'Partner' ?
-          // partner container
-          <div className="mt-4 min-h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-start items-center flex-col">
-            <div className='border-b-2 border-gray-100 p-4 w-full' >
-              <div className='flex flex-col jusify-center items-center m-auto' >
-                <h4>send an invite</h4>
-                <div className='flex flex-row md:flex-row w-full sm:w-3/4 items-center'>
-                  <BsSearch className='mr-2' />
-                  <input placeholder='enter an email' className='flex-grow shadow p-4 outline-none rounded-lg' type='email'></input>
-                  <button type='submit' className='ml-2 p-2 pt-4 pb-4 md:p-4 rounded-lg shadow cursor-pointer'>send</button>
+        : navState === 'Names' && userEmail === '' ?
+          <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center items-center flex-col flex-wrap">
+            <h3 className='mb-4'>Please login with your google account to decide on your favorite names!</h3>
+
+            <GoogleLogin
+              onSuccess={credentialResponse => {
+                setNavState('Names')
+                console.log(parseJwt(credentialResponse.credential))
+                setUserEmail(parseJwt(credentialResponse.credential).email);
+
+
+              }}
+              onError={() => {
+                console.log('Login Failed');
+              }}
+            /></div>
+          : navState === 'Partner' ?
+            // partner container
+            <div className="mt-4 min-h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-start items-center flex-col">
+              <div className='border-b-2 border-gray-100 p-4 w-full' >
+                <div className='flex flex-col jusify-center items-center m-auto' >
+                  <h4>send an invite</h4>
+                  <div className='flex flex-row md:flex-row w-full sm:w-3/4 items-center'>
+                    <BsSearch className='mr-2' />
+                    <input placeholder='enter an email' className='flex-grow shadow p-4 outline-none rounded-lg' type='email'></input>
+                    <button type='submit' className='ml-2 p-2 pt-4 pb-4 md:p-4 rounded-lg shadow cursor-pointer'>send</button>
+                  </div>
+                </div>
+              </div>
+              <div className='w-full' >
+                <div className='flex flex-col items-center'>
+                  <h4>connected partners</h4>
+                  <div className='w-full md:w-1/2 m-2 p-4 shadow rounded-lg flex items-center'>
+                    <span className='mr-2'><AiOutlineCheckCircle className='text-green-500' /></span>
+                    <span className='flex-grow'>email.test1234@gmail.com</span>
+                    <span><MdCancel className='text-red-400 hover:text-red-800 cursor-pointer' /></span>
+                  </div>
+                  <div className='w-full md:w-1/2 m-2 p-4 shadow rounded-lg flex items-center'>
+                    <span className='mr-2'><CiAirportSign1 className='text-yellow-400' /></span>
+                    <span className='flex-grow'>jane.doe@gmail.com</span>
+                    <span><MdCancel className='text-red-400 hover:text-red-800 cursor-pointer' /></span>
+                  </div>
+                  <div className='w-full md:w-1/2 m-2 p-4 shadow rounded-lg flex items-center'>
+                    <span className='mr-2'><CiAirportSign1 className='text-yellow-400' /></span>
+                    <span className='flex-grow'>charlie.brown@gmail.com</span>
+                    <span><MdCancel className='text-red-400 hover:text-red-800 cursor-pointer' /></span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className='w-full' >
-              <div className='flex flex-col items-center'>
-                <h4>connected partners</h4>
-                <div className='w-full md:w-1/2 m-2 p-4 shadow rounded-lg flex items-center'>
-                  <span className='mr-2'><AiOutlineCheckCircle className='text-green-500' /></span>
-                  <span className='flex-grow'>email.test1234@gmail.com</span>
-                  <span><MdCancel className='text-red-400 hover:text-red-800 cursor-pointer' /></span>
-                </div>
-                <div className='w-full md:w-1/2 m-2 p-4 shadow rounded-lg flex items-center'>
-                  <span className='mr-2'><CiAirportSign1 className='text-yellow-400' /></span>
-                  <span className='flex-grow'>jane.doe@gmail.com</span>
-                  <span><MdCancel className='text-red-400 hover:text-red-800 cursor-pointer' /></span>
-                </div>
-                <div className='w-full md:w-1/2 m-2 p-4 shadow rounded-lg flex items-center'>
-                  <span className='mr-2'><CiAirportSign1 className='text-yellow-400' /></span>
-                  <span className='flex-grow'>charlie.brown@gmail.com</span>
-                  <span><MdCancel className='text-red-400 hover:text-red-800 cursor-pointer' /></span>
-                </div>
-              </div>
-            </div>
-          </div>
-          : navState === 'Matches' ?
-            <div className="mt-12 min-h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col sm:flex-row">
-              <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2' /> Liked</div>
+            : navState === 'Matches' ?
+              <div className="mt-12 min-h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col sm:flex-row">
+                <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2' /> Liked</div>
 
-                <div className='flex w-full flex-wrap text-center justify-around'>{likedGirlNames.map((name) =>
-                  <div className='p-4 w-5/12 mt-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </div>
-                )}</div>
-                <div className='flex w-full flex-wrap  text-center justify-around'> {likedBoyNames.map((name) =>
-                  <div className='p-4 w-5/12 mt-2  rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </div>
-                )}</div>
-              </div>
-              <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2' /> Dislike</div>
+                  <div className='flex w-full flex-wrap text-center justify-around'>{likedGirlNames.map((name) =>
+                    <div className='p-4 w-5/12 mt-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </div>
+                  )}</div>
+                  <div className='flex w-full flex-wrap  text-center justify-around'> {likedBoyNames.map((name) =>
+                    <div className='p-4 w-5/12 mt-2  rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </div>
+                  )}</div>
+                </div>
+                <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2' /> Dislike</div>
 
-                <div className='flex w-full flex-wrap text-center justify-around'> {disLikedGirlNames.map((name) =>
-                  <div className='p-4 w-5/12 mt-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </div>
-                )}</div>
-                <div className='flex w-full flex-wrap text-center justify-around'> {disLikedBoyNames.map((name) =>
-                  <div className='p-4 w-5/12 mt-2  rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </div>
-                )}</div>
-              </div>
+                  <div className='flex w-full flex-wrap text-center justify-around'> {disLikedGirlNames.map((name) =>
+                    <div className='p-4 w-5/12 mt-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </div>
+                  )}</div>
+                  <div className='flex w-full flex-wrap text-center justify-around'> {disLikedBoyNames.map((name) =>
+                    <div className='p-4 w-5/12 mt-2  rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </div>
+                  )}</div>
+                </div>
 
-            </div>
-            :
-            <></>
+              </div>
+              :
+              <></>
       }
     </div >
   );
