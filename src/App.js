@@ -33,7 +33,7 @@ function App() {
 
   const [userEmail, setUserEmail] = useState('')
 
-  const [navState, setNavState] = useState('Home')
+  const [navState, setNavState] = useState('Names')
   const [likedBoyNames, setLikedBoyNames] = useState([])
   const [likedGirlNames, setLikedGirlNames] = useState([])
 
