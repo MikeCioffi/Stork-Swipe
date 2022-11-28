@@ -31,7 +31,7 @@ function App() {
   const [nameIndex, setNameIndex] = useState(0)
   const [listKey, setListKey] = useState('boys')
 
-  const [userEmail, setUserEmail] = useState('')
+
 
   const [navState, setNavState] = useState('Names')
   const [likedBoyNames, setLikedBoyNames] = useState([])
@@ -39,6 +39,15 @@ function App() {
 
   const [disLikedBoyNames, setDisLikedBoyNames] = useState([])
   const [disLikedGirlNames, setDisLikedGirlNames] = useState([])
+
+
+
+  const [userEmail, setUserEmail] = useState({
+    "email": '',
+    "first_name": '',
+    "last_name": ''
+
+  })
 
   console.log(userEmail)
 
@@ -98,7 +107,9 @@ function App() {
         </div>
         <div className=''>
           {userEmail !== '' ?
-            <button className='absolute right-5 top-5 shadow p-2' onClick={() => setUserEmail('')}>Sign Out</button> : <></>
+            <button className='flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg' onClick={() => setUserEmail('')}>
+              <img src="https://lh3.googleusercontent.com/a/ALm5wu3zpCc1tT4WS4yapPC1OuSMqlwpo7sOnyjAliQSlMc=s96-c" alt="user's google profile" className='rounded-full mr-2 h-12 w-12'></img>
+              <span>Sign Out</span></button> : <></>
           }
         </div>
       </nav >
@@ -133,7 +144,11 @@ function App() {
               onSuccess={credentialResponse => {
                 setNavState('Names')
                 console.log(parseJwt(credentialResponse.credential))
-                setUserEmail(parseJwt(credentialResponse.credential).email);
+                setUserEmail({
+                  "email": parseJwt(credentialResponse.credential).email,
+                  "first_name": parseJwt(credentialResponse.credential).given_name,
+                  "last_name": parseJwt(credentialResponse.credential).family_name
+                });
 
 
               }}
