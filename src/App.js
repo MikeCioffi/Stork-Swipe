@@ -32,12 +32,7 @@ function App() {
   const [disLikedGirlNames, setDisLikedGirlNames] = useState([])
 
 
-
   const handleclick = (event, listKey) => {
-
-
-
-    console.log(listKey)
     if (event === 'liked' && listKey === 'boys') {
       setLikedBoyNames(current => [...current, names[listKey][nameIndex]])
       setNameIndex(nameIndex + 1)
@@ -139,19 +134,19 @@ function App() {
             <div className="mt-12 min-h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col sm:flex-row">
               <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2' /> Liked</div>
 
-                <div className='flex  flex-wrap text-center justify-around'>{likedGirlNames.map((name) =>
+                <div className='flex w-full flex-wrap text-center justify-around'>{likedGirlNames.map((name) =>
                   <div className='p-4 w-5/12 mt-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </div>
                 )}</div>
-                <div className='flex  flex-wrap  text-center justify-around'> {likedBoyNames.map((name) =>
+                <div className='flex w-full flex-wrap  text-center justify-around'> {likedBoyNames.map((name) =>
                   <div className='p-4 w-5/12 mt-2  rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </div>
                 )}</div>
               </div>
               <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2' /> Dislike</div>
 
-                <div className='flex  flex-wrap text-center justify-around'> {disLikedGirlNames.map((name) =>
+                <div className='flex w-full flex-wrap text-center justify-around'> {disLikedGirlNames.map((name) =>
                   <div className='p-4 w-5/12 mt-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </div>
                 )}</div>
-                <div className='flex  flex-wrap text-center justify-around'> {disLikedBoyNames.map((name) =>
+                <div className='flex w-full flex-wrap text-center justify-around'> {disLikedBoyNames.map((name) =>
                   <div className='p-4 w-5/12 mt-2  rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </div>
                 )}</div>
               </div>
