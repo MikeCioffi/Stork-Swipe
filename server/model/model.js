@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+
+//-----------NAME SCHEMA-----------------
 const nameDataSchema = new mongoose.Schema({
     name: {
         required: true,
@@ -17,6 +19,9 @@ const nameDataSchema = new mongoose.Schema({
     { collection: 'nameData' })
 
 
+
+
+//-----------USER SCHEMA-----------------
 const userSchema = new mongoose.Schema({
     email: {
         required: true,
@@ -41,13 +46,37 @@ const userSchema = new mongoose.Schema({
 )
 
 
+const friendSchema = new mongoose.Schema({
+    status: {
+        required: true,
+        type: String
 
+    },
+    email: {
+        required: true,
+        type: String
+    },
+    friend_email: {
+        required: true,
+        type: String
+    },
+    friend_nickname: {
+        required: false,
+        type: String
+    }
+
+},
+    { collection: 'Friends' }
+
+)
+
+const Friend = mongoose.model('friend', friendSchema)
 const nameData = mongoose.model('list-data', nameDataSchema)
 const User = mongoose.model('user', userSchema)
 
 
 module.exports = {
-    User, nameData
+    User, nameData, Friend
 }
 
 // Liked-name = {list-data-ID, userID}

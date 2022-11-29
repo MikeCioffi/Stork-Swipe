@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './App.css';
 
 
@@ -37,7 +37,9 @@ function App() {
 
   const [disLikedBoyNames, setDisLikedBoyNames] = useState([])
   const [disLikedGirlNames, setDisLikedGirlNames] = useState([])
+  const [friendEmail, setFriendEmail] = useState()
 
+  const [friends, setFriends] = useState()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const [userData, setUserData] = useState({
@@ -58,6 +60,7 @@ function App() {
     })
     setIsLoggedIn(false)
   }
+
 
 
   useEffect(() => {
@@ -100,11 +103,62 @@ function App() {
 
     }
   }, [userData])
+  const getFriends = useCallback(async () => {
+    await axios
+      .get(`http://localhost:3001/api/friend/getOne/${userData.email}`, {})
+      .then(function (response) {
+        console.log(response.data)
+        setFriends(response.data)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }, [userData.email])
+  const sendFriendRequest = async () => {
+    await axios
+      .post(`http://localhost:3001/api/friend/post`, {
+        status: 'sent',
+        email: userData.email,
+        friend_email: friendEmail
+      })
+      .then(function (response) {
+        console.log(response)
+        getFriends()
+        setFriendEmail('')
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
 
+  const deleteFriend = async (deleteID) => {
+    await axios
+      .delete(`http://localhost:3001/api/friend/delete/${deleteID}`)
+      .then(function (response) {
+        getFriends()
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
 
-
-
-
+  const acceptFriend = async (acceptID, email, friend_email) => {
+    await axios
+      .patch(`http://localhost:3001/api/friend/accept/${acceptID}`, {
+        status: 'accept',
+      })
+      .then(function (response) {
+        getFriends()
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+  useEffect(() => {
+    getFriends()
+  }, [getFriends, userData.email, isLoggedIn])
 
   let upperListKey = listKey.toUpperCase()
 
@@ -140,6 +194,7 @@ function App() {
     // increate name counter
 
   }
+
 
 
 
@@ -225,29 +280,32 @@ function App() {
                   <h4>send an invite</h4>
                   <div className='flex flex-row md:flex-row w-full sm:w-3/4 items-center'>
                     <BsSearch className='mr-2' />
-                    <input placeholder='enter an email' className='flex-grow shadow p-4 outline-none rounded-lg' type='email'></input>
-                    <button type='submit' className='ml-2 p-2 pt-4 pb-4 md:p-4 rounded-lg shadow cursor-pointer'>send</button>
+                    <input value={friendEmail} onChange={e => setFriendEmail(e.target.value)} placeholder='enter an email' className='flex-grow shadow p-4 outline-none rounded-lg' type='email'></input>
+                    <button type='submit' onClick={sendFriendRequest} className='ml-2 p-2 pt-4 pb-4 md:p-4 rounded-lg shadow cursor-pointer'>send</button>
                   </div>
                 </div>
               </div>
               <div className='w-full' >
                 <div className='flex flex-col items-center'>
                   <h4>connected partners</h4>
-                  <div className='w-full md:w-1/2 m-2 p-4 shadow rounded-lg flex items-center'>
-                    <span className='mr-2'><AiOutlineCheckCircle className='text-green-500' /></span>
-                    <span className='flex-grow'>email.test1234@gmail.com</span>
-                    <span><MdCancel className='text-red-400 hover:text-red-800 cursor-pointer' /></span>
-                  </div>
-                  <div className='w-full md:w-1/2 m-2 p-4 shadow rounded-lg flex items-center'>
-                    <span className='mr-2'><CiAirportSign1 className='text-yellow-400' /></span>
-                    <span className='flex-grow'>jane.doe@gmail.com</span>
-                    <span><MdCancel className='text-red-400 hover:text-red-800 cursor-pointer' /></span>
-                  </div>
-                  <div className='w-full md:w-1/2 m-2 p-4 shadow rounded-lg flex items-center'>
-                    <span className='mr-2'><CiAirportSign1 className='text-yellow-400' /></span>
-                    <span className='flex-grow'>charlie.brown@gmail.com</span>
-                    <span><MdCancel className='text-red-400 hover:text-red-800 cursor-pointer' /></span>
-                  </div>
+                  {friends.map((friend) => {
+                    return <div className='w-full lg:w-3/4 m-2 p-4 shadow rounded-lg flex items-center' key={friend._id}>
+                      {friend.status === 'sent' ?
+                        <div className='mr-2'><CiAirportSign1 className='text-yellow-500' /></div> :
+                        <div className='mr-2'><AiOutlineCheckCircle className='text-green-500' /></div>}
+                      {friend.friend_email === userData.email ?
+                        <div className='flex-grow'>{friend.email}</div>
+                        :
+                        <div className='flex-grow'>{friend.friend_email}</div>}
+                      {friend.status === 'sent' & friend.friend_email === userData.email ?
+                        <div><FcCheckmark onClick={() => acceptFriend(friend._id, friend.email, friend.friend_email)} className='text-green-400 mr-2 text-lg hover:text-green-800 cursor-pointer' /></div> : <></>
+                      }
+                      <div><MdCancel onClick={() => deleteFriend(friend._id)} className='text-red-400 hover:text-red-800 text-lg cursor-pointer' /></div>
+                    </div>
+
+                  })}
+
+
                 </div>
               </div>
             </div>
