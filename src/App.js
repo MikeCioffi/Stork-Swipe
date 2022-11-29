@@ -61,48 +61,51 @@ function App() {
 
 
   useEffect(() => {
+    const matchUser = async () => {
+      if (userData.email !== undefined)
+        if (userData.email.length > 0) {
+          await axios
+            .get(`http://localhost:3001/api/user/getOne/${userData.email}`, {
+            })
+            .then(function (response) {
+              if ((response.data.length === 0)) {
+                createUser()
+              }
+
+            })
+
+            .catch(function (error) {
+              console.log(error)
+            })
+        }
+    }
+    const createUser = async () => {
+      await axios
+        .post(`http://localhost:3001/api/user/post/`, {
+          email: userData.email,
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          image_url: userData.image_url
+        })
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
+
     if (userData.email !== undefined) {
       matchUser()
 
     }
-  }, [userData.email])
+  }, [userData])
 
 
-  const matchUser = async () => {
-    if (userData.email !== undefined)
-      if (userData.email.length > 0) {
-        await axios
-          .get(`http://localhost:3001/api/user/getOne/${userData.email}`, {
-          })
-          .then(function (response) {
-            if ((response.data.length === 0)) {
-              createUser()
-            }
-
-          })
-
-          .catch(function (error) {
-            console.log(error)
-          })
-      }
-  }
 
 
-  const createUser = async () => {
-    await axios
-      .post(`http://localhost:3001/api/user/post/`, {
-        email: userData.email,
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        image_url: userData.image_url
-      })
-      .then(function (response) {
-        console.log(response)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  }
+
+
   let upperListKey = listKey.toUpperCase()
 
   function parseJwt(token) {
