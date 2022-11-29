@@ -251,7 +251,6 @@ function App() {
             }}
           /></div> :
         navState === 'Names' && isLoggedIn === true ?
-
           <div className="flex flex-col w-full justify-center items-center">
             <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
               <button onClick={() => setListKey('boy')} className={listKey === 'boy' ?
@@ -264,7 +263,7 @@ function App() {
                 <TbGenderDemigirl /></button>
 
             </div>
-            <div className="mt-12 h-48 w-11/12 md:w-1/2 rounded-lg xl:w-1/4 flex shadow-xl  justify-center flex-row flex-wrap">
+            <div className="mt-12 h-48 w-11/12 md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex shadow-xl  justify-center flex-row flex-wrap">
               <button onClick={() => handleclick('disliked', listKey)} className='w-1/6 md:1/12 items-center justify-center flex flex-col cursor-pointer hover:bg-red-100 rounded-lg'><FcCancel /></button>
               <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
                 <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
