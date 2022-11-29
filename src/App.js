@@ -157,7 +157,10 @@ function App() {
       })
   }
   useEffect(() => {
-    getFriends()
+    if (isLoggedIn === true) {
+      getFriends()
+
+    }
   }, [getFriends, userData.email, isLoggedIn])
 
   let upperListKey = listKey.toUpperCase()
@@ -289,7 +292,7 @@ function App() {
                 <div className='flex flex-col items-center'>
                   <h4>connected partners</h4>
                   {friends.map((friend) => {
-                    return <div className='w-full lg:w-3/4 m-2 p-4 shadow rounded-lg flex items-center' key={friend._id}>
+                    return <div className='w-11/12 lg:w-3/4 m-2 p-4 shadow rounded-lg flex items-center' key={friend._id}>
                       {friend.status === 'sent' ?
                         <div className='mr-2'><CiAirportSign1 className='text-yellow-500' /></div> :
                         <div className='mr-2'><AiOutlineCheckCircle className='text-green-500' /></div>}

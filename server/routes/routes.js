@@ -125,7 +125,7 @@ router.patch('/friend/accept/:id', async (req, res) => {
         const options = { new: true };
         console.log(req.body)
         const result = await Model.Friend.findByIdAndUpdate(
-            id, updatedData, options
+            id, { status: 'accepted' }, options
         )
 
         res.send(result)
@@ -140,15 +140,11 @@ router.patch('/friend/accept/:id', async (req, res) => {
 router.patch('/update/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const updatedData = req.body;
         const options = { new: true };
 
         const result = await Model.findByIdAndUpdate(
             id, {
-            status: req.body.status,
-            email: req.body.email,
-            friend_email: req.body.friend_email,
-            friend_nickname: req.body.friend_nickname
+            status: 'accepted',
         }, options
         )
 
