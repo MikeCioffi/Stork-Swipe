@@ -1,16 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import './App.css';
-
-
-import names from '../src/names.json'
-
-
 // icons
 import { FcCheckmark, FcCancel } from 'react-icons/fc';
 import { FaBabyCarriage } from 'react-icons/fa';
 import { BsFillPersonFill, BsSearch } from 'react-icons/bs'
 import { RiCheckboxMultipleLine } from 'react-icons/ri'
-import { MdCancel } from 'react-icons/md'
+import { MdOutlineCancel } from 'react-icons/md'
 import { CiAirportSign1 } from 'react-icons/ci'
 import { AiOutlineCheckCircle } from 'react-icons/ai'
 import { TbGenderDemigirl, TbGenderMale } from 'react-icons/tb'
@@ -21,9 +16,6 @@ import { SlLike, SlDislike } from 'react-icons/sl'
 import { GoogleLogin } from '@react-oauth/google';
 import axios from "axios"
 
-
-
-
 // Be able to find partners
 // show matching matching partners
 //  show dashboard of partners and names you like
@@ -32,16 +24,14 @@ function App() {
   const [nameIndex, setNameIndex] = useState(0)
   const [listKey, setListKey] = useState('boy')
   const [navState, setNavState] = useState('Names')
-  const [likedBoyNames, setLikedBoyNames] = useState([])
-  const [likedGirlNames, setLikedGirlNames] = useState([])
-
-  const [disLikedBoyNames, setDisLikedBoyNames] = useState([])
-  const [disLikedGirlNames, setDisLikedGirlNames] = useState([])
+  const [likedData, setLikedData] = useState()
+  const [disLikedData, setDisLikedData] = useState()
   const [friendEmail, setFriendEmail] = useState()
-
+  const [nameList, setNameList] = useState(null)
+  const [girlList, setGirlList] = useState(null)
+  const [boyList, setBoyList] = useState(null)
   const [friends, setFriends] = useState()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-
   const [userData, setUserData] = useState({
     "email": '',
     "first_name": '',
@@ -61,7 +51,61 @@ function App() {
     setIsLoggedIn(false)
   }
 
+  const likeName = async (nameid) => {
+    await axios
+      .post(`http://localhost:3001/api/name/like/post`, {
+        nameid: nameid,
+        email: userData.email,
+      })
+      .then(function (response) {
+        setNameIndex(nameIndex + 1)
 
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+
+  const disLikeName = async (nameid) => {
+    await axios
+      .post(`http://localhost:3001/api/name/dislike/post`, {
+        nameid: nameid,
+        email: userData.email,
+      })
+      .then(function (response) {
+        setNameIndex(nameIndex + 1)
+
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+
+  const removeLike = async (deleteID) => {
+    await axios
+      .delete(`http://localhost:3001/api/name/like/delete/${deleteID}`)
+      .then(function (response) {
+        getLikedNames()
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+
+  const removeDisLike = async (deleteID) => {
+    await axios
+      .delete(`http://localhost:3001/api/name/dislike/delete/${deleteID}`)
+      .then(function (response) {
+        getDisLikedNames()
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
 
   useEffect(() => {
     const matchUser = async () => {
@@ -143,7 +187,9 @@ function App() {
       })
   }
 
-  const acceptFriend = async (acceptID, email, friend_email) => {
+
+
+  const acceptFriend = async (acceptID) => {
     await axios
       .patch(`http://localhost:3001/api/friend/accept/${acceptID}`, {
         status: 'accept',
@@ -156,12 +202,76 @@ function App() {
         console.log(error)
       })
   }
+
+  const getAllNames = useCallback(async () => {
+    await axios
+      .get(`http://localhost:3001/api/name/getall`, {})
+      .then(function (response) {
+        console.log('api call made')
+        setNameList(response.data)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }, [])
+
+  const getLikedNames = useCallback(async () => {
+    await axios
+      .get(`http://localhost:3001/api/name/like/getbyemail/${userData.email}`, {})
+      .then(function (response) {
+        setLikedData(response.data)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }, [userData.email])
+
+  const getDisLikedNames = useCallback(async () => {
+    await axios
+      .get(`http://localhost:3001/api/name/dislike/getbyemail/${userData.email}`, {})
+      .then(function (response) {
+        setDisLikedData(response.data)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+
+  }, [userData.email])
+  // console.log(nameList)
+
+  // function filter_names(filters) {
+  //   const filtered_names = [];
+  //   filters.forEach(filterValue => {
+  //     filtered_names.push(...nameList.filter(val => val.areas.includes(filterValue)));
+  //   });
+  //   console.log(filtered_names);
+  // };
+
+
+
+
+
+  useEffect(() => {
+    if (nameList === null) {
+      getAllNames()
+    }
+    if (nameList !== null & girlList === null & boyList === null) {
+      var filters = [true];
+      setGirlList(nameList.filter(val => filters.includes(val.isfemale)))
+      setBoyList(nameList.filter(val => filters.includes(val.ismale)))
+    }
+  }
+    , [nameList, boyList, getAllNames, girlList])
+
+
   useEffect(() => {
     if (isLoggedIn === true) {
       getFriends()
+      getLikedNames()
+      getDisLikedNames()
 
     }
-  }, [getFriends, userData.email, isLoggedIn])
+  }, [getDisLikedNames, getLikedNames, getAllNames, nameList, getFriends, userData.email, isLoggedIn])
 
   let upperListKey = listKey.toUpperCase()
 
@@ -176,20 +286,27 @@ function App() {
   };
   const handleclick = (event, listKey) => {
     if (event === 'liked' && listKey === 'boy') {
-      setLikedBoyNames(current => [...current, names[listKey][nameIndex]])
+      //make api call to like a certain person
+      likeName(boyList[nameIndex]._id)
       setNameIndex(nameIndex + 1)
+      getLikedNames()
+
     }
     if (event === 'liked' && listKey === 'girl') {
-      setLikedGirlNames(current => [...current, names[listKey][nameIndex]])
+      likeName(girlList[nameIndex]._id)
       setNameIndex(nameIndex + 1)
+      getLikedNames()
     }
     if (event === 'disliked' && listKey === 'boy') {
-      setDisLikedBoyNames(current => [...current, names[listKey][nameIndex]])
+      disLikeName(boyList[nameIndex]._id)
       setNameIndex(nameIndex + 1)
+      getDisLikedNames()
     }
     if (event === 'disliked' && listKey === 'girl') {
-      setDisLikedGirlNames(current => [...current, names[listKey][nameIndex]])
+      disLikeName(girlList[nameIndex]._id)
       setNameIndex(nameIndex + 1)
+      getDisLikedNames()
+
     }
 
 
@@ -235,7 +352,7 @@ function App() {
           <GoogleLogin auto_select
             onSuccess={credentialResponse => {
               setIsLoggedIn(true)
-              setNavState('Names')
+
               let tempUserData = parseJwt(credentialResponse.credential)
               setUserData({
                 "email": tempUserData.email,
@@ -267,7 +384,14 @@ function App() {
               <button onClick={() => handleclick('disliked', listKey)} className='w-1/6 md:1/12 items-center justify-center flex flex-col cursor-pointer hover:bg-red-100 rounded-lg'><FcCancel /></button>
               <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
                 <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
-                <h3 className='text-5xl'>{names[listKey][nameIndex]}</h3>
+                {listKey === 'girl' ?
+                  // show girl names
+                  <h3 className='text-5xl'>{girlList[nameIndex].name}</h3>
+
+                  // show boy names  
+                  : <h3 className='text-5xl'>{boyList[nameIndex].name}</h3>
+
+                }
               </div>
               <button onClick={() => handleclick('liked', listKey)} className='w-1/6 md:1/12 items-center justify-center   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><FcCheckmark /></button>
 
@@ -300,9 +424,9 @@ function App() {
                         :
                         <div className='flex-grow'>{friend.friend_email}</div>}
                       {friend.status === 'sent' & friend.friend_email === userData.email ?
-                        <div><FcCheckmark onClick={() => acceptFriend(friend._id, friend.email, friend.friend_email)} className='text-green-400 mr-2 text-lg hover:text-green-800 cursor-pointer' /></div> : <></>
+                        <div><FcCheckmark onClick={() => acceptFriend(friend._id)} className='text-green-400 mr-2 text-lg hover:text-green-800 cursor-pointer' /></div> : <></>
                       }
-                      <div><MdCancel onClick={() => deleteFriend(friend._id)} className='text-red-400 hover:text-red-800 text-lg cursor-pointer' /></div>
+                      <div><MdOutlineCancel onClick={() => deleteFriend(friend._id)} className='text-red-400 hover:text-red-800 text-lg cursor-pointer' /></div>
                     </div>
 
                   })}
@@ -315,28 +439,41 @@ function App() {
               <div className="mt-12 min-h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col sm:flex-row">
                 <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2' /> Liked</div>
 
-                  <div className='flex w-full flex-wrap text-center justify-around'>{likedGirlNames.map((name) =>
-                    <div className='p-4 w-5/12 mt-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </div>
-                  )}</div>
-                  <div className='flex w-full flex-wrap  text-center justify-around'> {likedBoyNames.map((name) =>
-                    <div className='p-4 w-5/12 mt-2  rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </div>
-                  )}</div>
+                  <div className='flex w-full flex-wrap text-center justify-around'>
+                    {likedData.map((item) => <div key={item.likeid._id}
+                      className={item.data.ismale === true ? 'relative p-4 w-5/12 mt-2 rounded-lg shadow-sm min-w-fit bg-blue-50 ' :
+                        'relative p-4 w-5/12 mt-2 rounded-lg shadow-sm min-w-fit bg-pink-50 '}
+                    > <div>
+                        {item.data.name}
+                        <button onClick={() => removeLike(item.likeid._id)} className='absolute right-2 top-6  cursor-pointer hover:text-red-100 rounded-lg'><MdOutlineCancel className='text-red-500 hover:text-red-200' /></button>
+
+                      </div>
+                    </div>)}
+
+                  </div>
+
                 </div>
                 <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2' /> Dislike</div>
 
-                  <div className='flex w-full flex-wrap text-center justify-around'> {disLikedGirlNames.map((name) =>
-                    <div className='p-4 w-5/12 mt-2 rounded-lg shadow-sm bg-pink-50 min-w-fit'> {name} </div>
-                  )}</div>
-                  <div className='flex w-full flex-wrap text-center justify-around'> {disLikedBoyNames.map((name) =>
-                    <div className='p-4 w-5/12 mt-2  rounded-lg shadow-sm bg-blue-50 min-w-fit'> {name} </div>
-                  )}</div>
+                  <div className='flex w-full flex-wrap text-center justify-around'>
+                    {disLikedData.map((item) => <div key={item.likeid._id}
+                      className={item.data.ismale === true ? 'relative p-4 w-5/12 mt-2 rounded-lg shadow-sm min-w-fit bg-blue-50 ' :
+                        'relative p-4 w-5/12 mt-2 rounded-lg shadow-sm min-w-fit bg-pink-50 '}
+                    > <div>
+                        {item.data.name}
+                        <button onClick={() => removeDisLike(item.likeid._id)} className='absolute right-2 top-6  cursor-pointer hover:text-red-100 rounded-lg'><MdOutlineCancel className='text-red-500 hover:text-red-200' /></button>
+
+                      </div>
+                    </div>)}
+                  </div>
                 </div>
 
               </div>
               :
               <></>
       }
-    </div >
+    </div>
+
   );
 }
 

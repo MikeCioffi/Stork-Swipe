@@ -32,6 +32,116 @@ router.post('/name/post', jsonParser, async (req, res) => {
     }
 })
 
+router.get('/name/getall', async (req, res) => {
+
+    try {
+        const data = await Model.nameData.find();
+        res.json(data)
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+// used get users liked names based on email
+router.get('/name/like/getbyemail/:email', jsonParser, async (req, res) => {
+    try {
+        const data = await Model.LikedData.find({ email: req.params.email })
+        // assuming data is returned
+        const result = data.map(async obj => {
+            return {
+                likeid: obj,
+                data: await Model.nameData.findById(obj.nameid).exec()
+
+            }
+        }
+        )
+        await Promise.all(result).then(completed => {
+            res.json(completed)
+        })
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+
+})
+// used to create a user to name 1:many like relationship
+router.post('/name/like/post', jsonParser, async (req, res) => {
+    const LikedData = new Model.LikedData({
+        nameid: req.body.nameid,
+        email: req.body.email,
+    })
+
+    try {
+        const dataToSave = await LikedData.save();
+        res.status(200).json(dataToSave)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+})
+
+//used to delete the users 'like' of a name
+router.delete('/name/like/delete/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = await Model.LikedData.findByIdAndDelete(id)
+        res.send(`Document with ${data.name} has been deleted..`)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+})
+
+// used get users disliked names based on email
+router.get('/name/dislike/getbyemail/:email', jsonParser, async (req, res) => {
+    try {
+        const data = await Model.DisLikedData.find({ email: req.params.email })
+        // assuming data is returned
+        const result = data.map(async obj => {
+            return {
+                likeid: obj,
+                data: await Model.nameData.findById(obj.nameid).exec()
+
+            }
+        }
+        )
+        await Promise.all(result).then(completed => {
+            res.json(completed)
+        })
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+
+})
+
+//used to delete the users 'dislikelike' of a name
+router.delete('/name/dislike/delete/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = await Model.DisLikedData.findByIdAndDelete(id)
+        res.send(`Document with ${data.name} has been deleted..`)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+})
+
+router.post('/name/dislike/post', jsonParser, async (req, res) => {
+    const dislikedData = new Model.DisLikedData({
+        nameid: req.body.nameid,
+        email: req.body.email,
+    })
+
+    try {
+        const dataToSave = await dislikedData.save();
+        res.status(200).json(dataToSave)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+})
+
 //Post Method to create new USER in DB
 router.post('/user/post', jsonParser, async (req, res) => {
     const listData = new Model.User({

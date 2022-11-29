@@ -70,13 +70,42 @@ const friendSchema = new mongoose.Schema({
 
 )
 
+
+const LikedNameSchema = new mongoose.Schema({
+    nameid: {
+        required: true,
+        type: String
+    },
+    email: {
+        required: true,
+        type: String
+    }
+},
+    { collection: 'LikedData' }
+
+)
+const DisLikedDataSchema = new mongoose.Schema({
+    nameid: {
+        required: true,
+        type: String
+    },
+    email: {
+        required: true,
+        type: String
+    }
+},
+    { collection: 'DisLikedData' }
+
+)
+const DisLikedData = mongoose.model('diLiked-data', DisLikedDataSchema)
+const LikedData = mongoose.model('liked-data', LikedNameSchema)
 const Friend = mongoose.model('friend', friendSchema)
 const nameData = mongoose.model('list-data', nameDataSchema)
 const User = mongoose.model('user', userSchema)
 
 
 module.exports = {
-    User, nameData, Friend
+    User, nameData, Friend, LikedData, DisLikedData
 }
 
 // Liked-name = {list-data-ID, userID}
