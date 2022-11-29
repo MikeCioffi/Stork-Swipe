@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 
@@ -19,6 +19,7 @@ import { SlLike, SlDislike } from 'react-icons/sl'
 
 // 
 import { GoogleLogin } from '@react-oauth/google';
+import axios from "axios"
 
 
 
@@ -29,10 +30,7 @@ import { GoogleLogin } from '@react-oauth/google';
 
 function App() {
   const [nameIndex, setNameIndex] = useState(0)
-  const [listKey, setListKey] = useState('boys')
-
-
-
+  const [listKey, setListKey] = useState('boy')
   const [navState, setNavState] = useState('Names')
   const [likedBoyNames, setLikedBoyNames] = useState([])
   const [likedGirlNames, setLikedGirlNames] = useState([])
@@ -40,17 +38,72 @@ function App() {
   const [disLikedBoyNames, setDisLikedBoyNames] = useState([])
   const [disLikedGirlNames, setDisLikedGirlNames] = useState([])
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-
-  const [userEmail, setUserEmail] = useState({
+  const [userData, setUserData] = useState({
     "email": '',
     "first_name": '',
-    "last_name": ''
+    "last_name": '',
+    "image_url": ''
 
   })
 
-  console.log(userEmail)
+  const resetUser = () => {
+    setUserData({
+      "email": '',
+      "first_name": '',
+      "last_name": '',
+      "image_url": ''
 
+    })
+    setIsLoggedIn(false)
+  }
+
+
+  useEffect(() => {
+    if (userData.email !== undefined) {
+      matchUser()
+
+    }
+  }, [userData.email])
+
+
+  const matchUser = async () => {
+    if (userData.email !== undefined)
+      if (userData.email.length > 0) {
+        await axios
+          .get(`http://localhost:3001/api/user/getOne/${userData.email}`, {
+          })
+          .then(function (response) {
+            if ((response.data.length === 0)) {
+              createUser()
+            }
+
+          })
+
+          .catch(function (error) {
+            console.log(error)
+          })
+      }
+  }
+
+
+  const createUser = async () => {
+    await axios
+      .post(`http://localhost:3001/api/user/post/`, {
+        email: userData.email,
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        image_url: userData.image_url
+      })
+      .then(function (response) {
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+  let upperListKey = listKey.toUpperCase()
 
   function parseJwt(token) {
     var base64Url = token.split('.')[1];
@@ -62,19 +115,19 @@ function App() {
     return JSON.parse(jsonPayload);
   };
   const handleclick = (event, listKey) => {
-    if (event === 'liked' && listKey === 'boys') {
+    if (event === 'liked' && listKey === 'boy') {
       setLikedBoyNames(current => [...current, names[listKey][nameIndex]])
       setNameIndex(nameIndex + 1)
     }
-    if (event === 'liked' && listKey === 'girls') {
+    if (event === 'liked' && listKey === 'girl') {
       setLikedGirlNames(current => [...current, names[listKey][nameIndex]])
       setNameIndex(nameIndex + 1)
     }
-    if (event === 'disliked' && listKey === 'boys') {
+    if (event === 'disliked' && listKey === 'boy') {
       setDisLikedBoyNames(current => [...current, names[listKey][nameIndex]])
       setNameIndex(nameIndex + 1)
     }
-    if (event === 'disliked' && listKey === 'girls') {
+    if (event === 'disliked' && listKey === 'girl') {
       setDisLikedGirlNames(current => [...current, names[listKey][nameIndex]])
       setNameIndex(nameIndex + 1)
     }
@@ -92,71 +145,76 @@ function App() {
       <nav className='flex items-center w-full justify-center'>
 
         <div onClick={() => setNavState('Names')} className={navState === 'Names' ?
-          'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-blue-500'
+          'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
           : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
           <FaBabyCarriage /> <button className='ml-2'>Names</button> </div>
         <div onClick={() => setNavState('Partner')} className={navState === 'Partner' ?
-          'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-blue-500'
+          'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
           : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50 '}>
           <BsFillPersonFill /><button className='ml-2'>Partners</button></div>
         <div onClick={() => setNavState('Matches')} className={navState === 'Matches' ?
-          'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-blue-500'
+          'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
           : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
           <RiCheckboxMultipleLine /><button className='ml-2'>Matches</button>
 
         </div>
         <div className=''>
-          {userEmail !== '' ?
-            <button className='flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg' onClick={() => setUserEmail('')}>
-              <img src="https://lh3.googleusercontent.com/a/ALm5wu3zpCc1tT4WS4yapPC1OuSMqlwpo7sOnyjAliQSlMc=s96-c" alt="user's google profile" className='rounded-full mr-2 h-12 w-12'></img>
+          {userData.email.length > 0 ?
+            <button className='flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg' onClick={() => resetUser()}>
+              <img src={userData.image_url} referrerPolicy="no-referrer" alt="user's google profile" className='rounded-full mr-2 h-12 w-12'></img>
               <span>Sign Out</span></button> : <></>
           }
         </div>
       </nav >
 
-      {navState === 'Names' && userEmail !== '' ?
+      {isLoggedIn === false ?
+        <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center items-center flex-col flex-wrap">
+          <h3 className='mb-4 p-4 text-center'>Please login with your google account to decide on your favorite names!</h3>
 
-        <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center flex-row flex-wrap">
-          <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
-            <button onClick={() => setListKey('boys')} className={listKey === 'boys' ?
-              'p-4 m-4 bg-blue-300 rounded-full text-white' :
-              'p-4 m-4 bg-blue-100 rounded-full text-white hover:bg-blue-200'}>
-              <TbGenderMale /></button>
-            <button onClick={() => setListKey('girls')} className={listKey === 'girls' ?
-              'p-4 m-4  bg-pink-300 rounded-full text-white' :
-              'p-4 m-4  bg-pink-100 rounded-full text-white hover:bg-pink-200'} >
-              <TbGenderDemigirl /></button>
+          <GoogleLogin auto_select
+            onSuccess={credentialResponse => {
+              setIsLoggedIn(true)
+              setNavState('Names')
+              let tempUserData = parseJwt(credentialResponse.credential)
+              setUserData({
+                "email": tempUserData.email,
+                "first_name": tempUserData.given_name,
+                "last_name": tempUserData.family_name,
+                "image_url": tempUserData.picture
+              });
 
+
+            }}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          /></div> :
+        navState === 'Names' && isLoggedIn === true ?
+
+          <div className="flex flex-col w-full justify-center items-center">
+            <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
+              <button onClick={() => setListKey('boy')} className={listKey === 'boy' ?
+                'p-4 m-4 bg-blue-300 rounded-full text-white' :
+                'p-4 m-4 bg-blue-100 rounded-full text-white hover:bg-blue-200'}>
+                <TbGenderMale /></button>
+              <button onClick={() => setListKey('girl')} className={listKey === 'girl' ?
+                'p-4 m-4  bg-pink-300 rounded-full text-white' :
+                'p-4 m-4  bg-pink-100 rounded-full text-white hover:bg-pink-200'} >
+                <TbGenderDemigirl /></button>
+
+            </div>
+            <div className="mt-12 h-48 w-11/12 md:w-1/2 rounded-lg xl:w-1/4 flex shadow-xl  justify-center flex-row flex-wrap">
+              <button onClick={() => handleclick('disliked', listKey)} className='w-1/6 md:1/12 items-center justify-center flex flex-col cursor-pointer hover:bg-red-100 rounded-lg'><FcCancel /></button>
+              <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
+                <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
+                <h3 className='text-5xl'>{names[listKey][nameIndex]}</h3>
+              </div>
+              <button onClick={() => handleclick('liked', listKey)} className='w-1/6 md:1/12 items-center justify-center   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><FcCheckmark /></button>
+
+            </div>
           </div>
-          <div onClick={() => handleclick('disliked', listKey)} className='w-1/6 md:1/12 items-center justify-center flex flex-col cursor-pointer hover:bg-red-100 rounded-lg'><FcCancel /></div>
-          <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
-            <h1 className='-mt-4 text-sm'>Name</h1>
-            <h3 className='text-5xl'>{names[listKey][nameIndex]}</h3>
-          </div>
-          <div onClick={() => handleclick('liked', listKey)} className='w-1/6 md:1/12 items-center justify-center   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><FcCheckmark /></div>
 
-        </div>
-        : navState === 'Names' && userEmail === '' ?
-          <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center items-center flex-col flex-wrap">
-            <h3 className='mb-4'>Please login with your google account to decide on your favorite names!</h3>
-
-            <GoogleLogin
-              onSuccess={credentialResponse => {
-                setNavState('Names')
-                console.log(parseJwt(credentialResponse.credential))
-                setUserEmail({
-                  "email": parseJwt(credentialResponse.credential).email,
-                  "first_name": parseJwt(credentialResponse.credential).given_name,
-                  "last_name": parseJwt(credentialResponse.credential).family_name
-                });
-
-
-              }}
-              onError={() => {
-                console.log('Login Failed');
-              }}
-            /></div>
-          : navState === 'Partner' ?
+          : navState === 'Partner' && isLoggedIn === true ?
             // partner container
             <div className="mt-4 min-h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-start items-center flex-col">
               <div className='border-b-2 border-gray-100 p-4 w-full' >

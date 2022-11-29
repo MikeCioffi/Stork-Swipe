@@ -15,15 +15,16 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 module.exports = router;
 
-//Post Method
-router.post('/post', jsonParser, async (req, res) => {
-    const data = new Model({
+//Post Method to create new names in DB
+router.post('/name/post', jsonParser, async (req, res) => {
+    const listData = new Model.nameData({
         name: req.body.name,
-        gender: req.body.gender
+        ismale: req.body.ismale,
+        isfemale: req.body.isfemale
     })
 
     try {
-        const dataToSave = await data.save();
+        const dataToSave = await listData.save();
         res.status(200).json(dataToSave)
     }
     catch (error) {
@@ -31,20 +32,46 @@ router.post('/post', jsonParser, async (req, res) => {
     }
 })
 
-//Get all Method
-router.get('/getAll', async (req, res) => {
+//Post Method to create new USER in DB
+router.post('/user/post', jsonParser, async (req, res) => {
+    const listData = new Model.User({
+        email: req.body.email,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        image_url: req.body.image_url
+    })
+
     try {
-        const data = await Model.find();
+        const dataToSave = await listData.save();
+        res.status(200).json(dataToSave)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+})
+
+// //Get all users in db
+// router.get('/user/getAll', async (req, res) => {
+//     try {
+//         const data = await Model.User.find();
+//         res.json(data)
+//     }
+//     catch (error) {
+//         res.status(500).json({ message: error.message })
+//     }
+// })
+
+//Get a user by their email
+router.get('/user/getOne/:email', async (req, res) => {
+
+    const email = req.params;
+    try {
+        const data = await Model.User.find(email);
         res.json(data)
     }
     catch (error) {
         res.status(500).json({ message: error.message })
     }
-})
-
-//Get by ID Method
-router.get('/getOne/:id', (req, res) => {
-    res.send(req.params.id)
 })
 
 //Update by ID Method
