@@ -6,7 +6,6 @@ const cors = require('cors')
 mongoose.connect(mongoString);
 const database = mongoose.connection;
 
-
 database.on('error', (error) => {
     console.log(error)
 })
@@ -29,6 +28,8 @@ const jsonParser = bodyParser.json()
 const corsOptions = {
     origin: 'https://baby-tinder.netlify.app/',
     credentials: true,            //access-control-allow-credentials:true
+    headers: { "Access-Control-Allow-Origin": "*" },
+
     optionSuccessStatus: 200
 }
 
