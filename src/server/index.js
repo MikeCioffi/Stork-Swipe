@@ -27,7 +27,7 @@ const jsonParser = bodyParser.json()
 // });
 
 const corsOptions = {
-    origin: 'https://0a56-54-82-84-176.ngrok.io',
+    origin: 'https://baby-tinder.netlify.app',
     credentials: true,            //access-control-allow-credentials:true
     optionSuccessStatus: 200
 }
