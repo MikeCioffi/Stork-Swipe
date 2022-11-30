@@ -5,7 +5,7 @@ const routes = require('./routes/routes');
 const cors = require('cors')
 mongoose.connect(mongoString);
 const database = mongoose.connection;
-
+const hostname = 'http://ec2-18-117-130-121.us-east-2.compute.amazonaws.com/'
 
 database.on('error', (error) => {
     console.log(error)
@@ -36,6 +36,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use('/api', routes)
 
-app.listen(8080, () => {
+app.listen(8080, hostname, () => {
     console.log(`Server Started at port ${8080}`)
 })
