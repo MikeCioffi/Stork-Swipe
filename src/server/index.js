@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const mongoString = REACT_APP_URL;
+const mongoString = "mongodb+srv://admin:iBzgYkDnMFXUJJWs@cluster0.hckdkha.mongodb.net/Prod?retryWrites=true&w=majority";
 const routes = require('./routes/routes');
 const cors = require('cors')
 mongoose.connect(mongoString);
