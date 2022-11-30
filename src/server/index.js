@@ -1,3 +1,5 @@
+// Import builtin NodeJS modules to instantiate the service
+const https = require("https");
 const express = require('express');
 const mongoose = require('mongoose');
 const mongoString = "mongodb+srv://admin:iBzgYkDnMFXUJJWs@cluster0.hckdkha.mongodb.net/Prod?retryWrites=true&w=majority";
@@ -14,6 +16,8 @@ database.once('connected', () => {
     console.log('Database Connected');
 })
 const app = express();
+
+
 const bodyParser = require('body-parser');
 const { data } = require('autoprefixer');
 
@@ -37,8 +41,15 @@ app.use(function (req, res, next) {
 });
 
 app.use(cors(corsOptions));
-app.use('/api', routes)
 
-app.listen(8080, () => {
-    console.log(`Server Started at port ${8080}`)
-})
+
+
+app.use('/api', routes)
+https
+    .createServer(app)
+    .listen(8080, () => {
+        console.log('server is runing at port 8080')
+    });
+// app.listen(8080, () => {
+//     console.log(`Server Started at port ${8080}`)
+// })
