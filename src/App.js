@@ -54,7 +54,7 @@ function App() {
   }
 
   // axios config
-  const apiurl = "http://54.82.84.176:8080/api";
+  const apiurl = "https://54.82.84.176:8080/api";
 
 
 
