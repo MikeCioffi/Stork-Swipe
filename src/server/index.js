@@ -5,7 +5,7 @@ const routes = require('./routes/routes');
 const cors = require('cors')
 mongoose.connect(mongoString);
 const database = mongoose.connection;
-const hostname = 'http://ec2-18-117-130-121.us-east-2.compute.amazonaws.com/'
+const hostname = 'ec2-18-117-130-121.us-east-2.compute.amazonaws.com/'
 
 database.on('error', (error) => {
     console.log(error)
