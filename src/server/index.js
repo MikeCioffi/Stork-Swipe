@@ -36,6 +36,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use('/api', routes)
 
-app.listen(8080, hostname, () => {
+app.listen(8080, '0.0.0.0', () => {
     console.log(`Server Started at port ${8080}`)
 })
