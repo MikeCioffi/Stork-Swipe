@@ -27,7 +27,6 @@ const corsOptions = {
     origin: 'https://baby-tinder.netlify.app',
     credentials: true,            //access-control-allow-credentials:true
     headers: { "Access-Control-Allow-Origin": "*" },
-
     optionSuccessStatus: 200
 }
 
@@ -40,6 +39,6 @@ app.use(function (req, res, next) {
 app.use(cors(corsOptions));
 app.use('/api', routes)
 
-app.listen(8080, '0.0.0.0', () => {
+app.listen(8080, () => {
     console.log(`Server Started at port ${8080}`)
 })
