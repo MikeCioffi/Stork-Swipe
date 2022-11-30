@@ -27,7 +27,7 @@ const jsonParser = bodyParser.json()
 // });
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: 'https://0a56-54-82-84-176.ngrok.io',
     credentials: true,            //access-control-allow-credentials:true
     optionSuccessStatus: 200
 }
