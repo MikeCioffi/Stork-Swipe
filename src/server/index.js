@@ -21,12 +21,10 @@ const { data } = require('autoprefixer');
 const jsonParser = bodyParser.json()
 
 
-// app.configure(function () {
-//     app.use(express.bodyParser());
-// });
+
 
 const corsOptions = {
-    origin: 'https://baby-tinder.netlify.app/',
+    origin: 'https://baby-tinder.netlify.app',
     credentials: true,            //access-control-allow-credentials:true
     headers: { "Access-Control-Allow-Origin": "*" },
 
