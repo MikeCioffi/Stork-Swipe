@@ -16,6 +16,8 @@ import { SlLike, SlDislike } from 'react-icons/sl'
 import { GoogleLogin } from '@react-oauth/google';
 import axios from "axios"
 
+
+
 // Be able to find partners
 // show matching matching partners
 //  show dashboard of partners and names you like
@@ -51,9 +53,20 @@ function App() {
     setIsLoggedIn(false)
   }
 
+  // axios config
+  const apiurl = "https://0a56-54-82-84-176.ngrok.io/api";
+  const config = {
+    apiurl,
+
+  }
+
+  axios.defaults.headers.common['header1'] = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+  }
   const likeName = async (nameid) => {
     await axios
-      .post(`https://0a56-54-82-84-176.ngrok.io/api/name/like/post`, {
+      .post(`${apiurl}/name/like/post`, {
         nameid: nameid,
         email: userData.email,
       })
@@ -69,7 +82,7 @@ function App() {
 
   const disLikeName = async (nameid) => {
     await axios
-      .post(`https://0a56-54-82-84-176.ngrok.io/api/name/dislike/post`, {
+      .post(`${apiurl}/name/dislike/post`, {
         nameid: nameid,
         email: userData.email,
       })
@@ -85,7 +98,7 @@ function App() {
 
   const removeLike = async (deleteID) => {
     await axios
-      .delete(`https://0a56-54-82-84-176.ngrok.io/api/name/like/delete/${deleteID}`)
+      .delete(`${apiurl}/name/like/delete/${deleteID}`)
       .then(function (response) {
         getLikedNames()
         console.log(response)
@@ -97,7 +110,7 @@ function App() {
 
   const removeDisLike = async (deleteID) => {
     await axios
-      .delete(`https://0a56-54-82-84-176.ngrok.io/api/name/dislike/delete/${deleteID}`)
+      .delete(`${apiurl}/name/dislike/delete/${deleteID}`)
       .then(function (response) {
         getDisLikedNames()
         console.log(response)
@@ -112,7 +125,7 @@ function App() {
       if (userData.email !== undefined)
         if (userData.email.length > 0) {
           await axios
-            .get(`https://0a56-54-82-84-176.ngrok.io/api/user/getOne/${userData.email}`, {
+            .get(`${apiurl}/user/getOne/${userData.email}`, {
             })
             .then(function (response) {
               if ((response.data.length === 0)) {
@@ -128,7 +141,7 @@ function App() {
     }
     const createUser = async () => {
       await axios
-        .post(`https://0a56-54-82-84-176.ngrok.io/api/user/post/`, {
+        .post(`${apiurl}/user/post/`, {
           email: userData.email,
           first_name: userData.first_name,
           last_name: userData.last_name,
@@ -149,7 +162,7 @@ function App() {
   }, [userData])
   const getFriends = useCallback(async () => {
     await axios
-      .get(`https://0a56-54-82-84-176.ngrok.io/api/friend/getOne/${userData.email}`, {})
+      .get(`${apiurl}/friend/getOne/${userData.email}`, {})
       .then(function (response) {
         console.log(response.data)
         setFriends(response.data)
@@ -160,7 +173,7 @@ function App() {
   }, [userData.email])
   const sendFriendRequest = async () => {
     await axios
-      .post(`https://0a56-54-82-84-176.ngrok.io/api/friend/post`, {
+      .post(`${apiurl}/friend/post`, {
         status: 'sent',
         email: userData.email,
         friend_email: friendEmail
@@ -177,7 +190,7 @@ function App() {
 
   const deleteFriend = async (deleteID) => {
     await axios
-      .delete(`https://0a56-54-82-84-176.ngrok.io/api/friend/delete/${deleteID}`)
+      .delete(`${apiurl}/friend/delete/${deleteID}`)
       .then(function (response) {
         getFriends()
         console.log(response)
@@ -191,7 +204,7 @@ function App() {
 
   const acceptFriend = async (acceptID) => {
     await axios
-      .patch(`https://0a56-54-82-84-176.ngrok.io/api/friend/accept/${acceptID}`, {
+      .patch(`${apiurl}/friend/accept/${acceptID}`, {
         status: 'accept',
       })
       .then(function (response) {
@@ -205,7 +218,7 @@ function App() {
 
   const getAllNames = useCallback(async () => {
     await axios
-      .get(`https://0a56-54-82-84-176.ngrok.io/api/name/getall`, {})
+      .get(`${apiurl}/name/getall`, {})
       .then(function (response) {
         console.log('api call made')
         setNameList(response.data)
@@ -217,7 +230,7 @@ function App() {
 
   const getLikedNames = useCallback(async () => {
     await axios
-      .get(`https://0a56-54-82-84-176.ngrok.io/api/name/like/getbyemail/${userData.email}`, {})
+      .get(`${apiurl}/name/like/getbyemail/${userData.email}`, {})
       .then(function (response) {
         setLikedData(response.data)
       })
@@ -228,7 +241,7 @@ function App() {
 
   const getDisLikedNames = useCallback(async () => {
     await axios
-      .get(`https://0a56-54-82-84-176.ngrok.io/api/name/dislike/getbyemail/${userData.email}`, {})
+      .get(`${apiurl}/name/dislike/getbyemail/${userData.email}`, {})
       .then(function (response) {
         setDisLikedData(response.data)
       })
