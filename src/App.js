@@ -57,10 +57,7 @@ function App() {
   const apiurl = "https://0a56-54-82-84-176.ngrok.io/api";
 
 
-  axios.defaults.headers.common['header1'] = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-  }
+
   const likeName = async (nameid) => {
     await axios
       .post(`${apiurl}/name/like/post`, {
