@@ -55,10 +55,7 @@ function App() {
 
   // axios config
   const apiurl = "https://0a56-54-82-84-176.ngrok.io/api";
-  const config = {
-    apiurl,
 
-  }
 
   axios.defaults.headers.common['header1'] = {
     'Access-Control-Allow-Origin': '*',
