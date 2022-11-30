@@ -7,6 +7,15 @@ const routes = require('./routes/routes');
 const cors = require('cors')
 mongoose.connect(mongoString);
 const database = mongoose.connection;
+const fs = require('fs');
+
+const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
+
+
+
 
 database.on('error', (error) => {
     console.log(error)
@@ -46,7 +55,7 @@ app.use(cors(corsOptions));
 
 app.use('/api', routes)
 https
-    .createServer(app)
+    .createServer(options, app)
     .listen(8080, () => {
         console.log('server is runing at port 8080')
     });
