@@ -36,6 +36,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use('/api', routes)
 
-app.listen(3001, () => {
+app.listen(80, () => {
     console.log(`Server Started at ${3001}`)
 })
