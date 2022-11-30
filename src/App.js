@@ -54,7 +54,7 @@ function App() {
   }
 
   // axios config
-  const apiurl = "https://0a56-54-82-84-176.ngrok.io/api";
+  const apiurl = "http://54.82.84.176:8080/api";
 
 
 
