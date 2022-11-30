@@ -5,7 +5,7 @@ const routes = require('./routes/routes');
 const cors = require('cors')
 mongoose.connect(mongoString);
 const database = mongoose.connection;
-const hostname = 'ec2-18-117-130-121.us-east-2.compute.amazonaws.com'
+
 
 database.on('error', (error) => {
     console.log(error)
@@ -27,7 +27,7 @@ const jsonParser = bodyParser.json()
 // });
 
 const corsOptions = {
-    origin: 'https://baby-tinder.netlify.app',
+    origin: 'https://baby-tinder.netlify.app/',
     credentials: true,            //access-control-allow-credentials:true
     optionSuccessStatus: 200
 }
