@@ -56,7 +56,7 @@ app.use(cors(corsOptions));
 
 
 
-// app.use('/api', routes)
+app.use('/', routes)
 // https
 //     .createServer(options, app)
 //     .listen(8080, () => {
