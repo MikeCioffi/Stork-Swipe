@@ -21,6 +21,13 @@ router.all('*', function (req, res, next) {
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
 });
+
+
+
+router.get('/.well-known/pki-validation/'), (req, res) => {
+    res.sendFile('BA0B5F4522466C83E210CE262E330607.txt')
+}
+
 //Post Method to create new NAME in DB
 router.post('/name/post', jsonParser, async (req, res) => {
     const listData = new Model.nameData({
@@ -207,10 +214,6 @@ router.delete('/friend/delete/:id', async (req, res) => {
         res.status(400).json({ message: error.message })
     }
 })
-
-router.get('/.well-known/pki-validation/'), (req, res) => {
-    res.sendFile('BA0B5F4522466C83E210CE262E330607.txt')
-}
 
 
 
