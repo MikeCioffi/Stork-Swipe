@@ -41,7 +41,7 @@ const jsonParser = bodyParser.json()
 
 
 const corsOptions = {
-    origin: 'https://baby-tinder.netlify.app',
+    origin: 'https://baby-name-finder.netlify.app',
     credentials: true,            //access-control-allow-credentials:true
     headers: { "Access-Control-Allow-Origin": "*" },
     optionSuccessStatus: 200
