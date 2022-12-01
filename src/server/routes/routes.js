@@ -23,7 +23,6 @@ router.all('*', function (req, res, next) {
 });
 
 
-
 //Post Method to create new NAME in DB
 router.post('/name/post', jsonParser, async (req, res) => {
     const listData = new Model.nameData({
