@@ -56,12 +56,12 @@ app.use(cors(corsOptions));
 
 
 
-app.use('/api', routes)
-https
-    .createServer(options, app)
-    .listen(8080, () => {
-        console.log('server is runing at port 8080')
-    });
-// app.listen(8080, () => {
-//     console.log(`Server Started at port ${8080}`)
-// })
+// app.use('/api', routes)
+// https
+//     .createServer(options, app)
+//     .listen(8080, () => {
+//         console.log('server is runing at port 8080')
+//     });
+app.listen(8080, () => {
+    console.log(`Server Started at port ${8080}`)
+})
