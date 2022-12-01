@@ -9,6 +9,8 @@ mongoose.connect(mongoString);
 const database = mongoose.connection;
 const fs = require('fs');
 
+// const key = fs.readFileSync('private.key')
+// const cert = fs.readFileSync('certificate.crt')
 
 
 const options = {
@@ -30,7 +32,7 @@ const app = express();
 
 
 const bodyParser = require('body-parser');
-const { data } = require('autoprefixer');
+// const { data } = require('autoprefixer');
 
 // create application/json parser
 const jsonParser = bodyParser.json()
@@ -57,8 +59,8 @@ app.use(cors(corsOptions));
 app.use('/api', routes)
 https
     .createServer(options, app)
-    .listen(8843, () => {
-        console.log('server is runing at port 8843')
+    .listen(8080, () => {
+        console.log('server is runing at port 8080')
     });
 // app.listen(8080, () => {
 //     console.log(`Server Started at port ${8080}`)
