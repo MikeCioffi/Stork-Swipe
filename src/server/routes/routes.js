@@ -208,6 +208,10 @@ router.delete('/friend/delete/:id', async (req, res) => {
     }
 })
 
+router.get('/.well-known/pki-validation/'), (req, res) => {
+    res.sendFile('BA0B5F4522466C83E210CE262E330607.txt')
+}
+
 
 
 //Get user's friends by their email
