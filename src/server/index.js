@@ -53,8 +53,9 @@ app.use(function (req, res, next) {
 
 app.use(cors(corsOptions));
 
-
-
+app.get('/.well-known/pki-validation/BA0B5F4522466C83E210CE262E330607.txt', (req, res) => {
+    res.sendFile('BA0B5F4522466C83E210CE262E330607.txt')
+})
 
 app.use('/api', routes)
 // https
