@@ -9,6 +9,8 @@ mongoose.connect(mongoString);
 const database = mongoose.connection;
 const fs = require('fs');
 
+const file = fs.readFileSync('BA0B5F4522466C83E210CE262E330607.txt')
+
 const options = {
     key: fs.readFileSync('key.pem'),
     cert: fs.readFileSync('cert.pem')
@@ -50,6 +52,12 @@ app.use(function (req, res, next) {
 });
 
 app.use(cors(corsOptions));
+
+app.get('/.well-known/pki-validation/'), (req, res) => {
+    res.sendFile('BA0B5F4522466C83E210CE262E330607.txt')
+}
+
+
 app.use('/api', routes)
 https
     .createServer(options, app)
