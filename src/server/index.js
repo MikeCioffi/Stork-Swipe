@@ -50,9 +50,6 @@ app.use(function (req, res, next) {
 });
 
 app.use(cors(corsOptions));
-
-
-
 app.use('/api', routes)
 https
     .createServer(options, app)
