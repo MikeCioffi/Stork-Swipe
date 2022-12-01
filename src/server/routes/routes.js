@@ -24,10 +24,6 @@ router.all('*', function (req, res, next) {
 
 
 
-router.get('.well-known/pki-validation/'), (req, res) => {
-    res.sendFile('BA0B5F4522466C83E210CE262E330607.txt')
-}
-
 //Post Method to create new NAME in DB
 router.post('/name/post', jsonParser, async (req, res) => {
     const listData = new Model.nameData({
@@ -45,7 +41,7 @@ router.post('/name/post', jsonParser, async (req, res) => {
     }
 })
 
-router.get('name/getall', async (req, res) => {
+router.get('/name/getall', async (req, res) => {
 
     try {
         const data = await Model.nameData.find();
@@ -56,7 +52,7 @@ router.get('name/getall', async (req, res) => {
     }
 })
 // used get users liked names based on email
-router.get('name/like/getbyemail/:email', jsonParser, async (req, res) => {
+router.get('/name/like/getbyemail/:email', jsonParser, async (req, res) => {
     try {
         const data = await Model.LikedData.find({ email: req.params.email })
         // assuming data is returned
@@ -78,7 +74,7 @@ router.get('name/like/getbyemail/:email', jsonParser, async (req, res) => {
 
 })
 // used to create a user to name 1:many like relationship
-router.post('name/like/post', jsonParser, async (req, res) => {
+router.post('/name/like/post', jsonParser, async (req, res) => {
     const LikedData = new Model.LikedData({
         nameid: req.body.nameid,
         email: req.body.email,
@@ -94,7 +90,7 @@ router.post('name/like/post', jsonParser, async (req, res) => {
 })
 
 //used to delete the users 'like' of a name
-router.delete('name/like/delete/:id', async (req, res) => {
+router.delete('/name/like/delete/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const data = await Model.LikedData.findByIdAndDelete(id)
@@ -106,7 +102,7 @@ router.delete('name/like/delete/:id', async (req, res) => {
 })
 
 // used get users disliked names based on email
-router.get('name/dislike/getbyemail/:email', jsonParser, async (req, res) => {
+router.get('/name/dislike/getbyemail/:email', jsonParser, async (req, res) => {
     try {
         const data = await Model.DisLikedData.find({ email: req.params.email })
         // assuming data is returned
@@ -129,7 +125,7 @@ router.get('name/dislike/getbyemail/:email', jsonParser, async (req, res) => {
 })
 
 //used to delete the users 'dislikelike' of a name
-router.delete('name/dislike/delete/:id', async (req, res) => {
+router.delete('/name/dislike/delete/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const data = await Model.DisLikedData.findByIdAndDelete(id)
@@ -140,7 +136,7 @@ router.delete('name/dislike/delete/:id', async (req, res) => {
     }
 })
 
-router.post('name/dislike/post', jsonParser, async (req, res) => {
+router.post('/name/dislike/post', jsonParser, async (req, res) => {
     const dislikedData = new Model.DisLikedData({
         nameid: req.body.nameid,
         email: req.body.email,
@@ -156,7 +152,7 @@ router.post('name/dislike/post', jsonParser, async (req, res) => {
 })
 
 //Post Method to create new USER in DB
-router.post('user/post', jsonParser, async (req, res) => {
+router.post('/user/post', jsonParser, async (req, res) => {
     const listData = new Model.User({
         email: req.body.email,
         first_name: req.body.first_name,
@@ -173,7 +169,7 @@ router.post('user/post', jsonParser, async (req, res) => {
     }
 })
 //Get a user by their email
-router.get('user/getOne/:email', async (req, res) => {
+router.get('/user/getOne/:email', async (req, res) => {
 
     const email = req.params;
     try {
@@ -187,7 +183,7 @@ router.get('user/getOne/:email', async (req, res) => {
 
 
 //Post Method to create new FRIEND in DB
-router.post('friend/post', jsonParser, async (req, res) => {
+router.post('/friend/post', jsonParser, async (req, res) => {
     const friendData = new Model.Friend({
         status: req.body.status,
         email: req.body.email,
@@ -204,7 +200,7 @@ router.post('friend/post', jsonParser, async (req, res) => {
     }
 })
 //Delete a friend relationship
-router.delete('friend/delete/:id', async (req, res) => {
+router.delete('/friend/delete/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const data = await Model.Friend.findByIdAndDelete(id)
@@ -218,7 +214,7 @@ router.delete('friend/delete/:id', async (req, res) => {
 
 
 //Get user's friends by their email
-router.get('friend/getOne/:email', async (req, res) => {
+router.get('/friend/getOne/:email', async (req, res) => {
     try {
         console.log(req.params)
         const data = await Model.Friend.find(
@@ -241,7 +237,7 @@ router.get('friend/getOne/:email', async (req, res) => {
     }
 })
 
-router.patch('friend/accept/:id', async (req, res) => {
+router.patch('/friend/accept/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const updatedData = req.body;
@@ -260,7 +256,7 @@ router.patch('friend/accept/:id', async (req, res) => {
 
 
 //Update by ID Method
-router.patch('update/:id', async (req, res) => {
+router.patch('/update/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const options = { new: true };
@@ -279,7 +275,7 @@ router.patch('update/:id', async (req, res) => {
 })
 
 //Delete by ID Method
-router.delete('delete/:id', async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const data = await Model.findByIdAndDelete(id)
