@@ -9,11 +9,11 @@ mongoose.connect(mongoString);
 const database = mongoose.connection;
 const fs = require('fs');
 
-const file = fs.readFileSync('BA0B5F4522466C83E210CE262E330607.txt')
+
 
 const options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
+    key: fs.readFileSync('private.key'),
+    cert: fs.readFileSync('certificate.crt')
 };
 
 
@@ -53,16 +53,13 @@ app.use(function (req, res, next) {
 
 app.use(cors(corsOptions));
 
-app.get('/.well-known/pki-validation/BA0B5F4522466C83E210CE262E330607.txt', (req, res) => {
-    res.sendFile('/home/ubuntu/name-matcher/BA0B5F4522466C83E210CE262E330607.txt')
-})
 
 app.use('/api', routes)
-// https
-//     .createServer(options, app)
-//     .listen(8080, () => {
-//         console.log('server is runing at port 8080')
-//     });
-app.listen(8080, () => {
-    console.log(`Server Started at port ${8080}`)
-})
+https
+    .createServer(options, app)
+    .listen(8843, () => {
+        console.log('server is runing at port 8843')
+    });
+// app.listen(8080, () => {
+//     console.log(`Server Started at port ${8080}`)
+// })
