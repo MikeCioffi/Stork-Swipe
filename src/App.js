@@ -57,6 +57,8 @@ function App() {
     })
     setIsLoggedIn(false)
   }
+  console.log('friends')
+  console.log(friends)
 
   // axios config
   const apiurl = "https://44.196.127.59:8080/api";
@@ -492,7 +494,7 @@ function App() {
                   <div className='flex w-full flex-wrap text-center justify-around'>
                     {likedData.map((item) => <div key={item.likeid._id}
                       className={item.data.ismale === true ? 'relative p-4 w-full m-2 rounded-lg shadow-lg min-w-fit bg-blue-50 ' :
-                        'relative p-4 w-5/12 mt-2 rounded-lg shadow-sm min-w-fit bg-pink-50 '}
+                        'relative p-4  w-full m-2 rounded-lg shadow-lg  min-w-fit bg-pink-50'}
                     > <div className='flex justify-center items-center'>
                         <div className='w-1/2'>
                           {item.data.name}
@@ -524,7 +526,7 @@ function App() {
                   <div className='flex w-full flex-wrap text-center justify-around'>
                     {disLikedData.map((item) => <div key={item.likeid._id}
                       className={item.data.ismale === true ? 'relative p-4  w-full m-2 rounded-lg shadow-lg  min-w-fit bg-blue-50 ' :
-                        ' p-4 w-full mt-2 rounded-lg shadow-sm min-w-fit bg-pink-50 '}
+                        ' relative p-4  w-full m-2 rounded-lg shadow-lg  min-w-fit bg-pink-50 '}
                     > <div className='flex justify-center items-center'>
                         <div className='w-1/2'>
                           {item.data.name}
