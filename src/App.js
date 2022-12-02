@@ -499,11 +499,11 @@ function App() {
                         <div className='w-1/2'>
                           {item.data.name}
                         </div>
-                        <div className='flex flex-wrap w-1/2'>
+                        <div className='flex flex-wrap justify-around w-1/2'>
                           {friendLikes.length > 0 ?
                             friendLikes.map((friend) => (friend.data.map(like => {
                               if (like.data._id === item.data._id && friend.email !== userData.email) {
-                                return <div className='flex justify-center items-center bg-gray-50 opacity-100 m-2 text-gray-500 rounded-full h-6 w-6'>
+                                return <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6'>
                                   {friend.email.substring(0, 1).toUpperCase()}
                                 </div>
                               } else {
@@ -531,12 +531,11 @@ function App() {
                         <div className='w-1/2'>
                           {item.data.name}
                         </div>
-                        <div className='flex flex-wrap w-1/2'>
-
+                        <div className='flex flex-wrap justify-around w-1/2'>
                           {friendDisLikes.length > 0 ?
                             friendDisLikes.map((friend) => friend.data.map((like) => {
                               if (like.data._id === item.data._id && friend.email !== userData.email) {
-                                return <div className='flex justify-center items-center bg-gray-50 opacity-100 m-2 text-gray-500 rounded-full h-6 w-6'>
+                                return <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6'>
                                   {friend.email.substring(0, 1).toUpperCase()}
                                 </div>
                               } else {
@@ -546,7 +545,7 @@ function App() {
 
                             ) : <></>}
                         </div>
-                        <button onClick={() => removeDisLike(item.likeid._id)} className='absolute right-2 top-6  cursor-pointer hover:text-red-100 rounded-lg'><MdOutlineCancel className='text-red-500 hover:text-red-200' /></button>
+                        <button onClick={() => removeDisLike(item.likeid._id)} className='cursor-pointer hover:text-red-100 rounded-lg'><MdOutlineCancel className='text-red-500 hover:text-red-200' /></button>
 
                       </div>
                     </div>)}
