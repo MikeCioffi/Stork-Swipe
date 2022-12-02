@@ -32,7 +32,7 @@ function App() {
   const [nameList, setNameList] = useState(null)
   const [girlList, setGirlList] = useState(null)
   const [boyList, setBoyList] = useState(null)
-  const [friends, setFriends] = useState()
+  const [friends, setFriends] = useState([])
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userData, setUserData] = useState({
     "email": '',
@@ -41,8 +41,13 @@ function App() {
     "image_url": ''
 
   })
+  const [friendLikes, setFriendLikes] = useState([])
+  const [friendDisLikes, setFriendDisLikes] = useState([])
+  console.log('friendDislikes')
+  console.log(friendDisLikes)
 
   const resetUser = () => {
+    setFriendLikes([])
     setUserData({
       "email": '',
       "first_name": '',
@@ -55,7 +60,6 @@ function App() {
 
   // axios config
   const apiurl = "https://44.196.127.59:8080/api";
-
 
 
   const likeName = async (nameid) => {
@@ -155,10 +159,49 @@ function App() {
     }
   }, [userData])
   const getFriends = useCallback(async () => {
+    setFriendLikes([])
+    setFriendDisLikes([])
+
     await axios
       .get(`${apiurl}/friend/getOne/${userData.email}`, {})
       .then(function (response) {
+        console.log('friend/getOne/response')
+        console.log(response)
+        console.log('friend data')
         console.log(response.data)
+        // need to populate friend liked names
+        const getFriendsNames = (async (email) => {
+          await axios
+            .get(`${apiurl}/name/like/getbyemail/${email}`, {})
+            .then(function (response) {
+
+              setFriendLikes(prevState => ([...prevState,
+              {
+                "email": email, "data": response.data
+              }]))
+            })
+
+          await axios
+            .get(`${apiurl}/name/dislike/getbyemail/${email}`, {})
+            .then(function (response) {
+
+              setFriendDisLikes(prevState => ([...prevState,
+              {
+                "email": email, "data": response.data
+              }]))
+            })
+
+
+        })
+
+        response.data.map((res) => {
+          if (res.friend_email === userData.email) {
+
+            return getFriendsNames(res.email)
+          }
+          else return getFriendsNames(res.friend_email)
+
+        })
         setFriends(response.data)
       })
       .catch(function (error) {
@@ -173,6 +216,7 @@ function App() {
         friend_email: friendEmail
       })
       .then(function (response) {
+
         console.log(response)
         getFriends()
         setFriendEmail('')
@@ -186,6 +230,7 @@ function App() {
     await axios
       .delete(`${apiurl}/friend/delete/${deleteID}`)
       .then(function (response) {
+
         getFriends()
         console.log(response)
       })
@@ -193,15 +238,13 @@ function App() {
         console.log(error)
       })
   }
-
-
-
   const acceptFriend = async (acceptID) => {
     await axios
       .patch(`${apiurl}/friend/accept/${acceptID}`, {
         status: 'accept',
       })
       .then(function (response) {
+
         getFriends()
         console.log(response)
       })
@@ -443,16 +486,32 @@ function App() {
               </div>
             </div>
             : navState === 'Matches' ?
-              <div className="mt-12 min-h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col sm:flex-row">
-                <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2' /> Liked</div>
+              <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col sm:flex-row">
+                <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2' /> Liked</div>
 
                   <div className='flex w-full flex-wrap text-center justify-around'>
                     {likedData.map((item) => <div key={item.likeid._id}
-                      className={item.data.ismale === true ? 'relative p-4 w-5/12 mt-2 rounded-lg shadow-sm min-w-fit bg-blue-50 ' :
+                      className={item.data.ismale === true ? 'relative p-4 w-full m-2 rounded-lg shadow-lg min-w-fit bg-blue-50 ' :
                         'relative p-4 w-5/12 mt-2 rounded-lg shadow-sm min-w-fit bg-pink-50 '}
-                    > <div>
-                        {item.data.name}
-                        <button onClick={() => removeLike(item.likeid._id)} className='absolute right-2 top-6  cursor-pointer hover:text-red-100 rounded-lg'><MdOutlineCancel className='text-red-500 hover:text-red-200' /></button>
+                    > <div className='flex justify-center items-center'>
+                        <div className='w-1/2'>
+                          {item.data.name}
+                        </div>
+                        <div className='flex flex-wrap w-1/2'>
+                          {friendLikes.length > 0 ?
+                            friendLikes.map((friend) => (friend.data.map(like => {
+                              if (like.data._id === item.data._id && friend.email !== userData.email) {
+                                return <div className='flex justify-center items-center bg-gray-50 opacity-100 m-2 text-gray-500 rounded-full h-6 w-6'>
+                                  {friend.email.substring(0, 1).toUpperCase()}
+                                </div>
+                              } else {
+                                return <></>
+                              }
+                            }))
+
+                            ) : <></>}
+                        </div>
+                        <button onClick={() => removeLike(item.likeid._id)} className='cursor-pointer hover:text-red-100 rounded-lg'><MdOutlineCancel className='text-red-500 hover:text-red-200' /></button>
 
                       </div>
                     </div>)}
@@ -460,14 +519,31 @@ function App() {
                   </div>
 
                 </div>
-                <div className='md:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2' /> Dislike</div>
+                <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2' /> Dislike</div>
 
                   <div className='flex w-full flex-wrap text-center justify-around'>
                     {disLikedData.map((item) => <div key={item.likeid._id}
-                      className={item.data.ismale === true ? 'relative p-4 w-5/12 mt-2 rounded-lg shadow-sm min-w-fit bg-blue-50 ' :
-                        'relative p-4 w-5/12 mt-2 rounded-lg shadow-sm min-w-fit bg-pink-50 '}
-                    > <div>
-                        {item.data.name}
+                      className={item.data.ismale === true ? 'relative p-4  w-full m-2 rounded-lg shadow-lg  min-w-fit bg-blue-50 ' :
+                        ' p-4 w-full mt-2 rounded-lg shadow-sm min-w-fit bg-pink-50 '}
+                    > <div className='flex justify-center items-center'>
+                        <div className='w-1/2'>
+                          {item.data.name}
+                        </div>
+                        <div className='flex flex-wrap w-1/2'>
+
+                          {friendDisLikes.length > 0 ?
+                            friendDisLikes.map((friend) => friend.data.map((like) => {
+                              if (like.data._id === item.data._id && friend.email !== userData.email) {
+                                return <div className='flex justify-center items-center bg-gray-50 opacity-100 m-2 text-gray-500 rounded-full h-6 w-6'>
+                                  {friend.email.substring(0, 1).toUpperCase()}
+                                </div>
+                              } else {
+                                return <></>
+                              }
+                            })
+
+                            ) : <></>}
+                        </div>
                         <button onClick={() => removeDisLike(item.likeid._id)} className='absolute right-2 top-6  cursor-pointer hover:text-red-100 rounded-lg'><MdOutlineCancel className='text-red-500 hover:text-red-200' /></button>
 
                       </div>
@@ -479,7 +555,7 @@ function App() {
               :
               <></>
       }
-    </div>
+    </div >
 
   );
 }
