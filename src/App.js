@@ -15,6 +15,7 @@ import { SlLike, SlDislike } from 'react-icons/sl'
 // 
 import { GoogleLogin } from '@react-oauth/google';
 import axios from "axios"
+import { listIndex } from './server/model/model';
 
 
 
@@ -24,7 +25,11 @@ import axios from "axios"
 
 function App() {
   const [nameIndex, setNameIndex] = useState(0)
+  const [newNameIndex, setNewNameIndex] = useState({})
+
+  // can be boy or girl
   const [listKey, setListKey] = useState('boy')
+
   const [navState, setNavState] = useState('Names')
   const [likedData, setLikedData] = useState()
   const [disLikedData, setDisLikedData] = useState()
@@ -43,8 +48,6 @@ function App() {
   })
   const [friendLikes, setFriendLikes] = useState([])
   const [friendDisLikes, setFriendDisLikes] = useState([])
-  console.log('friendDislikes')
-  console.log(friendDisLikes)
 
   const resetUser = () => {
     setFriendLikes([])
@@ -57,12 +60,49 @@ function App() {
     })
     setIsLoggedIn(false)
   }
-  console.log('friends')
-  console.log(friends)
+
 
   // axios config
   const apiurl = "https://44.196.127.59:8080/api";
+  // DEV
+  // const apiurl = 'http://localhost:8080/api'
 
+  const getListIndexs = useCallback(async () => {
+    await axios
+      .get(`${apiurl}/listIndex/get/${userData.email}`)
+      .then(function (response) {
+        setNewNameIndex(response.data[0])
+      })
+  }, [userData.email])
+
+
+  //depending on list key, it increases the correct nameindex 
+
+  const updateIndexOnKey = async () => {
+    if (listKey === 'boy') {
+      let newIndex = newNameIndex.boyIndex + 1
+      console.log('increasing boy index')
+      await axios.post(`${apiurl}/listIndex/update/${userData.email}`, {
+        boyIndex: newIndex
+        ,
+        girlIndex: newNameIndex.girlIndex
+      })
+    }
+    else if (listKey === 'girl') {
+      let newIndex = newNameIndex.girlIndex + 1
+      console.log('increasing girl index')
+
+      await axios.post(`${apiurl}/listIndex/update/${userData.email}`, {
+        girlIndex: newIndex
+        ,
+        boyIndex: newNameIndex.boyIndex
+      })
+    }
+    getListIndexs()
+
+  }
+
+  console.log(newNameIndex)
 
   const likeName = async (nameid) => {
     await axios
@@ -72,7 +112,7 @@ function App() {
       })
       .then(function (response) {
         setNameIndex(nameIndex + 1)
-
+        updateIndexOnKey()
         console.log(response)
       })
       .catch(function (error) {
@@ -88,6 +128,7 @@ function App() {
       })
       .then(function (response) {
         setNameIndex(nameIndex + 1)
+        updateIndexOnKey()
 
         console.log(response)
       })
@@ -149,6 +190,7 @@ function App() {
         })
         .then(function (response) {
           console.log(response)
+          axios.post(`${apiurl}/listIndex/create/${userData.email}`)
         })
         .catch(function (error) {
           console.log(error)
@@ -298,11 +340,6 @@ function App() {
   //   });
   //   console.log(filtered_names);
   // };
-
-
-
-
-
   useEffect(() => {
     if (nameList === null) {
       getAllNames()
@@ -312,6 +349,8 @@ function App() {
       setGirlList(nameList.filter(val => filters.includes(val.isfemale)))
       setBoyList(nameList.filter(val => filters.includes(val.ismale)))
     }
+
+    else return
   }
     , [nameList, boyList, getAllNames, girlList])
 
@@ -321,9 +360,9 @@ function App() {
       getFriends()
       getLikedNames()
       getDisLikedNames()
-
+      getListIndexs()
     }
-  }, [getDisLikedNames, getLikedNames, getAllNames, nameList, getFriends, userData.email, isLoggedIn])
+  }, [getDisLikedNames, getLikedNames, getListIndexs, getAllNames, getFriends, userData.email, isLoggedIn])
 
   let upperListKey = listKey.toUpperCase()
 
@@ -341,22 +380,25 @@ function App() {
       //make api call to like a certain person
       likeName(boyList[nameIndex]._id)
       setNameIndex(nameIndex + 1)
+      updateIndexOnKey()
       getLikedNames()
-
     }
     if (event === 'liked' && listKey === 'girl') {
       likeName(girlList[nameIndex]._id)
       setNameIndex(nameIndex + 1)
+      updateIndexOnKey()
       getLikedNames()
     }
     if (event === 'disliked' && listKey === 'boy') {
       disLikeName(boyList[nameIndex]._id)
       setNameIndex(nameIndex + 1)
+      updateIndexOnKey()
       getDisLikedNames()
     }
     if (event === 'disliked' && listKey === 'girl') {
       disLikeName(girlList[nameIndex]._id)
       setNameIndex(nameIndex + 1)
+      updateIndexOnKey()
       getDisLikedNames()
 
     }
@@ -366,9 +408,6 @@ function App() {
     // increate name counter
 
   }
-
-
-
 
   return (
     <div className="flex h-full w-full items-center flex-col">
@@ -438,10 +477,11 @@ function App() {
                 <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
                 {listKey === 'girl' ?
                   // show girl names
-                  <h3 className='text-5xl'>{girlList[nameIndex].name}</h3>
+
+                  <h3 className='text-5xl'>{girlList[newNameIndex.girlIndex].name}</h3>
 
                   // show boy names  
-                  : <h3 className='text-5xl'>{boyList[nameIndex].name}</h3>
+                  : <h3 className='text-5xl'>{boyList[newNameIndex.boyIndex].name}</h3>
 
                 }
               </div>

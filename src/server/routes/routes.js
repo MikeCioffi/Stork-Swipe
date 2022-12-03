@@ -245,7 +245,6 @@ router.patch('/friend/accept/:id', async (req, res) => {
         const result = await Model.Friend.findByIdAndUpdate(
             id, { status: 'accepted' }, options
         )
-
         res.send(result)
     }
     catch (error) {
@@ -279,6 +278,51 @@ router.delete('/delete/:id', async (req, res) => {
         const id = req.params.id;
         const data = await Model.findByIdAndDelete(id)
         res.send(`Document with ${data.name} has been deleted..`)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+})
+
+// when a new user is created, set their boy and girl index's to 0
+router.post('/listIndex/create/:email', async (req, res) => {
+    const listData = new Model.listIndex({
+        email: req.params.email,
+        boyIndex: 0,
+        girlIndex: 0,
+
+    })
+    try {
+        const dataToSave = await listData.save();
+        res.status(200).json(dataToSave)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+})
+// to get the users boy and girl indexs
+router.get('/listIndex/get/:email', async (req, res) => {
+    const email = req.params;
+    try {
+        const data = await Model.listIndex.find(email);
+        res.json(data)
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+// used to increment the boy and girl index, depending on user action
+router.post('/listIndex/update/:email', jsonParser, async (req, res) => {
+    try {
+        const filter = { email: req.params.email };
+        console.log(req.body)
+        const update = req.body;
+        console.log(update)
+        const result = await Model.listIndex.findOneAndUpdate(filter, update, {
+            new: true
+        })
+
+        res.send(result)
     }
     catch (error) {
         res.status(400).json({ message: error.message })

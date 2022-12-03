@@ -18,7 +18,24 @@ const nameDataSchema = new mongoose.Schema({
 },
     { collection: 'nameData' })
 
+//-----------listIndexSchema SCHEMA-----------------
+const listIndexSchema = new mongoose.Schema({
+    email: {
+        required: true,
+        type: String
+    },
+    boyIndex: {
+        required: true,
+        type: Number
+    },
+    girlIndex: {
+        required: true,
+        type: Number
+    }
+},
+    { collection: 'nameDataIndex' }
 
+)
 
 
 //-----------USER SCHEMA-----------------
@@ -46,6 +63,8 @@ const userSchema = new mongoose.Schema({
 )
 
 
+
+//-----------FRIEND SCHEMA-----------------
 const friendSchema = new mongoose.Schema({
     status: {
         required: true,
@@ -70,7 +89,7 @@ const friendSchema = new mongoose.Schema({
 
 )
 
-
+//-----------LIKED NAME SCHEMA-----------------
 const LikedNameSchema = new mongoose.Schema({
     nameid: {
         required: true,
@@ -84,6 +103,8 @@ const LikedNameSchema = new mongoose.Schema({
     { collection: 'LikedData' }
 
 )
+
+//-----------DISLIKE NAME SCHEMA-----------------
 const DisLikedDataSchema = new mongoose.Schema({
     nameid: {
         required: true,
@@ -102,10 +123,10 @@ const LikedData = mongoose.model('liked-data', LikedNameSchema)
 const Friend = mongoose.model('friend', friendSchema)
 const nameData = mongoose.model('list-data', nameDataSchema)
 const User = mongoose.model('user', userSchema)
-
+const listIndex = mongoose.model('listIndex', listIndexSchema)
 
 module.exports = {
-    User, nameData, Friend, LikedData, DisLikedData
+    User, nameData, Friend, LikedData, DisLikedData, listIndex
 }
 
 // Liked-name = {list-data-ID, userID}
