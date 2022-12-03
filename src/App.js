@@ -80,7 +80,6 @@ function App() {
   const updateIndexOnKey = async () => {
     if (listKey === 'boy') {
       let newIndex = newNameIndex.boyIndex + 1
-      console.log('increasing boy index')
       await axios.post(`${apiurl}/listIndex/update/${userData.email}`, {
         boyIndex: newIndex
         ,
@@ -89,8 +88,6 @@ function App() {
     }
     else if (listKey === 'girl') {
       let newIndex = newNameIndex.girlIndex + 1
-      console.log('increasing girl index')
-
       await axios.post(`${apiurl}/listIndex/update/${userData.email}`, {
         girlIndex: newIndex
         ,
@@ -457,7 +454,7 @@ function App() {
               console.log('Login Failed');
             }}
           /></div> :
-        navState === 'Names' && isLoggedIn === true ?
+        navState === 'Names' && boyList.length > 0 && isLoggedIn === true ?
           <div className="flex flex-col w-full justify-center items-center">
             <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
               <button onClick={() => setListKey('boy')} className={listKey === 'boy' ?
