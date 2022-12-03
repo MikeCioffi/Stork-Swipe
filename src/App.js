@@ -15,7 +15,6 @@ import { SlLike, SlDislike } from 'react-icons/sl'
 // 
 import { GoogleLogin } from '@react-oauth/google';
 import axios from "axios"
-import { listIndex } from './server/model/model';
 
 
 
