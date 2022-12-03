@@ -67,9 +67,14 @@ function App() {
   // DEV
   // const apiurl = 'http://localhost:8080/api'
 
-  const getListIndexs = useCallback(async () => {
+  const getListIndexs = useCallback(async (email) => {
+    let sentEmail = ''
+    if (email === null) {
+      sentEmail = userData.email
+    }
+    else sentEmail = email
     await axios
-      .get(`${apiurl}/listIndex/get/${userData.email}`)
+      .get(`${apiurl}/listIndex/get/${sentEmail}`)
       .then(function (response) {
         setNewNameIndex(response.data[0])
       })
@@ -100,7 +105,7 @@ function App() {
         boyIndex: newNameIndex.boyIndex
       })
     }
-    getListIndexs()
+    getListIndexs(null)
 
   }
 
@@ -363,9 +368,12 @@ function App() {
       getFriends()
       getLikedNames()
       getDisLikedNames()
-      getListIndexs()
+
+      if (newNameIndex === null) {
+        getListIndexs(null)
+      }
     }
-  }, [getDisLikedNames, getLikedNames, getListIndexs, getAllNames, getFriends, userData.email, isLoggedIn])
+  }, [getDisLikedNames, getLikedNames, getListIndexs, getAllNames, getFriends, userData.email, isLoggedIn, newNameIndex])
 
   let upperListKey = listKey.toUpperCase()
 
@@ -453,7 +461,7 @@ function App() {
                 "last_name": tempUserData.family_name,
                 "image_url": tempUserData.picture
               })
-              getListIndexs()
+              getListIndexs(tempUserData.email)
 
               setIsLoggedIn(true)
                 ;
