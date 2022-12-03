@@ -23,6 +23,7 @@ import axios from "axios"
 //  show dashboard of partners and names you like
 
 function App() {
+
   const [nameIndex, setNameIndex] = useState(0)
   const [newNameIndex, setNewNameIndex] = useState({})
 
@@ -74,12 +75,15 @@ function App() {
       })
   }, [userData.email])
 
+  console.log(newNameIndex)
+
 
   //depending on list key, it increases the correct nameindex 
 
   const updateIndexOnKey = async () => {
     if (listKey === 'boy') {
       let newIndex = newNameIndex.boyIndex + 1
+      console.log('increasing boy index')
       await axios.post(`${apiurl}/listIndex/update/${userData.email}`, {
         boyIndex: newIndex
         ,
@@ -88,6 +92,8 @@ function App() {
     }
     else if (listKey === 'girl') {
       let newIndex = newNameIndex.girlIndex + 1
+      console.log('increasing girl index')
+
       await axios.post(`${apiurl}/listIndex/update/${userData.email}`, {
         girlIndex: newIndex
         ,
@@ -98,7 +104,8 @@ function App() {
 
   }
 
-  console.log(newNameIndex)
+
+
 
   const likeName = async (nameid) => {
     await axios
@@ -438,7 +445,6 @@ function App() {
 
           <GoogleLogin auto_select
             onSuccess={credentialResponse => {
-              setIsLoggedIn(true)
 
               let tempUserData = parseJwt(credentialResponse.credential)
               setUserData({
@@ -446,7 +452,11 @@ function App() {
                 "first_name": tempUserData.given_name,
                 "last_name": tempUserData.family_name,
                 "image_url": tempUserData.picture
-              });
+              })
+              getListIndexs()
+
+              setIsLoggedIn(true)
+                ;
 
 
             }}
@@ -454,7 +464,7 @@ function App() {
               console.log('Login Failed');
             }}
           /></div> :
-        navState === 'Names' && boyList.length > 0 && isLoggedIn === true ?
+        navState === 'Names' && newNameIndex.boyIndex >= 0 && isLoggedIn === true ?
           <div className="flex flex-col w-full justify-center items-center">
             <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
               <button onClick={() => setListKey('boy')} className={listKey === 'boy' ?
