@@ -209,17 +209,13 @@ function App() {
 
     }
   }, [userData])
+
+
   const getFriends = useCallback(async () => {
-    setFriendLikes([])
-    setFriendDisLikes([])
 
     await axios
       .get(`${apiurl}/friend/getOne/${userData.email}`, {})
       .then(function (response) {
-        console.log('friend/getOne/response')
-        console.log(response)
-        console.log('friend data')
-        console.log(response.data)
         // need to populate friend liked names
         const getFriendsNames = (async (email) => {
           await axios
@@ -246,11 +242,19 @@ function App() {
         })
 
         response.data.map((res) => {
+          console.log(res)
           if (res.friend_email === userData.email) {
+            console.log('using getfriends name with ' + res.email)
 
             return getFriendsNames(res.email)
           }
-          else return getFriendsNames(res.friend_email)
+
+          else {
+            console.log('using getfriends name with ' + res.friend_email)
+
+            return getFriendsNames(res.friend_email)
+          }
+
 
         })
         setFriends(response.data)
@@ -267,7 +271,6 @@ function App() {
         friend_email: friendEmail
       })
       .then(function (response) {
-
         console.log(response)
         getFriends()
         setFriendEmail('')
@@ -359,14 +362,19 @@ function App() {
   }
     , [nameList, boyList, getAllNames, girlList])
 
-
   useEffect(() => {
     if (isLoggedIn === true) {
       getFriends()
+    }
+  }, [getFriends, isLoggedIn])
+
+  useEffect(() => {
+    if (isLoggedIn === true) {
       getLikedNames()
       getDisLikedNames()
-
       if (newNameIndex === null) {
+
+
         getListIndexs(null)
       }
     }
@@ -386,26 +394,22 @@ function App() {
   const handleclick = (event, listKey) => {
     if (event === 'liked' && listKey === 'boy') {
       //make api call to like a certain person
-      likeName(boyList[nameIndex]._id)
-      setNameIndex(nameIndex + 1)
+      likeName(boyList[newNameIndex.boyIndex]._id)
       updateIndexOnKey()
       getLikedNames()
     }
     if (event === 'liked' && listKey === 'girl') {
-      likeName(girlList[nameIndex]._id)
-      setNameIndex(nameIndex + 1)
+      likeName(girlList[newNameIndex.girlIndex]._id)
       updateIndexOnKey()
       getLikedNames()
     }
     if (event === 'disliked' && listKey === 'boy') {
-      disLikeName(boyList[nameIndex]._id)
-      setNameIndex(nameIndex + 1)
+      disLikeName(boyList[newNameIndex.boyIndex]._id)
       updateIndexOnKey()
       getDisLikedNames()
     }
     if (event === 'disliked' && listKey === 'girl') {
-      disLikeName(girlList[nameIndex]._id)
-      setNameIndex(nameIndex + 1)
+      disLikeName(girlList[newNameIndex.girlIndex]._id)
       updateIndexOnKey()
       getDisLikedNames()
 
@@ -459,7 +463,6 @@ function App() {
                 "image_url": tempUserData.picture
               })
               getListIndexs(tempUserData.email)
-
               setIsLoggedIn(true)
                 ;
 
@@ -547,7 +550,7 @@ function App() {
                       className={item.data.ismale === true ? 'relative p-4 w-full m-2 rounded-lg shadow-lg min-w-fit bg-blue-50 ' :
                         'relative p-4  w-full m-2 rounded-lg shadow-lg  min-w-fit bg-pink-50'}
                     > <div className='flex justify-center items-center'>
-                        <div className='w-1/2'>
+                        <div className='w-1/2' key={item.data._id}>
                           {item.data.name}
                         </div>
                         <div className='flex flex-wrap justify-around w-1/2'>
@@ -579,7 +582,7 @@ function App() {
                       className={item.data.ismale === true ? 'relative p-4  w-full m-2 rounded-lg shadow-lg  min-w-fit bg-blue-50 ' :
                         ' relative p-4  w-full m-2 rounded-lg shadow-lg  min-w-fit bg-pink-50 '}
                     > <div className='flex justify-center items-center'>
-                        <div className='w-1/2'>
+                        <div className='w-1/2' key={item.data._id}>
                           {item.data.name}
                         </div>
                         <div className='flex flex-wrap justify-around w-1/2'>
