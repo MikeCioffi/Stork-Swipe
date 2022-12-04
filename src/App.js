@@ -61,6 +61,8 @@ function App() {
     setIsLoggedIn(false)
   }
 
+  console.log(friendLikes)
+
 
   // axios config
   const apiurl = "https://44.196.127.59:8080/api";
@@ -225,10 +227,17 @@ function App() {
             .get(`${apiurl}/name/like/getbyemail/${email}`, {})
             .then(function (response) {
 
-              setFriendLikes(prevState => ([...prevState,
-              {
-                "email": email, "data": response.data
-              }]))
+              axios.get(`${apiurl}/user/getOne/${email}`, {}).then(function (userReponse) {
+
+                setFriendLikes(prevState => ([...prevState,
+                {
+                  "email": email, "url": userReponse.data[0].image_url, "data": response.data
+                }]))
+
+
+              })
+
+
             })
 
           await axios
@@ -550,20 +559,20 @@ function App() {
               <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col sm:flex-row">
                 <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2' /> Liked</div>
 
-                  <div className='flex w-full flex-wrap text-center justify-around'>
+                  <div className='flex w-full flex-wrap text-center justify-  '>
                     {likedData.map((item) => <div key={item.likeid._id}
-                      className={item.data.ismale === true ? 'relative p-4 w-full m-2 rounded-lg shadow-lg min-w-fit bg-blue-50 ' :
-                        'relative p-4  w-full m-2 rounded-lg shadow-lg  min-w-fit bg-pink-50'}
+                      className={item.data.ismale === true ? 'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-blue-50 ' :
+                        'relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-pink-50'}
                     > <div className='flex justify-center items-center'>
                         <div className='w-1/2' key={item.data._id}>
                           {item.data.name}
                         </div>
-                        <div className='flex flex-wrap justify-around w-1/2'>
+                        <div className='flex flex-wrap justify-center w-1/2'>
                           {friendLikes.length > 0 ?
                             friendLikes.map((friend) => (friend.data.map(like => {
                               if (like.data._id === item.data._id && friend.email !== userData.email) {
-                                return <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6'>
-                                  {friend.email.substring(0, 1).toUpperCase()}
+                                return <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6 mr-2 ml-2'>
+                                  <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
                                 </div>
                               } else {
                                 return <></>
@@ -584,8 +593,8 @@ function App() {
 
                   <div className='flex w-full flex-wrap text-center justify-around'>
                     {disLikedData.map((item) => <div key={item.likeid._id}
-                      className={item.data.ismale === true ? 'relative p-4  w-full m-2 rounded-lg shadow-lg  min-w-fit bg-blue-50 ' :
-                        ' relative p-4  w-full m-2 rounded-lg shadow-lg  min-w-fit bg-pink-50 '}
+                      className={item.data.ismale === true ? 'relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-blue-50 ' :
+                        ' relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-pink-50 '}
                     > <div className='flex justify-center items-center'>
                         <div className='w-1/2' key={item.data._id}>
                           {item.data.name}
@@ -595,7 +604,7 @@ function App() {
                             friendDisLikes.map((friend) => friend.data.map((like) => {
                               if (like.data._id === item.data._id && friend.email !== userData.email) {
                                 return <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6'>
-                                  {friend.email.substring(0, 1).toUpperCase()}
+                                  <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
                                 </div>
                               } else {
                                 return <></>
