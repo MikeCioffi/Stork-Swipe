@@ -67,6 +67,7 @@ function App() {
   // DEV
   // const apiurl = 'http://localhost:8080/api'
 
+
   const getListIndexs = useCallback(async (email) => {
     let sentEmail = ''
 
@@ -212,6 +213,8 @@ function App() {
 
 
   const getFriends = useCallback(async () => {
+    setFriendDisLikes([])
+    setFriendLikes([])
 
     await axios
       .get(`${apiurl}/friend/getOne/${userData.email}`, {})
@@ -508,7 +511,7 @@ function App() {
 
           : navState === 'Partner' && isLoggedIn === true ?
             // partner container
-            <div className="mt-4 min-h-1/4 w-3/4 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-start items-center flex-col">
+            <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col">
               <div className='border-b-2 border-gray-100 p-4 w-full' >
                 <div className='flex flex-col jusify-center items-center m-auto' >
                   <h4>send an invite</h4>
