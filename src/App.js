@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import './App.css';
 // icons
-import { FcCheckmark, FcCancel } from 'react-icons/fc';
+import { FcCheckmark } from 'react-icons/fc';
 import { FaBabyCarriage } from 'react-icons/fa';
 import { BsFillPersonFill, BsSearch } from 'react-icons/bs'
 import { RiCheckboxMultipleLine } from 'react-icons/ri'
@@ -486,7 +486,7 @@ function App() {
 
             </div>
             <div className="mt-12 h-48 w-11/12 md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex shadow-xl  justify-center flex-row flex-wrap">
-              <button onClick={() => handleclick('disliked', listKey)} className='w-1/6 md:1/12 items-center justify-center flex flex-col cursor-pointer hover:bg-red-100 rounded-lg'><FcCancel /></button>
+              <button onClick={() => handleclick('disliked', listKey)} className='w-1/6 md:1/12 items-center justify-center flex flex-col  text-red-500  cursor-pointer hover:bg-red-100 rounded-lg'><SlDislike /></button>
               <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
                 <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
                 {listKey === 'girl' ?
@@ -498,8 +498,10 @@ function App() {
                   : <h3 className='text-5xl'>{boyList[newNameIndex.boyIndex].name}</h3>
 
                 }
+                {/* <button onClick={() => handleclick('skip', listKey)} className=''>skip</button> */}
+
               </div>
-              <button onClick={() => handleclick('liked', listKey)} className='w-1/6 md:1/12 items-center justify-center   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><FcCheckmark /></button>
+              <button onClick={() => handleclick('liked', listKey)} className='w-1/6 md:1/12 items-center justify-center text-green-500   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><SlLike /></button>
 
             </div>
           </div>
