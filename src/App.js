@@ -227,27 +227,27 @@ function App() {
             .get(`${apiurl}/name/like/getbyemail/${email}`, {})
             .then(function (response) {
 
-              axios.get(`${apiurl}/user/getOne/${email}`, {}).then(function (userReponse) {
+              axios.get(`${apiurl}/user/getOne/${email}`, {})
+                .then(function (userReponse) {
 
-                setFriendLikes(prevState => ([...prevState,
-                {
-                  "email": email, "url": userReponse.data[0].image_url, "data": response.data
-                }]))
-
-
-              })
-
-
+                  setFriendLikes(prevState => ([...prevState,
+                  {
+                    "email": email, "url": userReponse.data[0].image_url, "data": response.data
+                  }]))
+                })
             })
-
           await axios
             .get(`${apiurl}/name/dislike/getbyemail/${email}`, {})
             .then(function (response) {
+              axios.get(`${apiurl}/user/getOne/${email}`, {})
+                .then(function (userReponse) {
+                  setFriendDisLikes(prevState => ([...prevState,
+                  {
+                    "email": email, "url": userReponse.data[0].image_url, "data": response.data
+                  }]))
+                })
 
-              setFriendDisLikes(prevState => ([...prevState,
-              {
-                "email": email, "data": response.data
-              }]))
+
             })
 
 
