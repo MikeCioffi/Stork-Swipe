@@ -69,6 +69,7 @@ function App() {
 
   const getListIndexs = useCallback(async (email) => {
     let sentEmail = ''
+
     if (email === null) {
       sentEmail = userData.email
     }
@@ -79,8 +80,6 @@ function App() {
         setNewNameIndex(response.data[0])
       })
   }, [userData.email])
-
-  console.log(newNameIndex)
 
 
   //depending on list key, it increases the correct nameindex 
@@ -352,13 +351,11 @@ function App() {
     if (nameList === null) {
       getAllNames()
     }
-    if (nameList !== null & girlList === null & boyList === null) {
+    else if (nameList !== null & girlList === null & boyList === null) {
       var filters = [true];
       setGirlList(nameList.filter(val => filters.includes(val.isfemale)))
       setBoyList(nameList.filter(val => filters.includes(val.ismale)))
     }
-
-    else return
   }
     , [nameList, boyList, getAllNames, girlList])
 
@@ -373,7 +370,7 @@ function App() {
         getListIndexs(null)
       }
     }
-  }, [getDisLikedNames, getLikedNames, getListIndexs, getAllNames, getFriends, userData.email, isLoggedIn, newNameIndex])
+  }, [getDisLikedNames, getLikedNames, getListIndexs, getFriends, userData.email, isLoggedIn, newNameIndex])
 
   let upperListKey = listKey.toUpperCase()
 
