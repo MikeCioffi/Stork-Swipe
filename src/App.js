@@ -123,6 +123,7 @@ function App() {
       .then(function (response) {
         setNameIndex(nameIndex + 1)
         updateIndexOnKey()
+
         console.log(response)
       })
       .catch(function (error) {
@@ -147,29 +148,7 @@ function App() {
       })
   }
 
-  const removeLike = async (deleteID) => {
-    await axios
-      .delete(`${apiurl}/name/like/delete/${deleteID}`)
-      .then(function (response) {
-        getLikedNames()
-        console.log(response)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  }
 
-  const removeDisLike = async (deleteID) => {
-    await axios
-      .delete(`${apiurl}/name/dislike/delete/${deleteID}`)
-      .then(function (response) {
-        getDisLikedNames()
-        console.log(response)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  }
 
   useEffect(() => {
     const matchUser = async () => {
@@ -427,10 +406,78 @@ function App() {
 
     }
 
+    // handle the like
+    //  remove the dislike
+    // get updated lists
+
+
+
 
     // update liked or disliked
     // increate name counter
+    console.log('likedData')
+    console.log(likedData)
 
+
+  }
+  const handleRevert = async (type, nameid, likeid) => {
+
+    const removeLike = async (deleteID) => {
+      await axios
+        .delete(`${apiurl}/name/like/delete/${deleteID}`)
+        .then(function (response) {
+          getLikedNames()
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
+
+    const removeDisLike = async (deleteID) => {
+      await axios
+        .delete(`${apiurl}/name/dislike/delete/${deleteID}`)
+        .then(function (response) {
+          getDisLikedNames()
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
+
+    if (type === 'revertLike') {
+      // first remove the like, then add a dislike
+      removeLike(likeid)
+      await axios
+        .post(`${apiurl}/name/dislike/post`, {
+          nameid: nameid,
+          email: userData.email,
+        })
+        .then(function (response) {
+          getLikedNames()
+          getDisLikedNames()
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
+    if (type === 'revertDislike') {
+      // first remove the like, then add a dislike
+      removeDisLike(likeid)
+      await axios
+        .post(`${apiurl}/name/like/post`, {
+          nameid: nameid,
+          email: userData.email,
+        })
+        .then(function (response) {
+          getLikedNames()
+          getDisLikedNames()
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
   }
 
   return (
@@ -461,7 +508,7 @@ function App() {
       </nav >
 
       {isLoggedIn === false ?
-        <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-xl  justify-center items-center flex-col flex-wrap">
+        <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-md  justify-center items-center flex-col flex-wrap">
           <h3 className='mb-4 p-4 text-center'>Please login with your google account to decide on your favorite names!</h3>
 
           <GoogleLogin auto_select
@@ -488,16 +535,16 @@ function App() {
           <div className="flex flex-col w-full justify-center items-center">
             <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
               <button onClick={() => setListKey('boy')} className={listKey === 'boy' ?
-                'p-4 m-4 bg-blue-300 rounded-full text-white' :
-                'p-4 m-4 bg-blue-100 rounded-full text-white hover:bg-blue-200'}>
+                'p-4 m-4 bg-french-pass-800 rounded-full text-french-pass-50' :
+                'p-4 m-4 bg-french-pass-50 rounded-full text-white hover:bg-french-pass-200'}>
                 <TbGenderMale /></button>
               <button onClick={() => setListKey('girl')} className={listKey === 'girl' ?
-                'p-4 m-4  bg-pink-300 rounded-full text-white' :
-                'p-4 m-4  bg-pink-100 rounded-full text-white hover:bg-pink-200'} >
+                'p-4 m-4  bg-pastel-pink-300 rounded-full text-white' :
+                'p-4 m-4  bg-pastel-pink-100 rounded-full text-white hover:bg-pastel-pink-200'} >
                 <TbGenderDemigirl /></button>
 
             </div>
-            <div className="mt-12 h-48 w-11/12 md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex shadow-xl  justify-center flex-row flex-wrap">
+            <div className="mt-12 h-48 w-11/12 md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex shadow-md  justify-center flex-row flex-wrap">
               <button onClick={() => handleclick('disliked', listKey)} className='w-1/6 md:1/12 items-center justify-center flex flex-col  text-red-500  cursor-pointer hover:bg-red-100 rounded-lg'><SlDislike /></button>
               <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
                 <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
@@ -520,7 +567,7 @@ function App() {
 
           : navState === 'Partner' && isLoggedIn === true ?
             // partner container
-            <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col">
+            <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-md  justify-center  flex-col">
               <div className='border-b-2 border-gray-100 p-4 w-full' >
                 <div className='flex flex-col jusify-center items-center m-auto' >
                   <h4>send an invite</h4>
@@ -556,13 +603,13 @@ function App() {
               </div>
             </div>
             : navState === 'Matches' ?
-              <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-xl  justify-center  flex-col sm:flex-row">
-                <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2' /> Liked</div>
+              <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-md  justify-center  flex-col sm:flex-row">
+                <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2 text-green-500' /> Liked</div>
 
                   <div className='flex w-full flex-wrap text-center justify-  '>
                     {likedData.map((item) => <div key={item.likeid._id}
-                      className={item.data.ismale === true ? 'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-blue-50 ' :
-                        'relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-pink-50'}
+                      className={item.data.ismale === true ? 'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-french-pass-50 ' :
+                        'relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-pastel-pink-50'}
                     > <div className='flex justify-center items-center'>
                         <div className='w-1/2' key={item.data._id}>
                           {item.data.name}
@@ -581,7 +628,7 @@ function App() {
 
                             ) : <></>}
                         </div>
-                        <button onClick={() => removeLike(item.likeid._id)} className='cursor-pointer hover:text-red-100 rounded-lg'><MdOutlineCancel className='text-red-500 hover:text-red-200' /></button>
+                        <button onClick={() => handleRevert('revertLike', item.data._id, item.likeid._id)} className='cursor-pointer hover:text-red-100 rounded-lg'><SlDislike className='text-gray-300 hover:text-red-600' /></button>
 
                       </div>
                     </div>)}
@@ -589,12 +636,12 @@ function App() {
                   </div>
 
                 </div>
-                <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2' /> Dislike</div>
+                <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2 text-red-500' /> Disliked</div>
 
                   <div className='flex w-full flex-wrap text-center justify-around'>
                     {disLikedData.map((item) => <div key={item.likeid._id}
-                      className={item.data.ismale === true ? 'relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-blue-50 ' :
-                        ' relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-pink-50 '}
+                      className={item.data.ismale === true ? 'relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-french-pass-50 ' :
+                        ' relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-pastel-pink-50 '}
                     > <div className='flex justify-center items-center'>
                         <div className='w-1/2' key={item.data._id}>
                           {item.data.name}
@@ -613,7 +660,7 @@ function App() {
 
                             ) : <></>}
                         </div>
-                        <button onClick={() => removeDisLike(item.likeid._id)} className='cursor-pointer hover:text-red-100 rounded-lg'><MdOutlineCancel className='text-red-500 hover:text-red-200' /></button>
+                        <button onClick={() => handleRevert('revertDislike', item.data._id, item.likeid._id)} className='cursor-pointer hover:text-red-100 rounded-lg'><SlLike className='text-gray-300 hover:text-green-600' /></button>
 
                       </div>
                     </div>)}
