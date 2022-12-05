@@ -65,9 +65,9 @@ function App() {
 
 
   // axios config
-  // const apiurl = "https://44.196.127.59:8080/api";
+  const apiurl = "https://44.196.127.59:8080/api";
   // DEV
-  const apiurl = 'http://localhost:8080/api'
+  // const apiurl = 'http://localhost:8080/api'
 
 
   const getListIndexs = useCallback(async (email) => {
