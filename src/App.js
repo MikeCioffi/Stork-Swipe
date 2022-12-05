@@ -493,9 +493,9 @@ function App() {
           : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
           <RiCheckboxMultipleLine /><button className='ml-2'>Matches</button>
         </div>
-        <div className='flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'>
+        <div onClick={() => resetUser()} className='flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'>
           {userData.email.length > 0 ?
-            <button className='flex items-center' onClick={() => resetUser()}>
+            <button className='flex items-center'>
               <img src={userData.image_url} referrerPolicy="no-referrer" alt="user's google profile" className='rounded-full mr-2 h-6 w-6'></img>
               <span>Sign Out</span></button> : <></>
           }
