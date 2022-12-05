@@ -478,7 +478,7 @@ function App() {
 
   return (
     <div className="flex h-full w-full items-center flex-col">
-      <nav className='flex items-center w-full justify-center'>
+      <nav className='flex items-center w-full sm:justify-center justify-around'>
 
         <div onClick={() => setNavState('Names')} className={navState === 'Names' ?
           'flex flex-col sm:flex-row items-center p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
