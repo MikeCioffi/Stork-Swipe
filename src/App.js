@@ -65,9 +65,9 @@ function App() {
 
 
   // axios config
-  const apiurl = "https://44.196.127.59:8080/api";
+  // const apiurl = "https://44.196.127.59:8080/api";
   // DEV
-  // const apiurl = 'http://localhost:8080/api'
+  const apiurl = 'http://localhost:8080/api'
 
 
   const getListIndexs = useCallback(async (email) => {
@@ -575,22 +575,23 @@ function App() {
               </div>
               <div className='w-full' >
                 <div className='flex flex-col items-center'>
-                  <h4 className='text-xs'>PARTNERS</h4>
                   {friends.map((friend) => {
-                    return <div className='w-11/12 lg:w-3/4 m-2 p-4 shadow rounded-lg flex items-center' key={friend._id}>
-                      {friend.status === 'sent' ?
-                        <div className='mr-2'><CiAirportSign1 className='text-yellow-500' /></div> :
-                        <div className='mr-2'><AiOutlineCheckCircle className='text-green-500' /></div>}
-                      {friend.friend_email === userData.email ?
-                        <div className='flex-grow'>{friend.email}</div>
-                        :
-                        <div className='flex-grow'>{friend.friend_email}</div>}
-                      {friend.status === 'sent' & friend.friend_email === userData.email ?
-                        <div><FcCheckmark onClick={() => acceptFriend(friend._id)} className='text-green-400 mr-2 text-lg hover:text-green-800 cursor-pointer' /></div> : <></>
-                      }
-                      <div><MdOutlineCancel onClick={() => deleteFriend(friend._id)} className='text-red-400 hover:text-red-800 text-lg cursor-pointer' /></div>
-                    </div>
+                    return <>                   <h4 className='text-xs'>PARTNERS</h4>
+                      <div className='w-11/12 lg:w-3/4 m-2 p-4 shadow rounded-lg flex items-center' key={friend._id}>
 
+                        {friend.status === 'sent' ?
+                          <div className='mr-2'><CiAirportSign1 className='text-yellow-500' /></div> :
+                          <div className='mr-2'><AiOutlineCheckCircle className='text-green-500' /></div>}
+                        {friend.friend_email === userData.email ?
+                          <div className='flex-grow'>{friend.email}</div>
+                          :
+                          <div className='flex-grow'>{friend.friend_email}</div>}
+                        {friend.status === 'sent' & friend.friend_email === userData.email ?
+                          <div><FcCheckmark onClick={() => acceptFriend(friend._id)} className='text-green-400 mr-2 text-lg hover:text-green-800 cursor-pointer' /></div> : <></>
+                        }
+                        <div><MdOutlineCancel onClick={() => deleteFriend(friend._id)} className='text-red-400 hover:text-red-800 text-lg cursor-pointer' /></div>
+                      </div>
+                    </>
                   })}
 
 
