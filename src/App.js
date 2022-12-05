@@ -481,25 +481,28 @@ function App() {
       <nav className='flex items-center w-full justify-center'>
 
         <div onClick={() => setNavState('Names')} className={navState === 'Names' ?
-          'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
-          : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
+          'flex flex-col sm:flex-row items-center p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
+          : 'flex  flex-col sm:flex-row items-center p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
           <FaBabyCarriage /> <button className='ml-2'>Names</button> </div>
         <div onClick={() => setNavState('Partner')} className={navState === 'Partner' ?
-          'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
-          : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50 '}>
+          'flex flex-col sm:flex-row items-center p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
+          : 'flex flex-col sm:flex-row items-center p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50 '}>
           <BsFillPersonFill /><button className='ml-2'>Partners</button></div>
         <div onClick={() => setNavState('Matches')} className={navState === 'Matches' ?
-          'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
-          : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
+          'flex flex-col sm:flex-row items-center  p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
+          : 'flex flex-col sm:flex-row items-center  p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
           <RiCheckboxMultipleLine /><button className='ml-2'>Matches</button>
         </div>
-        <div onClick={() => resetUser()} className='flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'>
-          {userData.email.length > 0 ?
-            <button className='flex items-center'>
-              <img src={userData.image_url} referrerPolicy="no-referrer" alt="user's google profile" className='rounded-full mr-2 h-6 w-6'></img>
-              <span>Sign Out</span></button> : <></>
-          }
-        </div>
+        {userData.email.length > 0 ?
+          <div onClick={() => resetUser()} className='flex flex-col sm:flex-row items-center p-2   md:p-4 cursor-pointer  rounded-lg hover:bg-gray-50'>
+            <button className='flex flex-col sm:flex-row items-center justify-center'>
+              <img src={userData.image_url} referrerPolicy="no-referrer" alt="user's google profile" className='rounded-full mr-2 h-4 w-4 sm:h-6 sm:w-6'></img>
+              <span>Sign Out</span></button>  <></>
+          </div>
+          :
+          <>
+          </>
+        }
       </nav >
 
       {isLoggedIn === false ?
@@ -527,7 +530,7 @@ function App() {
             }}
           /></div> :
         navState === 'Names' && newNameIndex.boyIndex >= 0 && isLoggedIn === true ?
-          <div className="flex flex-col w-full justify-center items-center">
+          <div className="flex flex-col w-full justify-around items-center">
             <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
               <button onClick={() => setListKey('boy')} className={listKey === 'boy' ?
                 'p-4 m-4 bg-french-pass-800 rounded-full text-french-pass-50' :
