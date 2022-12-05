@@ -205,10 +205,12 @@ function App() {
           await axios
             .get(`${apiurl}/name/like/getbyemail/${email}`, {})
             .then(function (response) {
-
+              console.log('here')
+              console.log(response)
               axios.get(`${apiurl}/user/getOne/${email}`, {})
                 .then(function (userReponse) {
-
+                  console.log('userResponse')
+                  console.log(userReponse)
                   setFriendLikes(prevState => ([...prevState,
                   {
                     "email": email, "url": userReponse.data[0].image_url, "data": response.data
@@ -233,18 +235,17 @@ function App() {
         })
 
         response.data.map((res) => {
-          console.log(res)
-          if (res.friend_email === userData.email) {
-            console.log('using getfriends name with ' + res.email)
+
+          if (res.friend_email === userData.email && res.status === 'accepted') {
 
             return getFriendsNames(res.email)
           }
 
-          else {
-            console.log('using getfriends name with ' + res.friend_email)
+          else if (res.status === 'accepted') {
 
             return getFriendsNames(res.friend_email)
           }
+          else return null
 
 
         })
@@ -262,7 +263,6 @@ function App() {
         friend_email: friendEmail
       })
       .then(function (response) {
-        console.log(response)
         getFriends()
         setFriendEmail('')
       })
@@ -277,7 +277,6 @@ function App() {
       .then(function (response) {
 
         getFriends()
-        console.log(response)
       })
       .catch(function (error) {
         console.log(error)
@@ -291,7 +290,6 @@ function App() {
       .then(function (response) {
 
         getFriends()
-        console.log(response)
       })
       .catch(function (error) {
         console.log(error)
@@ -302,7 +300,6 @@ function App() {
     await axios
       .get(`${apiurl}/name/getall`, {})
       .then(function (response) {
-        console.log('api call made')
         setNameList(response.data)
       })
       .catch(function (error) {
@@ -415,8 +412,7 @@ function App() {
 
     // update liked or disliked
     // increate name counter
-    console.log('likedData')
-    console.log(likedData)
+
 
 
   }
@@ -496,12 +492,11 @@ function App() {
           'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
           : 'flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
           <RiCheckboxMultipleLine /><button className='ml-2'>Matches</button>
-
         </div>
-        <div className=''>
+        <div className='flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'>
           {userData.email.length > 0 ?
-            <button className='flex items-center mr-2 p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg' onClick={() => resetUser()}>
-              <img src={userData.image_url} referrerPolicy="no-referrer" alt="user's google profile" className='rounded-full mr-2 h-12 w-12'></img>
+            <button className='flex items-center' onClick={() => resetUser()}>
+              <img src={userData.image_url} referrerPolicy="no-referrer" alt="user's google profile" className='rounded-full mr-2 h-6 w-6'></img>
               <span>Sign Out</span></button> : <></>
           }
         </div>
@@ -570,7 +565,7 @@ function App() {
             <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-md  justify-center  flex-col">
               <div className='border-b-2 border-gray-100 p-4 w-full' >
                 <div className='flex flex-col jusify-center items-center m-auto' >
-                  <h4>send an invite</h4>
+                  <h4 className='text-xs'>SEND AN INVITE</h4>
                   <div className='flex flex-row md:flex-row w-full sm:w-3/4 items-center'>
                     <BsSearch className='mr-2' />
                     <input value={friendEmail} onChange={e => setFriendEmail(e.target.value)} placeholder='enter an email' className='flex-grow shadow p-4 outline-none rounded-lg' type='email'></input>
@@ -580,7 +575,7 @@ function App() {
               </div>
               <div className='w-full' >
                 <div className='flex flex-col items-center'>
-                  <h4>connected partners</h4>
+                  <h4 className='text-xs'>PARTNERS</h4>
                   {friends.map((friend) => {
                     return <div className='w-11/12 lg:w-3/4 m-2 p-4 shadow rounded-lg flex items-center' key={friend._id}>
                       {friend.status === 'sent' ?
