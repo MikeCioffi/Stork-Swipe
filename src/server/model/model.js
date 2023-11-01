@@ -118,15 +118,42 @@ const DisLikedDataSchema = new mongoose.Schema({
     { collection: 'DisLikedData' }
 
 )
+
+
+const NameActionSchema = new mongoose.Schema({
+    nameid: {
+        required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'nameData'  // Reference to the collection you're populating from
+    },
+    email: {
+        required: true,
+        type: String
+    },
+    status: {
+        required: true,
+        type: String, // 'liked' or 'disliked'
+    },
+    gender: {
+        required: true,
+        type: String, // 'boy' or 'girl'
+    }
+},
+    { collection: 'NameActions' }
+);
+
+
 const DisLikedData = mongoose.model('diLiked-data', DisLikedDataSchema)
 const LikedData = mongoose.model('liked-data', LikedNameSchema)
 const Friend = mongoose.model('friend', friendSchema)
-const nameData = mongoose.model('list-data', nameDataSchema)
+const nameData = mongoose.model('nameData', nameDataSchema);
 const User = mongoose.model('user', userSchema)
 const listIndex = mongoose.model('listIndex', listIndexSchema)
+const NameAction = mongoose.model('NameAction', NameActionSchema);
+
 
 module.exports = {
-    User, nameData, Friend, LikedData, DisLikedData, listIndex
+    User, nameData, Friend, LikedData, DisLikedData, listIndex, NameAction
 }
 
 // Liked-name = {list-data-ID, userID}

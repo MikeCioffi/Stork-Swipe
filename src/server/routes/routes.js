@@ -72,6 +72,23 @@ router.get('/name/like/getbyemail/:email', jsonParser, async (req, res) => {
     }
 
 })
+
+router.post('/listIndex/update/:email', jsonParser, async (req, res) => {
+    try {
+        const filter = { email: req.params.email };
+        console.log(req.body)
+        const update = req.body;
+        console.log(update)
+        const result = await Model.listIndex.findOneAndUpdate(filter, update, {
+            new: true
+        })
+
+        res.send(result)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+})
 // used to create a user to name 1:many like relationship
 router.post('/name/like/post', jsonParser, async (req, res) => {
     const LikedData = new Model.LikedData({
@@ -79,14 +96,23 @@ router.post('/name/like/post', jsonParser, async (req, res) => {
         email: req.body.email,
     })
 
+
     try {
         const dataToSave = await LikedData.save();
-        res.status(200).json(dataToSave)
+
+        // New logic to update index
+        const filter = { email: req.body.email };
+        const update = { /* whatever you want to update */ };
+        const updatedIndex = await Model.listIndex.findOneAndUpdate(filter, update, {
+            new: true
+        });
+
+        // Return both saved data and updated index
+        res.status(200).json({ savedData: dataToSave, updatedIndex });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
-    catch (error) {
-        res.status(400).json({ message: error.message })
-    }
-})
+});
 
 //used to delete the users 'like' of a name
 router.delete('/name/like/delete/:id', async (req, res) => {
@@ -311,20 +337,57 @@ router.get('/listIndex/get/:email', async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 })
-// used to increment the boy and girl index, depending on user action
-router.post('/listIndex/update/:email', jsonParser, async (req, res) => {
-    try {
-        const filter = { email: req.params.email };
-        console.log(req.body)
-        const update = req.body;
-        console.log(update)
-        const result = await Model.listIndex.findOneAndUpdate(filter, update, {
-            new: true
-        })
 
-        res.send(result)
+// new post for name | status | gender
+router.post('/name/action/post', jsonParser, async (req, res) => {
+
+    console.log("Request body: ", req.body);
+    console.log("Request headers: ", req.headers);
+    const ActionData = new Model.NameAction({
+        nameid: req.body.nameid,
+        email: req.body.email,
+        status: req.body.status, // 'liked' or 'disliked'
+        gender: req.body.gender // 'boy' or 'girl'
+    });
+
+    try {
+        const dataToSave = await ActionData.save();
+        res.status(200).json(dataToSave)
     }
     catch (error) {
         res.status(400).json({ message: error.message })
     }
-})
+});
+router.get('/name/action/all/:email', async (req, res) => {
+    try {
+        const email = req.params.email;
+        const actions = await Model.NameAction.find({ email })
+            .populate({
+                path: 'nameid',
+                select: 'name', // Only fetching the name field
+            })
+            .exec();
+
+        res.status(200).json(actions);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// // used to increment the boy and girl index, depending on user action
+// router.post('/listIndex/update/:email', jsonParser, async (req, res) => {
+//     try {
+//         const filter = { email: req.params.email };
+//         console.log(req.body)
+//         const update = req.body;
+//         console.log(update)
+//         const result = await Model.listIndex.findOneAndUpdate(filter, update, {
+//             new: true
+//         })
+
+//         res.send(result)
+//     }
+//     catch (error) {
+//         res.status(400).json({ message: error.message })
+//     }
+// })

@@ -24,12 +24,9 @@ import axios from "axios"
 
 function App() {
 
-  const [nameIndex, setNameIndex] = useState(0)
   const [newNameIndex, setNewNameIndex] = useState({})
-
   // can be boy or girl
   const [listKey, setListKey] = useState('boy')
-
   const [navState, setNavState] = useState('Names')
   const [likedData, setLikedData] = useState()
   const [disLikedData, setDisLikedData] = useState()
@@ -38,6 +35,7 @@ function App() {
   const [girlList, setGirlList] = useState(null)
   const [boyList, setBoyList] = useState(null)
   const [friends, setFriends] = useState([])
+
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userData, setUserData] = useState({
     "email": '',
@@ -60,14 +58,10 @@ function App() {
     })
     setIsLoggedIn(false)
   }
-
-  console.log(friendLikes)
-
-
   // axios config
-  const apiurl = "https://44.196.127.59:8080/api";
+  // const apiurl = "https://44.196.127.59:8080/api";
   // DEV
-  // const apiurl = 'http://localhost:8080/api'
+  const apiurl = 'http://localhost:8080/api'
 
 
   const getListIndexs = useCallback(async (email) => {
@@ -84,70 +78,38 @@ function App() {
       })
   }, [userData.email])
 
+  useEffect(() => {
+    if (navState === "Matches") {
+      const fetchData = async () => {
+        const result = await axios(`${apiurl}/name/action/all/${userData.email}`);
+        const rawActions = result.data;
+        let likedNames = [];
+        let dislikedNames = [];
+        rawActions.forEach(action => {
+          const actionInfo = {
+            name: action.nameid.name,
+            gender: action.gender
+          };
+
+          if (action.status === 'like') {
+            likedNames.push(actionInfo);
+          } else if (action.status === 'dislike') {
+            dislikedNames.push(actionInfo);
+          }
+        });
+
+        likedNames.sort((a, b) => a.name.localeCompare(b.name));
+        dislikedNames.sort((a, b) => a.name.localeCompare(b.name));
+
+        setLikedData(likedNames);
+        setDisLikedData(dislikedNames);
+      };
+
+      fetchData();
+    }
+  }, [navState])
 
   //depending on list key, it increases the correct nameindex 
-
-  const updateIndexOnKey = async () => {
-    if (listKey === 'boy') {
-      let newIndex = newNameIndex.boyIndex + 1
-      console.log('increasing boy index')
-      await axios.post(`${apiurl}/listIndex/update/${userData.email}`, {
-        boyIndex: newIndex
-        ,
-        girlIndex: newNameIndex.girlIndex
-      })
-    }
-    else if (listKey === 'girl') {
-      let newIndex = newNameIndex.girlIndex + 1
-      console.log('increasing girl index')
-
-      await axios.post(`${apiurl}/listIndex/update/${userData.email}`, {
-        girlIndex: newIndex
-        ,
-        boyIndex: newNameIndex.boyIndex
-      })
-    }
-    getListIndexs(null)
-
-  }
-
-
-
-
-  const likeName = async (nameid) => {
-    await axios
-      .post(`${apiurl}/name/like/post`, {
-        nameid: nameid,
-        email: userData.email,
-      })
-      .then(function (response) {
-        setNameIndex(nameIndex + 1)
-        updateIndexOnKey()
-
-        console.log(response)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  }
-
-  const disLikeName = async (nameid) => {
-    await axios
-      .post(`${apiurl}/name/dislike/post`, {
-        nameid: nameid,
-        email: userData.email,
-      })
-      .then(function (response) {
-        setNameIndex(nameIndex + 1)
-        updateIndexOnKey()
-
-        console.log(response)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  }
-
 
 
   useEffect(() => {
@@ -188,7 +150,6 @@ function App() {
 
     if (userData.email !== undefined) {
       matchUser()
-
     }
   }, [userData])
 
@@ -205,8 +166,7 @@ function App() {
           await axios
             .get(`${apiurl}/name/like/getbyemail/${email}`, {})
             .then(function (response) {
-              console.log('here')
-              console.log(response)
+
               axios.get(`${apiurl}/user/getOne/${email}`, {})
                 .then(function (userReponse) {
                   console.log('userResponse')
@@ -255,6 +215,8 @@ function App() {
         console.log(error)
       })
   }, [userData.email])
+
+
   const sendFriendRequest = async () => {
     await axios
       .post(`${apiurl}/friend/post`, {
@@ -307,48 +269,16 @@ function App() {
       })
   }, [])
 
-  const getLikedNames = useCallback(async () => {
-    await axios
-      .get(`${apiurl}/name/like/getbyemail/${userData.email}`, {})
-      .then(function (response) {
-        setLikedData(response.data)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  }, [userData.email])
 
-  const getDisLikedNames = useCallback(async () => {
-    await axios
-      .get(`${apiurl}/name/dislike/getbyemail/${userData.email}`, {})
-      .then(function (response) {
-        setDisLikedData(response.data)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-
-  }, [userData.email])
-  // console.log(nameList)
-
-  // function filter_names(filters) {
-  //   const filtered_names = [];
-  //   filters.forEach(filterValue => {
-  //     filtered_names.push(...nameList.filter(val => val.areas.includes(filterValue)));
-  //   });
-  //   console.log(filtered_names);
-  // };
   useEffect(() => {
-    if (nameList === null) {
-      getAllNames()
+    if (!nameList) {
+      getAllNames();
+    } else if (!girlList && !boyList) {
+      setGirlList(nameList.filter(val => val.isfemale === true));
+      setBoyList(nameList.filter(val => val.ismale === true));
     }
-    else if (nameList !== null & girlList === null & boyList === null) {
-      var filters = [true];
-      setGirlList(nameList.filter(val => filters.includes(val.isfemale)))
-      setBoyList(nameList.filter(val => filters.includes(val.ismale)))
-    }
-  }
-    , [nameList, boyList, getAllNames, girlList])
+  }, [nameList, boyList, girlList]);
+
 
   useEffect(() => {
     if (isLoggedIn === true) {
@@ -356,17 +286,6 @@ function App() {
     }
   }, [getFriends, isLoggedIn])
 
-  useEffect(() => {
-    if (isLoggedIn === true) {
-      getLikedNames()
-      getDisLikedNames()
-      if (newNameIndex === null) {
-
-
-        getListIndexs(null)
-      }
-    }
-  }, [getDisLikedNames, getLikedNames, getListIndexs, getFriends, userData.email, isLoggedIn, newNameIndex])
 
   let upperListKey = listKey.toUpperCase()
 
@@ -379,50 +298,13 @@ function App() {
 
     return JSON.parse(jsonPayload);
   };
-  const handleclick = (event, listKey) => {
-    if (event === 'liked' && listKey === 'boy') {
-      //make api call to like a certain person
-      likeName(boyList[newNameIndex.boyIndex]._id)
-      updateIndexOnKey()
-      getLikedNames()
-    }
-    if (event === 'liked' && listKey === 'girl') {
-      likeName(girlList[newNameIndex.girlIndex]._id)
-      updateIndexOnKey()
-      getLikedNames()
-    }
-    if (event === 'disliked' && listKey === 'boy') {
-      disLikeName(boyList[newNameIndex.boyIndex]._id)
-      updateIndexOnKey()
-      getDisLikedNames()
-    }
-    if (event === 'disliked' && listKey === 'girl') {
-      disLikeName(girlList[newNameIndex.girlIndex]._id)
-      updateIndexOnKey()
-      getDisLikedNames()
-
-    }
-
-    // handle the like
-    //  remove the dislike
-    // get updated lists
-
-
-
-
-    // update liked or disliked
-    // increate name counter
-
-
-
-  }
   const handleRevert = async (type, nameid, likeid) => {
 
     const removeLike = async (deleteID) => {
       await axios
         .delete(`${apiurl}/name/like/delete/${deleteID}`)
         .then(function (response) {
-          getLikedNames()
+          // getLikedNames()
           console.log(response)
         })
         .catch(function (error) {
@@ -434,7 +316,7 @@ function App() {
       await axios
         .delete(`${apiurl}/name/dislike/delete/${deleteID}`)
         .then(function (response) {
-          getDisLikedNames()
+          //           getDisLikedNames()
           console.log(response)
         })
         .catch(function (error) {
@@ -451,8 +333,8 @@ function App() {
           email: userData.email,
         })
         .then(function (response) {
-          getLikedNames()
-          getDisLikedNames()
+          // getLikedNames()
+          //           getDisLikedNames()
         })
         .catch(function (error) {
           console.log(error)
@@ -467,14 +349,44 @@ function App() {
           email: userData.email,
         })
         .then(function (response) {
-          getLikedNames()
-          getDisLikedNames()
+          // getLikedNames()
+          // //           getDisLikedNames()
         })
         .catch(function (error) {
           console.log(error)
         })
     }
   }
+
+  const handleNameAction = async (nameId, action, gender) => {
+    // action is either 'like' or 'dislike'
+    // gender is either 'boy' or 'girl'
+
+
+    await axios.post(`${apiurl}/name/action/post`, {
+      nameid: nameId,
+      status: action,
+      email: userData.email,
+      gender,
+    })
+      .then((response) => {
+        console.log(response);
+        if (response.data.gender === 'boy') {
+          setNewNameIndex(prevState => ({
+            ...prevState,
+            boyIndex: prevState.boyIndex + 1
+          }));
+        } else {
+          setNewNameIndex(prevState => ({
+            ...prevState,
+            girlIndex: prevState.girlIndex + 1
+          }));
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div className="flex h-full w-full items-center flex-col">
@@ -543,7 +455,12 @@ function App() {
 
             </div>
             <div className="mt-12 h-48 w-11/12 md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex shadow-md  justify-center flex-row flex-wrap">
-              <button onClick={() => handleclick('disliked', listKey)} className='w-1/6 md:1/12 items-center justify-center flex flex-col  text-red-500  cursor-pointer hover:bg-red-100 rounded-lg'><SlDislike /></button>
+              <button
+                onClick={() => listKey === 'girl' ? handleNameAction(girlList[newNameIndex.girlIndex]._id, 'dislike', listKey) : handleNameAction(boyList[newNameIndex.boyIndex]._id, 'dislike', listKey)}
+                className='w-1/6 md:1/12 items-center justify-center flex flex-col text-red-500 cursor-pointer hover:bg-red-100 rounded-lg'
+              >
+                <SlDislike />
+              </button>
               <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
                 <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
                 {listKey === 'girl' ?
@@ -558,7 +475,11 @@ function App() {
                 {/* <button onClick={() => handleclick('skip', listKey)} className=''>skip</button> */}
 
               </div>
-              <button onClick={() => handleclick('liked', listKey)} className='w-1/6 md:1/12 items-center justify-center text-green-500   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><SlLike /></button>
+              <button
+
+                onClick={() => listKey === 'girl' ? handleNameAction(girlList[newNameIndex.girlIndex]._id, 'like', listKey) : handleNameAction(boyList[newNameIndex.boyIndex]._id, 'like', listKey)} className='w-1/6 md:1/12 items-center justify-center text-green-500   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><SlLike /></button>
+
+              {/* // handleclick('liked', listKey)} className='w-1/6 md:1/12 items-center justify-center text-green-500   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><SlLike /></button> */}
 
             </div>
           </div>
@@ -604,33 +525,42 @@ function App() {
             : navState === 'Matches' ?
               <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-md  justify-center  flex-col sm:flex-row">
                 <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2 text-green-500' /> Liked</div>
-
                   <div className='flex w-full flex-wrap text-center justify-  '>
-                    {likedData.map((item) => <div key={item.likeid._id}
-                      className={item.data.ismale === true ? 'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-french-pass-50 ' :
-                        'relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-pastel-pink-50'}
-                    > <div className='flex justify-center items-center'>
-                        <div className='w-1/2' key={item.data._id}>
-                          {item.data.name}
+                    {likedData && likedData.map((item, index) =>
+                      <div
+                        key={index}
+                        className={item.gender === 'boy' ? 'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-french-pass-50 ' :
+                          'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-pastel-pink-50'}
+                      >
+                        <div className='flex justify-center items-center'>
+                          <div className='w-1/2'>
+                            {item.name}
+                          </div>
+                          <div className='flex flex-wrap justify-center w-1/2'>
+                            {friendLikes.length > 0 ?
+                              friendLikes.map((friend) => (
+                                friend.data.map(like => {
+                                  if (like.data.name === item.name && friend.email !== userData.email) {
+                                    return (
+                                      <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6 mr-2 ml-2'>
+                                        <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
+                                      </div>
+                                    );
+                                  } else {
+                                    return null;
+                                  }
+                                })
+                              )) : null}
+                          </div>
+                          <button
+                            onClick={() => handleRevert('revertLike', item.name)}
+                            className='cursor-pointer hover:text-red-100 rounded-lg'
+                          >
+                            <SlDislike className='text-gray-300 hover:text-red-600' />
+                          </button>
                         </div>
-                        <div className='flex flex-wrap justify-center w-1/2'>
-                          {friendLikes.length > 0 ?
-                            friendLikes.map((friend) => (friend.data.map(like => {
-                              if (like.data._id === item.data._id && friend.email !== userData.email) {
-                                return <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6 mr-2 ml-2'>
-                                  <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
-                                </div>
-                              } else {
-                                return <></>
-                              }
-                            }))
-
-                            ) : <></>}
-                        </div>
-                        <button onClick={() => handleRevert('revertLike', item.data._id, item.likeid._id)} className='cursor-pointer hover:text-red-100 rounded-lg'><SlDislike className='text-gray-300 hover:text-red-600' /></button>
-
                       </div>
-                    </div>)}
+                    )}
 
                   </div>
 
@@ -638,34 +568,45 @@ function App() {
                 <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2 text-red-500' /> Disliked</div>
 
                   <div className='flex w-full flex-wrap text-center justify-around'>
-                    {disLikedData.map((item) => <div key={item.likeid._id}
-                      className={item.data.ismale === true ? 'relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-french-pass-50 ' :
-                        ' relative p-4  w-full m-2 rounded-lg shadow-md  min-w-fit bg-pastel-pink-50 '}
-                    > <div className='flex justify-center items-center'>
-                        <div className='w-1/2' key={item.data._id}>
-                          {item.data.name}
-                        </div>
-                        <div className='flex flex-wrap justify-around w-1/2'>
-                          {friendDisLikes.length > 0 ?
-                            friendDisLikes.map((friend) => friend.data.map((like) => {
-                              if (like.data._id === item.data._id && friend.email !== userData.email) {
-                                return <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6'>
-                                  <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
-                                </div>
-                              } else {
-                                return <></>
-                              }
-                            })
 
-                            ) : <></>}
-                        </div>
-                        <button onClick={() => handleRevert('revertDislike', item.data._id, item.likeid._id)} className='cursor-pointer hover:text-red-100 rounded-lg'><SlLike className='text-gray-300 hover:text-green-600' /></button>
 
+                    {disLikedData && disLikedData.map((item, index) =>
+                      <div
+                        key={index}
+                        className={item.gender === 'boy' ? 'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-french-pass-50 ' :
+                          'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-pastel-pink-50'}
+                      >
+                        <div className='flex justify-center items-center'>
+                          <div className='w-1/2'>
+                            {item.name}
+                          </div>
+                          <div className='flex flex-wrap justify-center w-1/2'>
+                            {friendDisLikes.length > 0 ?
+                              friendDisLikes.map((friend) => (
+                                friend.data.map(dislike => {
+                                  if (dislike.data.name === item.name && friend.email !== userData.email) {
+                                    return (
+                                      <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6 mr-2 ml-2'>
+                                        <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
+                                      </div>
+                                    );
+                                  } else {
+                                    return null;
+                                  }
+                                })
+                              )) : null}
+                          </div>
+                          <button
+                            onClick={() => handleRevert('revertDislike', item.name)}
+                            className='cursor-pointer hover:text-green-100 rounded-lg'
+                          >
+                            <SlLike className='text-gray-300 hover:text-green-600' />
+                          </button>
+                        </div>
                       </div>
-                    </div>)}
+                    )}
                   </div>
                 </div>
-
               </div>
               :
               <></>
