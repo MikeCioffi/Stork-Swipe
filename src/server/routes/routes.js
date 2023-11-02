@@ -340,24 +340,87 @@ router.get('/listIndex/get/:email', async (req, res) => {
 
 // new post for name | status | gender
 router.post('/name/action/post', jsonParser, async (req, res) => {
-
     console.log("Request body: ", req.body);
     console.log("Request headers: ", req.headers);
-    const ActionData = new Model.NameAction({
-        nameid: req.body.nameid,
-        email: req.body.email,
-        status: req.body.status, // 'liked' or 'disliked'
-        gender: req.body.gender // 'boy' or 'girl'
-    });
+    let responseData;
 
     try {
-        const dataToSave = await ActionData.save();
-        res.status(200).json(dataToSave)
+        // Check if a record already exists
+        let existingAction = await Model.NameAction.findOne({
+            nameid: req.body.nameid,
+            email: req.body.email
+        });
+
+        if (existingAction) {
+            // Update the status if record exists
+            existingAction.status = req.body.status;
+            responseData = await existingAction.save();
+        } else {
+            // Create a new record if none exists
+            const ActionData = new Model.NameAction({
+                nameid: req.body.nameid,
+                email: req.body.email,
+                status: req.body.status, // 'liked' or 'disliked'
+                gender: req.body.gender // 'boy' or 'girl'
+            });
+
+            responseData = await ActionData.save();
+        }
+
+        // Fetch the existing index document for the email
+        let existingIndex = await Model.listIndex.findOne({
+            email: req.body.email
+        });
+
+        // Check if existingIndex is present, if not, create a new one
+        if (!existingIndex) {
+            existingIndex = new Model.listIndex({
+                email: req.body.email,
+                boyIndex: 0,
+                girlIndex: 0
+            });
+        }
+
+        // Increment the appropriate index based on gender
+        if (req.body.gender === 'boy') {
+            existingIndex.boyIndex++;
+        } else if (req.body.gender === 'girl') {
+            existingIndex.girlIndex++;
+        }
+
+        // Save the updated index
+        await existingIndex.save();
+
+        res.status(200).json(responseData);
     }
     catch (error) {
-        res.status(400).json({ message: error.message })
+        res.status(400).json({ message: error.message });
     }
 });
+
+
+// router.post('/name/action/post', jsonParser, async (req, res) => {
+
+//     console.log("Request body: ", req.body);
+//     console.log("Request headers: ", req.headers);
+//     const ActionData = new Model.NameAction({
+//         nameid: req.body.nameid,
+//         email: req.body.email,
+//         status: req.body.status, // 'liked' or 'disliked'
+//         gender: req.body.gender // 'boy' or 'girl'
+//     });
+
+//     try {
+//         const dataToSave = await ActionData.save();
+//         res.status(200).json(dataToSave)
+//     }
+//     catch (error) {
+//         res.status(400).json({ message: error.message })
+//     }
+// });
+
+
+
 router.get('/name/action/all/:email', async (req, res) => {
     try {
         const email = req.params.email;
