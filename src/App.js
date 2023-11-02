@@ -10,6 +10,13 @@ import { CiAirportSign1 } from 'react-icons/ci'
 import { AiOutlineCheckCircle } from 'react-icons/ai'
 import { TbGenderDemigirl, TbGenderMale } from 'react-icons/tb'
 import { SlLike, SlDislike } from 'react-icons/sl'
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useDrag } from 'react-dnd';
+import { useDrop } from 'react-dnd';
+
+
+
 
 
 // 
@@ -107,7 +114,9 @@ function App() {
 
       fetchData();
     }
-  }, [navState])
+  }, [navState, userData.email])
+
+
 
   //depending on list key, it increases the correct nameindex 
 
@@ -169,8 +178,7 @@ function App() {
 
               axios.get(`${apiurl}/user/getOne/${email}`, {})
                 .then(function (userReponse) {
-                  console.log('userResponse')
-                  console.log(userReponse)
+
                   setFriendLikes(prevState => ([...prevState,
                   {
                     "email": email, "url": userReponse.data[0].image_url, "data": response.data
@@ -277,14 +285,14 @@ function App() {
       setGirlList(nameList.filter(val => val.isfemale === true));
       setBoyList(nameList.filter(val => val.ismale === true));
     }
-  }, [nameList, boyList, girlList]);
+  }, [nameList, boyList, girlList, getAllNames]);
 
 
-  useEffect(() => {
-    if (isLoggedIn === true) {
-      getFriends()
-    }
-  }, [getFriends, isLoggedIn])
+  // useEffect(() => {
+  //   if (isLoggedIn === true) {
+  //     getFriends()
+  //   }
+  // }, [getFriends, isLoggedIn])
 
 
   let upperListKey = listKey.toUpperCase()
@@ -388,6 +396,89 @@ function App() {
       });
   };
 
+  const YourDragComponent = ({ listKey, newNameIndex, girlList, boyList }) => {
+    const [, ref] = useDrag({
+      type: 'NAME_CARD', // Matching the accept type in useDrop of LikeZone
+    });
+
+    return (listKey === 'girl' ?
+      <h3 ref={ref} className='text-5xl cursor-pointer'>{girlList[newNameIndex.girlIndex].name}</h3>
+      :
+      <h3 ref={ref} className='text-5xl cursor-pointer'>{boyList[newNameIndex.boyIndex].name}</h3>
+    );
+  };
+
+  const LikeZone = ({ listKey, newNameIndex, girlList, boyList, handleNameAction }) => {
+    // Setting up the Drop zone with a monitor to check if draggable item is over the zone
+    const [{ isOver }, ref] = useDrop(() => ({
+      accept: 'NAME_CARD',
+      drop: () => {
+        // Logic for handling drop event
+        if (listKey === 'girl') {
+          handleNameAction(girlList[newNameIndex.girlIndex]._id, 'like', listKey);
+        } else {
+          handleNameAction(boyList[newNameIndex.boyIndex]._id, 'like', listKey);
+        }
+      },
+      // The collect function allows you to access the monitor instance to check for the isOver state
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(), // Using double-bang to ensure a boolean value
+      }),
+    }), [listKey, newNameIndex, girlList, boyList, handleNameAction]); // dependencies array to re-create the hook if these props change
+
+    // Adding dynamic styling for when the draggable item is over the drop zone
+    const backgroundColor = isOver ? 'bg-green-300' : 'bg-green-100';
+
+    return (
+      <div
+        ref={ref}
+        onClick={() => listKey === 'girl'
+          ? handleNameAction(girlList[newNameIndex.girlIndex]._id, 'like', listKey)
+          : handleNameAction(boyList[newNameIndex.boyIndex]._id, 'like', listKey)}
+        className={`w-1/4 h-full transition-all md:1/12 items-center justify-center hover:bg-green-300 text-green-500 rounded-lg flex flex-col cursor-pointer ${backgroundColor}`}
+      >
+        <SlLike className='text-5xl' />
+      </div>
+    );
+  };
+
+
+  const DislikeZone = ({ listKey, newNameIndex, girlList, boyList, handleNameAction }) => {
+    // Setting up the Drop zone with a monitor to check if draggable item is over the zone
+    const [{ isOver }, ref] = useDrop(() => ({
+      accept: 'NAME_CARD',
+      drop: () => {
+        // Logic for handling drop event
+        if (listKey === 'girl') {
+          handleNameAction(girlList[newNameIndex.girlIndex]._id, 'dislike', listKey);
+        } else {
+          handleNameAction(boyList[newNameIndex.boyIndex]._id, 'dislike', listKey);
+        }
+      },
+      // The collect function allows you to access the monitor instance to check for the isOver state
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(), // Using double-bang to ensure a boolean value
+      }),
+    }), [listKey, newNameIndex, girlList, boyList, handleNameAction]); // dependencies array to re-create the hook if these props change
+
+    // Adding dynamic styling for when the draggable item is over the drop zone
+    const backgroundColor = isOver ? 'bg-red-300' : 'bg-red-100';
+
+    return (
+      <div
+        ref={ref}
+        onClick={() => listKey === 'girl'
+          ? handleNameAction(girlList[newNameIndex.girlIndex]._id, 'dislike', listKey)
+          : handleNameAction(boyList[newNameIndex.boyIndex]._id, 'dislike', listKey)}
+        className={`w-1/4 h-full transition-all md:1/12 items-center justify-center text-red-500 hover:bg-red-300 rounded-lg flex flex-col cursor-pointer ${backgroundColor}`}
+      >
+        <SlDislike className='text-5xl' />
+      </div>
+    );
+  };
+  // Then use YourDragComponent inside DndProvider
+
+
   return (
     <div className="flex h-full w-full items-center flex-col">
       <nav className='flex items-center w-full sm:justify-center justify-around'>
@@ -442,8 +533,11 @@ function App() {
             }}
           /></div> :
         navState === 'Names' && newNameIndex.boyIndex >= 0 && isLoggedIn === true ?
+
+
           <div className="flex flex-col w-full justify-around items-center">
             <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
+
               <button onClick={() => setListKey('boy')} className={listKey === 'boy' ?
                 'p-4 m-4 bg-french-pass-800 rounded-full text-french-pass-50' :
                 'p-4 m-4 bg-french-pass-50 rounded-full text-white hover:bg-french-pass-200'}>
@@ -454,36 +548,42 @@ function App() {
                 <TbGenderDemigirl /></button>
 
             </div>
-            <div className="mt-12 h-48 w-11/12 md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex shadow-md  justify-center flex-row flex-wrap">
-              <button
-                onClick={() => listKey === 'girl' ? handleNameAction(girlList[newNameIndex.girlIndex]._id, 'dislike', listKey) : handleNameAction(boyList[newNameIndex.boyIndex]._id, 'dislike', listKey)}
-                className='w-1/6 md:1/12 items-center justify-center flex flex-col text-red-500 cursor-pointer hover:bg-red-100 rounded-lg'
-              >
-                <SlDislike />
-              </button>
-              <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
-                <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
-                {listKey === 'girl' ?
-                  // show girl names
+            <div className='flex w-3/4  items-center'>
 
-                  <h3 className='text-5xl'>{girlList[newNameIndex.girlIndex].name}</h3>
+              <DndProvider backend={HTML5Backend}>
+                <DislikeZone
 
-                  // show boy names  
-                  : <h3 className='text-5xl'>{boyList[newNameIndex.boyIndex].name}</h3>
+                  listKey={listKey}
+                  newNameIndex={newNameIndex}
+                  girlList={girlList}
+                  boyList={boyList}
+                  handleNameAction={handleNameAction} />
+                <div className="mt-12 h-48 w-11/12 md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex shadow-md  justify-center flex-row flex-wrap">
 
-                }
-                {/* <button onClick={() => handleclick('skip', listKey)} className=''>skip</button> */}
+                  <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
+                    <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
 
-              </div>
-              <button
+                    <YourDragComponent
+                      listKey={listKey}
+                      newNameIndex={newNameIndex}
+                      girlList={girlList}
+                      boyList={boyList}
+                    />
+                  </div>
 
-                onClick={() => listKey === 'girl' ? handleNameAction(girlList[newNameIndex.girlIndex]._id, 'like', listKey) : handleNameAction(boyList[newNameIndex.boyIndex]._id, 'like', listKey)} className='w-1/6 md:1/12 items-center justify-center text-green-500   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><SlLike /></button>
-
-              {/* // handleclick('liked', listKey)} className='w-1/6 md:1/12 items-center justify-center text-green-500   rounded-lg flex flex-col cursor-pointer hover:bg-green-100'><SlLike /></button> */}
+                </div>
+                <LikeZone
+                  listKey={listKey}
+                  newNameIndex={newNameIndex}
+                  girlList={girlList}
+                  boyList={boyList}
+                  handleNameAction={handleNameAction}
+                />
+              </DndProvider>
 
             </div>
-          </div>
 
+          </div>
           : navState === 'Partner' && isLoggedIn === true ?
             // partner container
             <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-md  justify-center  flex-col">
@@ -522,6 +622,7 @@ function App() {
                 </div>
               </div>
             </div>
+
             : navState === 'Matches' ?
               <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-md  justify-center  flex-col sm:flex-row">
                 <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2 text-green-500' /> Liked</div>
