@@ -375,7 +375,7 @@ function App() {
       nameid: nameId,
       status: action,
       email: userData.email,
-      gender,
+      gender: gender,
     })
       .then((response) => {
         console.log(response);
