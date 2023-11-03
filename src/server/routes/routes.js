@@ -397,28 +397,33 @@ router.post('/name/action/post', jsonParser, async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
+router.post('/name/action/toggle', jsonParser, async (req, res) => {
+    console.log("Request body: ", req.body);
+    let responseData;
 
+    try {
+        // Check if a record already exists
+        let existingAction = await Model.NameAction.findOne({
+            nameid: req.body.nameid,
+            email: req.body.email
+        });
 
-// router.post('/name/action/post', jsonParser, async (req, res) => {
+        if (existingAction) {
+            // Update the status if record exists
+            existingAction.status = req.body.status;
+            responseData = await existingAction.save();
+        } else {
+            // If no existing action is found, send an error or handle appropriately
+            res.status(404).json({ message: "Action not found." });
+            return;
+        }
 
-//     console.log("Request body: ", req.body);
-//     console.log("Request headers: ", req.headers);
-//     const ActionData = new Model.NameAction({
-//         nameid: req.body.nameid,
-//         email: req.body.email,
-//         status: req.body.status, // 'liked' or 'disliked'
-//         gender: req.body.gender // 'boy' or 'girl'
-//     });
-
-//     try {
-//         const dataToSave = await ActionData.save();
-//         res.status(200).json(dataToSave)
-//     }
-//     catch (error) {
-//         res.status(400).json({ message: error.message })
-//     }
-// });
-
+        res.status(200).json(responseData);
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
 
 
 router.get('/name/action/all/:email', async (req, res) => {
