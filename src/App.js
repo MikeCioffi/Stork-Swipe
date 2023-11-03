@@ -1,5 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+// components
+import NamesSection from './components/NameSection/NameSection';
+
 import './App.css';
 // icons
 import { FcCheckmark } from 'react-icons/fc';
@@ -115,9 +118,9 @@ function App() {
   }, [apiurl, userData.email, setLikedData, setDisLikedData])
 
   useEffect(() => {
-    if (navState === "Matches") {
-      updateLikedDislikedData();
-    }
+
+    updateLikedDislikedData();
+
   }, [updateLikedDislikedData, navState, userData.email])
 
 
@@ -577,91 +580,30 @@ function App() {
             </div>
 
             : navState === 'Matches' ?
-              <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-md  justify-center  flex-col sm:flex-row">
-                <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlLike className='mr-2 text-green-500' /> Liked</div>
-                  <div className='flex w-full flex-wrap text-center justify-  '>
-                    {likedData && likedData.map((item, index) =>
-                      <div
-                        key={index}
-                        className={item.gender === 'boy' ? 'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-french-pass-50 ' :
-                          'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-pastel-pink-50'}
-                      >
-                        <div className='flex justify-center items-center'>
-                          <div className='w-1/2'>
-                            {item.name}
-                          </div>
-                          <div className='flex flex-wrap justify-center w-1/2'>
-                            {friendLikes.length > 0 ?
-                              friendLikes.map((friend) => (
-                                friend.data.map(like => {
-                                  if (like === item.name && friend.email !== userData.email) {
-                                    return (
-                                      <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6 mr-2 ml-2'>
-                                        <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
-                                      </div>
-                                    );
-                                  } else {
-                                    return null;
-                                  }
-                                })
-                              )) : null}
-                          </div>
-                          <button
-                            onClick={() => toggleActionStatus(item.nameid, 'dislike')}
-                            className='cursor-pointer hover:text-red-100 rounded-lg'
-                          >
-                            <SlDislike className='text-gray-300 hover:text-red-600' />
-                          </button>
-                        </div>
-                      </div>
-                    )}
+              <div className="flex-col mt-12 min-h-1/4 w-full rounded-lg flex  shadow-md justify-center ">
 
-                  </div>
+                <NamesSection
+                  title="Liked"
+                  data={likedData}
+                  friendsData={friendLikes}
+                  toggleAction={toggleActionStatus}
+                  actionType="dislike"
+                  icon={<SlLike className='mr-2 text-green-500' />}
+                  userData={userData}
+                />
 
-                </div>
-                <div className='w-full sm:w-1/2 flex justify-start items-center flex-col'> <div className='flex items-center'><SlDislike className='mr-2 text-red-500' /> Disliked</div>
+                <NamesSection
+                  title="Disliked"
+                  data={disLikedData}
+                  friendsData={friendDisLikes}
+                  toggleAction={toggleActionStatus}
+                  actionType="like"
+                  icon={<SlDislike className='mr-2 text-red-500' />}
+                  userData={userData}
+                />
 
-                  <div className='flex w-full flex-wrap text-center justify-around'>
-
-
-                    {disLikedData && disLikedData.map((item, index) =>
-                      <div
-                        key={index}
-                        className={item.gender === 'boy' ? 'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-french-pass-50 ' :
-                          'relative p-4 w-full m-2 rounded-lg shadow-md min-w-fit bg-pastel-pink-50'}
-                      >
-                        <div className='flex justify-center items-center'>
-                          <div className='w-1/2'>
-                            {item.name}
-                          </div>
-                          <div className='flex flex-wrap justify-center w-1/2'>
-                            {friendDisLikes.length > 0 ?
-                              friendDisLikes.map((friend) => (
-                                friend.data.map(dislike => {
-                                  if (dislike === item.name && friend.email !== userData.email) {
-                                    return (
-                                      <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6 mr-2 ml-2'>
-                                        <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
-                                      </div>
-                                    );
-                                  } else {
-                                    return null;
-                                  }
-                                })
-                              )) : null}
-                          </div>
-                          <button
-                            onClick={() => toggleActionStatus(item.nameid, 'like')}
-                            className='cursor-pointer hover:text-green-100 rounded-lg'
-                          >
-                            <SlLike className='text-gray-300 hover:text-green-600' />
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
               </div>
+
               :
               <></>
       }
