@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+
 import './App.css';
 // icons
 import { FcCheckmark } from 'react-icons/fc';
@@ -14,16 +15,8 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useDrag } from 'react-dnd';
 import { useDrop } from 'react-dnd';
-
-
-
-
-
-// 
 import { GoogleLogin } from '@react-oauth/google';
 import axios from "axios"
-
-
 
 // Be able to find partners
 // show matching matching partners
@@ -85,36 +78,46 @@ function App() {
       })
   }, [userData.email])
 
-  useEffect(() => {
-    if (navState === "Matches") {
-      const fetchData = async () => {
-        const result = await axios(`${apiurl}/name/action/all/${userData.email}`);
-        const rawActions = result.data;
-        let likedNames = [];
-        let dislikedNames = [];
-        rawActions.forEach(action => {
-          const actionInfo = {
-            name: action.nameid.name,
-            gender: action.gender
-          };
 
-          if (action.status === 'like') {
-            likedNames.push(actionInfo);
-          } else if (action.status === 'dislike') {
-            dislikedNames.push(actionInfo);
-          }
-        });
-
-        likedNames.sort((a, b) => a.name.localeCompare(b.name));
-        dislikedNames.sort((a, b) => a.name.localeCompare(b.name));
-
-        setLikedData(likedNames);
-        setDisLikedData(dislikedNames);
+  const updateLikedDislikedData = useCallback(async () => {
+    const result = await axios(`${apiurl}/name/action/all/${userData.email}`);
+    const rawActions = result.data;
+    let updatedLikedNames = [];
+    let updatedDislikedNames = [];
+    rawActions.forEach(action => {
+      const actionInfo = {
+        name: action.nameid.name,
+        nameid: action.nameid._id,
+        gender: action.gender
       };
 
-      fetchData();
+      if (action.status === 'like') {
+        updatedLikedNames.push(actionInfo);
+      } else if (action.status === 'dislike') {
+        updatedDislikedNames.push(actionInfo);
+      }
+    });
+
+    // Sort first by gender, then by name
+    const sortByGenderAndName = (a, b) => {
+      if (a.gender < b.gender) return -1;
+      if (a.gender > b.gender) return 1;
+      return a.name.localeCompare(b.name);
+    };
+
+    updatedLikedNames.sort(sortByGenderAndName);
+    updatedDislikedNames.sort(sortByGenderAndName);
+
+    setLikedData(updatedLikedNames);
+    setDisLikedData(updatedDislikedNames);
+  }, [apiurl, userData.email, setLikedData, setDisLikedData])
+
+  useEffect(() => {
+    if (navState === "Matches") {
+      updateLikedDislikedData();
     }
-  }, [navState, userData.email])
+  }, [updateLikedDislikedData, navState, userData.email])
+
 
 
 
@@ -288,11 +291,11 @@ function App() {
   }, [nameList, boyList, girlList, getAllNames]);
 
 
-  // useEffect(() => {
-  //   if (isLoggedIn === true) {
-  //     getFriends()
-  //   }
-  // }, [getFriends, isLoggedIn])
+  useEffect(() => {
+    if (isLoggedIn === true) {
+      getFriends()
+    }
+  }, [getFriends, isLoggedIn])
 
 
   let upperListKey = listKey.toUpperCase()
@@ -306,65 +309,30 @@ function App() {
 
     return JSON.parse(jsonPayload);
   };
-  const handleRevert = async (type, nameid, likeid) => {
 
-    const removeLike = async (deleteID) => {
-      await axios
-        .delete(`${apiurl}/name/like/delete/${deleteID}`)
-        .then(function (response) {
-          // getLikedNames()
-          console.log(response)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    }
 
-    const removeDisLike = async (deleteID) => {
-      await axios
-        .delete(`${apiurl}/name/dislike/delete/${deleteID}`)
-        .then(function (response) {
-          //           getDisLikedNames()
-          console.log(response)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    }
+  const toggleActionStatus = async (nameid, newStatus) => {
+    console.log(nameid)
+    try {
+      const response = await axios.post(`${apiurl}/name/action/toggle`, {
+        nameid: nameid,
+        email: userData.email,
+        status: newStatus // 'like' or 'dislike'
+      });
 
-    if (type === 'revertLike') {
-      // first remove the like, then add a dislike
-      removeLike(likeid)
-      await axios
-        .post(`${apiurl}/name/dislike/post`, {
-          nameid: nameid,
-          email: userData.email,
-        })
-        .then(function (response) {
-          // getLikedNames()
-          //           getDisLikedNames()
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    }
-    if (type === 'revertDislike') {
-      // first remove the like, then add a dislike
-      removeDisLike(likeid)
-      await axios
-        .post(`${apiurl}/name/like/post`, {
-          nameid: nameid,
-          email: userData.email,
-        })
-        .then(function (response) {
-          // getLikedNames()
-          // //           getDisLikedNames()
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      updateLikedDislikedData();
+
+      // Assuming you want to refresh the likes/dislikes lists after toggling
+      // You can call the function that fetches those lists here
+      // For example: fetchData(); if fetchData is the function that gets the likes and dislikes.
+
+      console.log("Toggle Response:", response);
+    } catch (error) {
+      console.log("Error toggling action:", error);
     }
   }
+
+
 
   const handleNameAction = async (nameId, action, gender) => {
     // action is either 'like' or 'dislike'
@@ -558,7 +526,7 @@ function App() {
                   girlList={girlList}
                   boyList={boyList}
                   handleNameAction={handleNameAction} />
-                <div className="mt-12 h-48 w-11/12 md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex shadow-md  justify-center flex-row flex-wrap">
+                <div className="md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex justify-center flex-row flex-wrap">
 
                   <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
                     <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
@@ -654,7 +622,7 @@ function App() {
                               )) : null}
                           </div>
                           <button
-                            onClick={() => handleRevert('revertLike', item.name)}
+                            onClick={() => toggleActionStatus(item.nameid, 'dislike')}
                             className='cursor-pointer hover:text-red-100 rounded-lg'
                           >
                             <SlDislike className='text-gray-300 hover:text-red-600' />
@@ -698,7 +666,7 @@ function App() {
                               )) : null}
                           </div>
                           <button
-                            onClick={() => handleRevert('revertDislike', item.name)}
+                            onClick={() => toggleActionStatus(item.nameid, 'like')}
                             className='cursor-pointer hover:text-green-100 rounded-lg'
                           >
                             <SlLike className='text-gray-300 hover:text-green-600' />
