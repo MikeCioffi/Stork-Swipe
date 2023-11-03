@@ -501,7 +501,7 @@ function App() {
                 <TbGenderDemigirl /></button>
 
             </div>
-            <div className='flex w-3/4  items-center'>
+            <div className='flex md:w-3/4 w-full mt-5 justify-around items-center'>
 
               <DndProvider backend={HTML5Backend}>
                 <DislikeZone
