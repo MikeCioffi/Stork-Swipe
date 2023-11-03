@@ -23,6 +23,20 @@ router.all('*', function (req, res, next) {
 });
 
 
+// get all friends for a given user
+router.get('/getFriendsByUser/:userEmail', async (req, res) => {
+    const userEmail = req.params.userEmail;
+
+    try {
+        const friends = await Model.Friend.find({
+            $or: [{ email: userEmail }, { friend_email: userEmail }]
+        });
+
+        res.status(200).send(friends);
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+});
 //Post Method to create new NAME in DB
 router.post('/name/post', jsonParser, async (req, res) => {
     const listData = new Model.nameData({

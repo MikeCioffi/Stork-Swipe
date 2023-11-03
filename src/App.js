@@ -46,6 +46,8 @@ function App() {
   })
   const [friendLikes, setFriendLikes] = useState([])
   const [friendDisLikes, setFriendDisLikes] = useState([])
+  console.log(friendLikes)
+
 
   const resetUser = () => {
     setFriendLikes([])
@@ -167,65 +169,48 @@ function App() {
 
 
   const getFriends = useCallback(async () => {
-    setFriendDisLikes([])
-    setFriendLikes([])
+    setFriendDisLikes([]);
+    setFriendLikes([]);
 
-    await axios
-      .get(`${apiurl}/friend/getOne/${userData.email}`, {})
-      .then(function (response) {
-        // need to populate friend liked names
-        const getFriendsNames = (async (email) => {
-          await axios
-            .get(`${apiurl}/name/like/getbyemail/${email}`, {})
-            .then(function (response) {
+    try {
+      // Get all friends using the new route
+      const friendsResponse = await axios.get(`${apiurl}/getFriendsByUser/${userData.email}`);
 
-              axios.get(`${apiurl}/user/getOne/${email}`, {})
-                .then(function (userReponse) {
+      const getFriendsNames = async (email) => {
+        const actionResponse = await axios.get(`${apiurl}/name/action/all/${email}`);
 
-                  setFriendLikes(prevState => ([...prevState,
-                  {
-                    "email": email, "url": userReponse.data[0].image_url, "data": response.data
-                  }]))
-                })
-            })
-          await axios
-            .get(`${apiurl}/name/dislike/getbyemail/${email}`, {})
-            .then(function (response) {
-              axios.get(`${apiurl}/user/getOne/${email}`, {})
-                .then(function (userReponse) {
-                  setFriendDisLikes(prevState => ([...prevState,
-                  {
-                    "email": email, "url": userReponse.data[0].image_url, "data": response.data
-                  }]))
-                })
+        const likes = actionResponse.data.filter(action => action.status === 'like').map(action => action.nameid.name);
+        const dislikes = actionResponse.data.filter(action => action.status === 'dislike').map(action => action.nameid.name);
 
+        const userResponse = await axios.get(`${apiurl}/user/getOne/${email}`);
 
-            })
+        setFriendLikes(prevState => ([...prevState, {
+          "email": email,
+          "url": userResponse.data[0].image_url,
+          "data": likes
+        }]));
 
+        setFriendDisLikes(prevState => ([...prevState, {
+          "email": email,
+          "url": userResponse.data[0].image_url,
+          "data": dislikes
+        }]));
+      };
 
-        })
+      // Loop through each friend and get their names
+      friendsResponse.data.forEach((friend) => {
+        if (friend.status === 'accepted') {
+          const email = friend.email === userData.email ? friend.friend_email : friend.email;
+          getFriendsNames(email);
+        }
+      });
 
-        response.data.map((res) => {
+      setFriends(friendsResponse.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [userData.email]);
 
-          if (res.friend_email === userData.email && res.status === 'accepted') {
-
-            return getFriendsNames(res.email)
-          }
-
-          else if (res.status === 'accepted') {
-
-            return getFriendsNames(res.friend_email)
-          }
-          else return null
-
-
-        })
-        setFriends(response.data)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  }, [userData.email])
 
 
   const sendFriendRequest = async () => {
@@ -609,7 +594,7 @@ function App() {
                             {friendLikes.length > 0 ?
                               friendLikes.map((friend) => (
                                 friend.data.map(like => {
-                                  if (like.data.name === item.name && friend.email !== userData.email) {
+                                  if (like === item.name && friend.email !== userData.email) {
                                     return (
                                       <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6 mr-2 ml-2'>
                                         <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
@@ -653,7 +638,7 @@ function App() {
                             {friendDisLikes.length > 0 ?
                               friendDisLikes.map((friend) => (
                                 friend.data.map(dislike => {
-                                  if (dislike.data.name === item.name && friend.email !== userData.email) {
+                                  if (dislike === item.name && friend.email !== userData.email) {
                                     return (
                                       <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6 mr-2 ml-2'>
                                         <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
