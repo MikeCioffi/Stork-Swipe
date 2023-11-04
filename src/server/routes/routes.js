@@ -210,9 +210,13 @@ router.post('/user/post', jsonParser, async (req, res) => {
 //Get a user by their email
 router.get('/user/getOne/:email', async (req, res) => {
 
+
     const email = req.params;
     try {
         const data = await Model.User.find(email);
+        console.log('userResponse')
+        console.log(data)
+
         res.json(data)
     }
     catch (error) {

@@ -1,25 +1,24 @@
 import React from 'react';
-import { SlLike, SlDislike } from 'react-icons/sl'
+import { FaHeart, FaHeartBroken } from 'react-icons/fa';
 
-const NameCard = ({ item, actionType, friendActions, toggleActionStatus, userData }) => {
+const NameCard = ({ namekey, item, actionType, friendActions, toggleActionStatus, userData }) => {
     return (item &&
-        <div
-            className={
-                item.gender === 'boy'
-                    ? 'relative xs:p-6 w-full p-10 lg:w-1/4 m-2 rounded-lg min-w-fit border-4 bg-french-pass-50 border-french-pass-200 '
-                    : 'relative xs:p-6 w-full p-10 lg:w-1/4 m-2 rounded-lg min-w-fit border-4 bg-pastel-pink-50'
-            }
+        <div key={namekey}
+            className={`flex min-h-fit w-full p-3 md:w-1/6 m-2 rounded-full border-8 ${item.gender === 'boy'
+                ? 'bg-french-pass-50 border-french-pass-600'
+                : 'bg-pastel-pink-50 border-pastel-pink-600'
+                } overflow-hidden`} // Adjusted for overflow and removed fixed heights
         >
-            <div className='flex justify-center items-center'>
-                <div className='w-1/2 text-2xl '>{item.name}</div>
-                <div className='flex flex-wrap justify-center w-1/2'>
+            <div className='flex w-full justify-around items-center'> {/* Added padding */}
+                <div className='w-1/2 text-2xl flex justify-center'>{item.name}</div>
+                <div className='w-1/5 flex justify-around'>
                     {friendActions && friendActions.length > 0
                         ? friendActions.map((friend) =>
                             friend.data.map(action => {
                                 if (action === item.name && friend.email !== userData.email) {
                                     return (
-                                        <div className='flex justify-center items-center bg-gray-50 opacity-100 text-gray-500 rounded-full h-6 w-6 mr-2 ml-2'>
-                                            <img src={friend.url} alt={friend.email} className='rounded-full shadow-md' />
+                                        <div key={friend.email} className='flex justify-center items-center '> {/* Added key */}
+                                            <img className='h-6 w-6 rounded-full' src={friend.url} alt={friend.email} />
                                         </div>
                                     );
                                 }
@@ -28,16 +27,22 @@ const NameCard = ({ item, actionType, friendActions, toggleActionStatus, userDat
                         )
                         : null}
                 </div>
-                <button
-                    onClick={() => toggleActionStatus(item.nameid, actionType)}
-                    className={`cursor-pointer  rounded-lg`}
-                >
-                    {actionType === 'dislike' ? (
-                        <SlDislike className='text-gray-300 text-2xl  hover:text-red-600' />
-                    ) : (
-                        <SlLike className='text-gray-300 hover:text-green-600' />
-                    )}
-                </button>
+                <div className='w-1/4 flex justify-around'>
+                    <button
+                        onClick={() => toggleActionStatus(item.nameid, actionType)}
+                        className={`cursor-pointer  rounded-lg`}
+                    >
+                        {actionType === 'dislike' ? (
+                            <FaHeartBroken className='text-red-300 text-2xl hover:text-red-600' />
+
+                        ) : (
+                            <FaHeart className='text-red-300 text-2xl  hover:text-red-600' />
+
+                        )}
+                    </button>
+                </div>
+
+
             </div>
         </div>
     );

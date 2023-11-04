@@ -2,23 +2,23 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 // components
 import NamesSection from './components/NameSection/NameSection';
+import NavBar from './components/NavBar/NavBar'; // Adjust the path according to your file structure
+
+// buttons
+
+// pages
+import LoginPage from './components/Pages/Login'
+import NamesPage from './components/Pages/NamePage';
 
 import './App.css';
 // icons
 import { FcCheckmark } from 'react-icons/fc';
-import { FaBabyCarriage } from 'react-icons/fa';
-import { BsFillPersonFill, BsSearch } from 'react-icons/bs'
-import { RiCheckboxMultipleLine } from 'react-icons/ri'
+import { BsSearch } from 'react-icons/bs'
 import { MdOutlineCancel } from 'react-icons/md'
 import { CiAirportSign1 } from 'react-icons/ci'
 import { AiOutlineCheckCircle } from 'react-icons/ai'
-import { TbGenderDemigirl, TbGenderMale } from 'react-icons/tb'
 import { SlLike, SlDislike } from 'react-icons/sl'
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useDrag } from 'react-dnd';
-import { useDrop } from 'react-dnd';
-import { GoogleLogin } from '@react-oauth/google';
+
 import axios from "axios"
 
 // Be able to find partners
@@ -190,12 +190,15 @@ function App() {
         setFriendLikes(prevState => ([...prevState, {
           "email": email,
           "url": userResponse.data[0].image_url,
+          "name": userResponse.data[0].first_name + ' ' + userResponse.data[0].last_name,
           "data": likes
         }]));
 
         setFriendDisLikes(prevState => ([...prevState, {
           "email": email,
           "url": userResponse.data[0].image_url,
+          "name": userResponse.data[0].first_name + ' ' + userResponse.data[0].last_name,
+
           "data": dislikes
         }]));
       };
@@ -285,20 +288,6 @@ function App() {
     }
   }, [getFriends, isLoggedIn])
 
-
-  let upperListKey = listKey.toUpperCase()
-
-  function parseJwt(token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
-  };
-
-
   const toggleActionStatus = async (nameid, newStatus) => {
     console.log(nameid)
     try {
@@ -352,194 +341,30 @@ function App() {
       });
   };
 
-  const YourDragComponent = ({ listKey, newNameIndex, girlList, boyList }) => {
-    const [, ref] = useDrag({
-      type: 'NAME_CARD', // Matching the accept type in useDrop of LikeZone
-    });
-
-    return (listKey === 'girl' ?
-      <h3 ref={ref} className='text-5xl cursor-pointer'>{girlList[newNameIndex.girlIndex].name}</h3>
-      :
-      <h3 ref={ref} className='text-5xl cursor-pointer'>{boyList[newNameIndex.boyIndex].name}</h3>
-    );
-  };
-
-  const LikeZone = ({ listKey, newNameIndex, girlList, boyList, handleNameAction }) => {
-    // Setting up the Drop zone with a monitor to check if draggable item is over the zone
-    const [{ isOver }, ref] = useDrop(() => ({
-      accept: 'NAME_CARD',
-      drop: () => {
-        // Logic for handling drop event
-        if (listKey === 'girl') {
-          handleNameAction(girlList[newNameIndex.girlIndex]._id, 'like', listKey);
-        } else {
-          handleNameAction(boyList[newNameIndex.boyIndex]._id, 'like', listKey);
-        }
-      },
-      // The collect function allows you to access the monitor instance to check for the isOver state
-      collect: (monitor) => ({
-        isOver: !!monitor.isOver(), // Using double-bang to ensure a boolean value
-      }),
-    }), [listKey, newNameIndex, girlList, boyList, handleNameAction]); // dependencies array to re-create the hook if these props change
-
-    // Adding dynamic styling for when the draggable item is over the drop zone
-    const backgroundColor = isOver ? 'bg-green-300' : 'bg-green-100';
-
-    return (
-      <div
-        ref={ref}
-        onClick={() => listKey === 'girl'
-          ? handleNameAction(girlList[newNameIndex.girlIndex]._id, 'like', listKey)
-          : handleNameAction(boyList[newNameIndex.boyIndex]._id, 'like', listKey)}
-        className={`w-1/4 h-full transition-all md:1/12 items-center justify-center hover:bg-green-300 text-green-500 rounded-lg flex flex-col cursor-pointer ${backgroundColor}`}
-      >
-        <SlLike className='text-5xl' />
-      </div>
-    );
-  };
-
-
-  const DislikeZone = ({ listKey, newNameIndex, girlList, boyList, handleNameAction }) => {
-    // Setting up the Drop zone with a monitor to check if draggable item is over the zone
-    const [{ isOver }, ref] = useDrop(() => ({
-      accept: 'NAME_CARD',
-      drop: () => {
-        // Logic for handling drop event
-        if (listKey === 'girl') {
-          handleNameAction(girlList[newNameIndex.girlIndex]._id, 'dislike', listKey);
-        } else {
-          handleNameAction(boyList[newNameIndex.boyIndex]._id, 'dislike', listKey);
-        }
-      },
-      // The collect function allows you to access the monitor instance to check for the isOver state
-      collect: (monitor) => ({
-        isOver: !!monitor.isOver(), // Using double-bang to ensure a boolean value
-      }),
-    }), [listKey, newNameIndex, girlList, boyList, handleNameAction]); // dependencies array to re-create the hook if these props change
-
-    // Adding dynamic styling for when the draggable item is over the drop zone
-    const backgroundColor = isOver ? 'bg-red-300' : 'bg-red-100';
-
-    return (
-      <div
-        ref={ref}
-        onClick={() => listKey === 'girl'
-          ? handleNameAction(girlList[newNameIndex.girlIndex]._id, 'dislike', listKey)
-          : handleNameAction(boyList[newNameIndex.boyIndex]._id, 'dislike', listKey)}
-        className={`w-1/4 h-full transition-all md:1/12 items-center justify-center text-red-500 hover:bg-red-300 rounded-lg flex flex-col cursor-pointer ${backgroundColor}`}
-      >
-        <SlDislike className='text-5xl' />
-      </div>
-    );
-  };
-  // Then use YourDragComponent inside DndProvider
-
 
   return (
     <div className="flex h-full w-full items-center flex-col">
-      <nav className='flex items-center w-full sm:justify-center justify-around'>
-
-        <div onClick={() => setNavState('Names')} className={navState === 'Names' ?
-          'flex flex-col sm:flex-row items-center p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
-          : 'flex  flex-col sm:flex-row items-center p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
-          <FaBabyCarriage /> <button className='ml-2'>Names</button> </div>
-        <div onClick={() => setNavState('Partner')} className={navState === 'Partner' ?
-          'flex flex-col sm:flex-row items-center p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
-          : 'flex flex-col sm:flex-row items-center p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50 '}>
-          <BsFillPersonFill /><button className='ml-2'>Partners</button></div>
-        <div onClick={() => setNavState('Matches')} className={navState === 'Matches' ?
-          'flex flex-col sm:flex-row items-center  p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-gray-300'
-          : 'flex flex-col sm:flex-row items-center  p-2  md:mr-4 md:p-4 cursor-pointer border-b-2 border-transparent rounded-lg hover:bg-gray-50'}>
-          <RiCheckboxMultipleLine /><button className='ml-2'>Matches</button>
-        </div>
-        {userData.email.length > 0 ?
-          <div onClick={() => resetUser()} className='flex flex-col sm:flex-row items-center p-2   md:p-4 cursor-pointer  rounded-lg hover:bg-gray-50'>
-            <button className='flex flex-col sm:flex-row items-center justify-center'>
-              <img src={userData.image_url} referrerPolicy="no-referrer" alt="user's google profile" className='rounded-full mr-2 h-4 w-4 sm:h-6 sm:w-6'></img>
-              <span>Sign Out</span></button>  <></>
-          </div>
-          :
-          <>
-          </>
-        }
-      </nav >
+      <NavBar navState={navState} setNavState={setNavState} userData={userData} resetUser={resetUser} />
 
       {isLoggedIn === false ?
-        <div className="mt-12 h-1/4 w-11/12 md:w-1/2 rounded-lg xl:w-1/2 flex shadow-md  justify-center items-center flex-col flex-wrap">
-          <h3 className='mb-4 p-4 text-center'>Please login with your google account to decide on your favorite names!</h3>
-
-          <GoogleLogin auto_select
-            onSuccess={credentialResponse => {
-
-              let tempUserData = parseJwt(credentialResponse.credential)
-              setUserData({
-                "email": tempUserData.email,
-                "first_name": tempUserData.given_name,
-                "last_name": tempUserData.family_name,
-                "image_url": tempUserData.picture
-              })
-              getListIndexs(tempUserData.email)
-              setIsLoggedIn(true)
-                ;
+        <LoginPage
+          setUserData={setUserData}
+          getListIndexs={getListIndexs}
+          setIsLoggedIn={setIsLoggedIn}
+        /> :
 
 
-            }}
-            onError={() => {
-              console.log('Login Failed');
-            }}
-          /></div> :
         navState === 'Names' && newNameIndex.boyIndex >= 0 && isLoggedIn === true ?
+          <NamesPage
+            setListKey={setListKey}
+            listKey={listKey}
+            newNameIndex={newNameIndex}
+            girlList={girlList}
+            boyList={boyList}
+            handleNameAction={handleNameAction} />
 
 
-          <div className="flex flex-col w-full justify-around items-center">
-            <div className='flex w-full justify-center m-auto border-b-2 border-gray-100'>
 
-              <button onClick={() => setListKey('boy')} className={listKey === 'boy' ?
-                'p-4 m-4 bg-french-pass-800 rounded-full text-french-pass-50' :
-                'p-4 m-4 bg-french-pass-50 rounded-full text-white hover:bg-french-pass-200'}>
-                <TbGenderMale /></button>
-              <button onClick={() => setListKey('girl')} className={listKey === 'girl' ?
-                'p-4 m-4  bg-pastel-pink-300 rounded-full text-white' :
-                'p-4 m-4  bg-pastel-pink-100 rounded-full text-white hover:bg-pastel-pink-200'} >
-                <TbGenderDemigirl /></button>
-
-            </div>
-            <div className='flex md:w-3/4 w-full mt-5 justify-around items-center'>
-
-              <DndProvider backend={HTML5Backend}>
-                <DislikeZone
-
-                  listKey={listKey}
-                  newNameIndex={newNameIndex}
-                  girlList={girlList}
-                  boyList={boyList}
-                  handleNameAction={handleNameAction} />
-                <div className="md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex justify-center flex-row flex-wrap">
-
-                  <div className='w-2/3 md:10/12 justify-center items-center flex flex-col'>
-                    <h2 className='-mt-4 text-xs'>{upperListKey} NAME</h2>
-
-                    <YourDragComponent
-                      listKey={listKey}
-                      newNameIndex={newNameIndex}
-                      girlList={girlList}
-                      boyList={boyList}
-                    />
-                  </div>
-
-                </div>
-                <LikeZone
-                  listKey={listKey}
-                  newNameIndex={newNameIndex}
-                  girlList={girlList}
-                  boyList={boyList}
-                  handleNameAction={handleNameAction}
-                />
-              </DndProvider>
-
-            </div>
-
-          </div>
           : navState === 'Partner' && isLoggedIn === true ?
             // partner container
             <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-md  justify-center  flex-col">
@@ -580,7 +405,7 @@ function App() {
             </div>
 
             : navState === 'Matches' ?
-              <div className="flex-col mt-12 min-h-1/4 w-full rounded-lg flex  shadow-md justify-center ">
+              <div className="m-2 w-5/6 rounded-xl border-4 border-gray-400  bg-gray-50 flex-col min-h-1/4 flex   justify-center ">
 
                 <NamesSection
                   title="Liked"
