@@ -118,46 +118,6 @@ function App() {
 
 
 
-  const matchUser = async () => {
-    if (userData.email !== undefined)
-      if (userData.email.length > 0) {
-        await axios
-          .get(`${apiurl}/user/getOne/${userData.email}`, {
-          })
-          .then(function (response) {
-            if ((response.data.length === 0)) {
-              createUser()
-            }
-
-          })
-
-          .catch(function (error) {
-            console.log(error)
-          })
-      }
-  }
-
-  const createUser = async () => {
-    await axios
-      .post(`${apiurl}/user/post/`, {
-        email: userData.email,
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        image_url: userData.image_url
-      })
-      .then(function (response) {
-        console.log(response)
-        axios.post(`${apiurl}/listIndex/create/${userData.email}`)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  }
-
-  if (userData.email !== undefined) {
-    matchUser()
-  }
-
 
 
 
