@@ -1,7 +1,8 @@
 import React from 'react';
 import NameCard from '../NameCard/NameCard';
 
-const NamesSection = ({ title, data, friendsData, actionType, toggleAction, icon, userData }) => {
+const NamesSection = ({ title, data, friendsData, actionType, toggleActionStatus, userData }) => {
+
 
     return (data &&
         <div className="min-h-1/4 w-full  items-center m-auto p-5 rounded-md flex  justify-center flex-col mb-10">
@@ -15,7 +16,7 @@ const NamesSection = ({ title, data, friendsData, actionType, toggleAction, icon
                         item={item}
                         actionType={actionType}
                         friendActions={friendsData}
-                        toggleActionStatus={toggleAction}
+                        toggleActionStatus={toggleActionStatus}
                         userData={userData}
                     />
                 ))}

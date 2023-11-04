@@ -1,0 +1,59 @@
+import React from 'react';
+import { BsSearch } from 'react-icons/bs';
+import { CiAirportSign1 } from 'react-icons/ci';
+import { AiOutlineCheckCircle } from 'react-icons/ai';
+import { FcCheckmark } from 'react-icons/fc';
+import { MdOutlineCancel } from 'react-icons/md';
+
+const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendRequest, friends, userData, acceptFriend, deleteFriend }) => {
+    if (!isLoggedIn) return null;
+
+    return (
+        <div className="m-2 p-5 w-5/6 rounded-xl border-4 border-gray-400  bg-gray-50 flex-col min-h-1/4 flex   justify-center ">
+            <div className='border-b-2 border-gray-100 p-4 w-full'>
+                <div className='flex flex-col jusify-center items-center m-auto'>
+                    <h4 className='text-3xl font-bold  border-b-8 border-gray-20 w-full text-center p-5'>Send an Invite</h4>
+                    <div className="flex justify-center items-center  w-full p-5  text-center text-gray-500 ">
+                        <BsSearch className='mr-2 text-3xl font-bold' />
+                        <input
+                            value={friendEmail}
+                            onChange={e => setFriendEmail(e.target.value)}
+                            placeholder='ENTER AN EMAIL'
+                            className='w-full lg:w-1/4 p-4 outline-none rounded-xl  border-4 border-gray-500' type='email'
+                        />
+                        <button
+                            type='submit'
+                            onClick={sendFriendRequest}
+                            className='ml-2 p-2 pt-4 pb-4 md:p-4 rounded-xl cursor-pointer hover:bg-gray-200 border-4 border-gray-500 '>
+                            SEND
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div className='w-full p-5'>
+                <div className='flex flex-col justify-center items-center'>
+                    <h4 className='text-xl md:text-4xl font-bold p-5  border-b-8 border-gray-20 text-center w-full'>Partners</h4>
+                    <div className='flex w-full justify-center items-center flex-wrap  '>
+                        {friends.map((friend) => (
+                            <React.Fragment key={friend._id}>
+                                <div className='p-5 m-5   border-4 border-gray-500 rounded-xl flex items-center '>
+
+                                    {friend.status === 'sent' ?
+                                        <div className='mr-2 text-xl md:text-4xl'><CiAirportSign1 className='text-yellow-500' /></div> :
+                                        <div className='mr-2 text-xl md:text-4xl'><AiOutlineCheckCircle className='text-green-500' /></div>}
+                                    <div className='flex-grow text-xl md:text-4xl'>{friend.friend_email === userData.email ? friend.email : friend.friend_email}</div>
+                                    {friend.status === 'sent' && friend.friend_email === userData.email ?
+                                        <FcCheckmark onClick={() => acceptFriend(friend._id)} className='text-green-400 mr-2 text-4xl hover:text-green-800 cursor-pointer' /> : null
+                                    }
+                                    <MdOutlineCancel onClick={() => deleteFriend(friend._id)} className='text-red-400 hover:text-red-800 text-4xl cursor-pointer' />
+                                </div>
+                            </React.Fragment>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default PartnerPage;

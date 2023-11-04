@@ -22,3 +22,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+  {
+  @apply transition-opacity duration-300 ease-in-out;
+
+}

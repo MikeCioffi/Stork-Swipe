@@ -2,6 +2,7 @@ import React from 'react';
 import { FaHeart, FaHeartBroken } from 'react-icons/fa';
 
 const NameCard = ({ namekey, item, actionType, friendActions, toggleActionStatus, userData }) => {
+
     return (item &&
         <div key={namekey}
             className={`flex min-h-fit w-full p-3 md:w-1/6 m-2 rounded-full border-8 ${item.gender === 'boy'

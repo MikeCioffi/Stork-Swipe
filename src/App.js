@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 // components
-import NamesSection from './components/NameSection/NameSection';
 import NavBar from './components/NavBar/NavBar'; // Adjust the path according to your file structure
 
 // buttons
@@ -9,15 +8,12 @@ import NavBar from './components/NavBar/NavBar'; // Adjust the path according to
 // pages
 import LoginPage from './components/Pages/Login'
 import NamesPage from './components/Pages/NamePage';
+import PartnerPage from './components/Pages/PartnerPage';
+import MatchesPage from './components/Pages/MatchesPage';
 
 import './App.css';
 // icons
-import { FcCheckmark } from 'react-icons/fc';
-import { BsSearch } from 'react-icons/bs'
-import { MdOutlineCancel } from 'react-icons/md'
-import { CiAirportSign1 } from 'react-icons/ci'
-import { AiOutlineCheckCircle } from 'react-icons/ai'
-import { SlLike, SlDislike } from 'react-icons/sl'
+
 
 import axios from "axios"
 
@@ -116,13 +112,6 @@ function App() {
     setLikedData(updatedLikedNames);
     setDisLikedData(updatedDislikedNames);
   }, [apiurl, userData.email, setLikedData, setDisLikedData])
-
-  useEffect(() => {
-
-    updateLikedDislikedData();
-
-  }, [updateLikedDislikedData, navState, userData.email])
-
 
 
 
@@ -284,7 +273,19 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn === true) {
+
+      updateLikedDislikedData();
+    }
+
+  }, [updateLikedDislikedData, navState, userData.email, isLoggedIn])
+
+
+
+
+  useEffect(() => {
+    if (isLoggedIn === true) {
       getFriends()
+
     }
   }, [getFriends, isLoggedIn])
 
@@ -344,97 +345,49 @@ function App() {
 
   return (
     <div className="flex h-full w-full items-center flex-col">
-      <NavBar navState={navState} setNavState={setNavState} userData={userData} resetUser={resetUser} />
-
+      {isLoggedIn && <NavBar navState={navState} setNavState={setNavState} userData={userData} resetUser={resetUser} />}
       {isLoggedIn === false ?
         <LoginPage
           setUserData={setUserData}
           getListIndexs={getListIndexs}
           setIsLoggedIn={setIsLoggedIn}
         /> :
-
-
-        navState === 'Names' && newNameIndex.boyIndex >= 0 && isLoggedIn === true ?
+        (navState === 'Names' ?
           <NamesPage
             setListKey={setListKey}
             listKey={listKey}
             newNameIndex={newNameIndex}
             girlList={girlList}
             boyList={boyList}
-            handleNameAction={handleNameAction} />
-
-
-
-          : navState === 'Partner' && isLoggedIn === true ?
-            // partner container
-            <div className="mt-12 min-h-1/4 w-11/12  rounded-lg xl:w-1/2 flex shadow-md  justify-center  flex-col">
-              <div className='border-b-2 border-gray-100 p-4 w-full' >
-                <div className='flex flex-col jusify-center items-center m-auto' >
-                  <h4 className='text-xs'>SEND AN INVITE</h4>
-                  <div className='flex flex-row md:flex-row w-full sm:w-3/4 items-center'>
-                    <BsSearch className='mr-2' />
-                    <input value={friendEmail} onChange={e => setFriendEmail(e.target.value)} placeholder='enter an email' className='flex-grow shadow p-4 outline-none rounded-lg' type='email'></input>
-                    <button type='submit' onClick={sendFriendRequest} className='ml-2 p-2 pt-4 pb-4 md:p-4 rounded-lg shadow cursor-pointer'>send</button>
-                  </div>
-                </div>
-              </div>
-              <div className='w-full' >
-                <div className='flex flex-col items-center'>
-                  {friends.map((friend) => {
-                    return <>                   <h4 className='text-xs'>PARTNERS</h4>
-                      <div className='w-11/12 lg:w-3/4 m-2 p-4 shadow rounded-lg flex items-center' key={friend._id}>
-
-                        {friend.status === 'sent' ?
-                          <div className='mr-2'><CiAirportSign1 className='text-yellow-500' /></div> :
-                          <div className='mr-2'><AiOutlineCheckCircle className='text-green-500' /></div>}
-                        {friend.friend_email === userData.email ?
-                          <div className='flex-grow'>{friend.email}</div>
-                          :
-                          <div className='flex-grow'>{friend.friend_email}</div>}
-                        {friend.status === 'sent' & friend.friend_email === userData.email ?
-                          <div><FcCheckmark onClick={() => acceptFriend(friend._id)} className='text-green-400 mr-2 text-lg hover:text-green-800 cursor-pointer' /></div> : <></>
-                        }
-                        <div><MdOutlineCancel onClick={() => deleteFriend(friend._id)} className='text-red-400 hover:text-red-800 text-lg cursor-pointer' /></div>
-                      </div>
-                    </>
-                  })}
-
-
-                </div>
-              </div>
-            </div>
-
+            handleNameAction={handleNameAction}
+          />
+          : navState === 'Partner' ?
+            <PartnerPage
+              isLoggedIn={isLoggedIn}
+              friendEmail={friendEmail}
+              setFriendEmail={setFriendEmail}
+              sendFriendRequest={sendFriendRequest}
+              friends={friends}
+              userData={userData}
+              acceptFriend={acceptFriend}
+              deleteFriend={deleteFriend}
+            />
             : navState === 'Matches' ?
-              <div className="m-2 w-5/6 rounded-xl border-4 border-gray-400  bg-gray-50 flex-col min-h-1/4 flex   justify-center ">
-
-                <NamesSection
-                  title="Liked"
-                  data={likedData}
-                  friendsData={friendLikes}
-                  toggleAction={toggleActionStatus}
-                  actionType="dislike"
-                  icon={<SlLike className='mr-2 text-green-500' />}
-                  userData={userData}
-                />
-
-                <NamesSection
-                  title="Disliked"
-                  data={disLikedData}
-                  friendsData={friendDisLikes}
-                  toggleAction={toggleActionStatus}
-                  actionType="like"
-                  icon={<SlDislike className='mr-2 text-red-500' />}
-                  userData={userData}
-                />
-
-              </div>
-
+              <MatchesPage
+                likedData={likedData}
+                disLikedData={disLikedData}
+                friendLikes={friendLikes}
+                friendDisLikes={friendDisLikes}
+                toggleActionStatus={toggleActionStatus}
+                userData={userData}
+              />
               :
-              <></>
+              null
+        )
       }
-    </div >
-
+    </div>
   );
+
 }
 
 export default App;

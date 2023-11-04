@@ -459,21 +459,3 @@ router.get('/name/action/all/:email', async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
-
-// // used to increment the boy and girl index, depending on user action
-// router.post('/listIndex/update/:email', jsonParser, async (req, res) => {
-//     try {
-//         const filter = { email: req.params.email };
-//         console.log(req.body)
-//         const update = req.body;
-//         console.log(update)
-//         const result = await Model.listIndex.findOneAndUpdate(filter, update, {
-//             new: true
-//         })
-
-//         res.send(result)
-//     }
-//     catch (error) {
-//         res.status(400).json({ message: error.message })
-//     }
-// })
