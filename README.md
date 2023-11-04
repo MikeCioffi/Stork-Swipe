@@ -1,13 +1,16 @@
 # name-matcher
 Simple app that allows you and your partner to decide on a name! 
+![image](https://github.com/MikeCioffi/Stork-Swipe/assets/10733966/26029b01-647a-4020-8b1f-1b5d888e6e5b)
 
-<img width="571" alt="image" src="https://user-images.githubusercontent.com/10733966/226233451-eca372a8-5fed-4d32-a3a5-3b66c5600b87.png">
+Simple like/dislike 
+![image](https://github.com/MikeCioffi/Stork-Swipe/assets/10733966/de45c30a-2b22-46d3-847d-507aae388fce)
+
 
 You're able to send requests to partners: 
 
-<img width="908" alt="image" src="https://user-images.githubusercontent.com/10733966/226233498-8492ca32-8083-441a-ab12-8efb381ab49c.png">
+![image](https://github.com/MikeCioffi/Stork-Swipe/assets/10733966/895cdd83-bfa3-426c-8aa8-e66780773ad3)
 
 Matches with your partner will be shown on the matches page: 
 
-<img width="856" alt="image" src="https://user-images.githubusercontent.com/10733966/226233982-99422da1-5ff1-4bf4-bc17-66455860d4e9.png">
+![image](https://github.com/MikeCioffi/Stork-Swipe/assets/10733966/03ce1b27-6e4a-46b4-91c9-a26ecc5fae69)
 
