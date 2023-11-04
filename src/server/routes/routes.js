@@ -2,9 +2,6 @@
 const express = require('express');
 const Model = require('../model/model');
 const bodyParser = require('body-parser')
-
-
-
 const router = express.Router()
 
 // create application/json parser

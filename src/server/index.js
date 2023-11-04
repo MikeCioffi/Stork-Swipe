@@ -84,7 +84,7 @@ const devCorsOptions = {
 
 
 const corsOptions = {
-    origin: 'https://baby-name-finder.netlify.app',
+    origin: 'https://storkswiper.netlify.app',
     credentials: true,            //access-control-allow-credentials:true
     headers: { "Access-Control-Allow-Origin": "*" },
     optionSuccessStatus: 200
