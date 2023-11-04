@@ -9,6 +9,7 @@ mongoose.connect(mongoString);
 const database = mongoose.connection;
 const fs = require('fs');
 
+
 // const key = fs.readFileSync('private.key')
 // const cert = fs.readFileSync('certificate.crt')
 
@@ -38,6 +39,14 @@ const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json()
 
 
+const devCorsOptions = {
+    origin: 'http://localhost:3000', // Your local frontend application's address
+    credentials: true, // Access-control-allow-credentials:true for cookies and authentication
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'], // Specify the allowed methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Specify the headers that can be used during the actual request
+    optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
 
 
 const corsOptions = {
@@ -53,7 +62,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-// app.use(cors(corsOptions));
+app.use(cors(devCorsOptions));
 
 
 app.use('/api', routes)
