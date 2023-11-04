@@ -38,6 +38,40 @@ const bodyParser = require('body-parser');
 // create application/json parser
 const jsonParser = bodyParser.json()
 
+// ONLY NEEDED TO CREATE NEW NAMES
+// const maleNames = fs.readFileSync('males.txt', 'utf-8').split('\n');
+// const femaleNames = fs.readFileSync('female.txt', 'utf-8').split('\n');
+
+// const createNameData = async (names, isMale) => {
+//     const nameDataPromises = names.map(name => {
+//         const nameEntry = new Model.nameData({
+//             name: name,
+//             ismale: isMale,
+//             isfemale: !isMale
+//         });
+//         return nameEntry.save();
+//     });
+
+//     return Promise.all(nameDataPromises);
+// };
+
+// const populateDatabase = async () => {
+//     try {
+//         // Populate male names
+//         await createNameData(maleNames.slice(0, 1000), true);
+//         console.log('trying')
+//         // Populate female names
+//         await createNameData(femaleNames.slice(0, 1000), false);
+//         console.log('Database has been populated with name data!');
+//     } catch (error) {
+//         console.error('Error populating database:', error);
+//     } finally {
+//         mongoose.disconnect();
+//     }
+// };
+
+// populateDatabase();
+
 
 const devCorsOptions = {
     origin: 'http://localhost:3000', // Your local frontend application's address

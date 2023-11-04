@@ -9,11 +9,11 @@ const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendReques
     if (!isLoggedIn) return null;
 
     return (
-        <div className="m-2 p-5 w-5/6 rounded-xl border-4 border-gray-400  bg-gray-50 flex-col min-h-1/4 flex   justify-center ">
+        <div className="m-2 p-0 md:p-5 w-5/6 rounded-xl border-4 border-gray-400  bg-gray-50 flex-col min-h-1/4 flex   justify-center ">
             <div className='border-b-2 border-gray-100 p-4 w-full'>
                 <div className='flex flex-col jusify-center items-center m-auto'>
                     <h4 className='text-3xl font-bold  border-b-8 border-gray-20 w-full text-center p-5'>Send an Invite</h4>
-                    <div className="flex justify-center items-center  w-full p-5  text-center text-gray-500 ">
+                    <div className="flex flex-col md:flex-row justify-center items-center  w-full p-5  text-center text-gray-500 ">
                         <BsSearch className='mr-2 text-3xl font-bold' />
                         <input
                             value={friendEmail}
@@ -24,7 +24,7 @@ const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendReques
                         <button
                             type='submit'
                             onClick={sendFriendRequest}
-                            className='ml-2 p-2 pt-4 pb-4 md:p-4 rounded-xl cursor-pointer hover:bg-gray-200 border-4 border-gray-500 '>
+                            className='w-full md:w-auto mt-2 md:mt-0 md:ml-2 p-2 pt-4 pb-4 md:p-4 rounded-xl cursor-pointer bg-gray-300 hover:bg-gray-200 border-4 border-gray-500 '>
                             SEND
                         </button>
                     </div>
@@ -36,16 +36,16 @@ const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendReques
                     <div className='flex w-full justify-center items-center flex-wrap  '>
                         {friends.map((friend) => (
                             <React.Fragment key={friend._id}>
-                                <div className='p-5 m-5   border-4 border-gray-500 rounded-xl flex items-center '>
+                                <div className='p-2 md:p-5 m-2   border-4 border-gray-500 rounded-xl flex items-center '>
 
                                     {friend.status === 'sent' ?
-                                        <div className='mr-2 text-xl md:text-4xl'><CiAirportSign1 className='text-yellow-500' /></div> :
-                                        <div className='mr-2 text-xl md:text-4xl'><AiOutlineCheckCircle className='text-green-500' /></div>}
-                                    <div className='flex-grow text-xl md:text-4xl'>{friend.friend_email === userData.email ? friend.email : friend.friend_email}</div>
+                                        <div className='mr-2 text-sm md:text-4xl'><CiAirportSign1 className='text-yellow-500' /></div> :
+                                        <div className='mr-2 text-md md:text-4xl'><AiOutlineCheckCircle className='text-green-500' /></div>}
+                                    <div className='flex-grow text-md md:text-4xl'>{friend.friend_email === userData.email ? friend.email : friend.friend_email}</div>
                                     {friend.status === 'sent' && friend.friend_email === userData.email ?
-                                        <FcCheckmark onClick={() => acceptFriend(friend._id)} className='text-green-400 mr-2 text-4xl hover:text-green-800 cursor-pointer' /> : null
+                                        <FcCheckmark onClick={() => acceptFriend(friend._id)} className='text-green-400 m-2 md:text-5xl hover:text-green-800 cursor-pointer' /> : null
                                     }
-                                    <MdOutlineCancel onClick={() => deleteFriend(friend._id)} className='text-red-400 hover:text-red-800 text-4xl cursor-pointer' />
+                                    <MdOutlineCancel onClick={() => deleteFriend(friend._id)} className='text-red-400 m-2 hover:text-red-800 md:text-5xl cursor-pointer' />
                                 </div>
                             </React.Fragment>
                         ))}

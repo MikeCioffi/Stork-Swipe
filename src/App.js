@@ -45,7 +45,8 @@ function App() {
   })
   const [friendLikes, setFriendLikes] = useState([])
   const [friendDisLikes, setFriendDisLikes] = useState([])
-  console.log(friendLikes)
+
+
 
 
   const resetUser = () => {
@@ -75,10 +76,12 @@ function App() {
     await axios
       .get(`${apiurl}/listIndex/get/${sentEmail}`)
       .then(function (response) {
+        console.log(response)
         setNewNameIndex(response.data[0])
       })
   }, [userData.email])
 
+  console.log(newNameIndex)
 
   const updateLikedDislikedData = useCallback(async () => {
     const result = await axios(`${apiurl}/name/action/all/${userData.email}`);
@@ -115,49 +118,47 @@ function App() {
 
 
 
-  //depending on list key, it increases the correct nameindex 
+  const matchUser = async () => {
+    if (userData.email !== undefined)
+      if (userData.email.length > 0) {
+        await axios
+          .get(`${apiurl}/user/getOne/${userData.email}`, {
+          })
+          .then(function (response) {
+            if ((response.data.length === 0)) {
+              createUser()
+            }
+
+          })
+
+          .catch(function (error) {
+            console.log(error)
+          })
+      }
+  }
+
+  const createUser = async () => {
+    await axios
+      .post(`${apiurl}/user/post/`, {
+        email: userData.email,
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        image_url: userData.image_url
+      })
+      .then(function (response) {
+        console.log(response)
+        axios.post(`${apiurl}/listIndex/create/${userData.email}`)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+
+  if (userData.email !== undefined) {
+    matchUser()
+  }
 
 
-  useEffect(() => {
-    const matchUser = async () => {
-      if (userData.email !== undefined)
-        if (userData.email.length > 0) {
-          await axios
-            .get(`${apiurl}/user/getOne/${userData.email}`, {
-            })
-            .then(function (response) {
-              if ((response.data.length === 0)) {
-                createUser()
-              }
-
-            })
-
-            .catch(function (error) {
-              console.log(error)
-            })
-        }
-    }
-    const createUser = async () => {
-      await axios
-        .post(`${apiurl}/user/post/`, {
-          email: userData.email,
-          first_name: userData.first_name,
-          last_name: userData.last_name,
-          image_url: userData.image_url
-        })
-        .then(function (response) {
-          console.log(response)
-          axios.post(`${apiurl}/listIndex/create/${userData.email}`)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    }
-
-    if (userData.email !== undefined) {
-      matchUser()
-    }
-  }, [userData])
 
 
   const getFriends = useCallback(async () => {
@@ -341,6 +342,45 @@ function App() {
         console.log(error);
       });
   };
+  useEffect(() => {
+    const initializeUser = async () => {
+      // Check if userData is populated and email has a value
+      if (userData?.email) {
+        try {
+          const response = await axios.get(`${apiurl}/user/getOne/${userData.email}`);
+          // If user doesn't exist, create new user
+          if (response.data.length === 0) {
+            await createUser();
+          } else {
+            // If user exists, maybe you want to do something with the existing user
+            console.log('User already exists, getting list indexes...');
+            getListIndexs(userData.email);
+
+          }
+        } catch (error) {
+          console.error('Error in initializing user:', error);
+        }
+      }
+    };
+
+    const createUser = async () => {
+      try {
+        const response = await axios.post(`${apiurl}/user/post/`, {
+          email: userData.email,
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          image_url: userData.image_url
+        });
+        console.log('User created:', response);
+        await axios.post(`${apiurl}/listIndex/create/${userData.email}`);
+      } catch (error) {
+        console.error('Error in creating user:', error);
+      }
+    };
+
+    initializeUser();
+  }, [userData, apiurl, getListIndexs]); // Only re-run the effect if userData or apiurl changes
+
 
 
   return (

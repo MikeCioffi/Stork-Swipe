@@ -5,7 +5,7 @@ import { RiCheckboxMultipleLine } from 'react-icons/ri';
 
 const NavBar = ({ navState, setNavState, userData, resetUser }) => {
     return (
-        <nav className='flex items-center w-full sm:justify-center justify-around text-2xl md:text-3xl lg:text-4xl'>
+        <nav className='flex items-center w-full sm:justify-center justify-around text-md md:text-3xl lg:text-4xl'>
             {/* Added transition classes to each nav item for the border */}
             <div onClick={() => setNavState('Names')} className={`${navState === 'Names' ? 'border-gray-300' : 'border-transparent'} flex flex-col sm:flex-row items-center p-2 md:mr-4 md:p-4 cursor-pointer border-b-4 transition-all duration-300 ease-in-out rounded-lg hover:bg-gray-50`}>
                 <FaBabyCarriage /><button className='ml-2'>Names</button>
