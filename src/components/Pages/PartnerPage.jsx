@@ -3,7 +3,6 @@ import { BsSearch } from 'react-icons/bs';
 import { CiAirportSign1 } from 'react-icons/ci';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { FcCheckmark } from 'react-icons/fc';
-import { MdOutlineCancel } from 'react-icons/md';
 
 const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendRequest, friends, userData, acceptFriend, deleteFriend }) => {
     if (!isLoggedIn) return null;
@@ -19,33 +18,33 @@ const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendReques
                             value={friendEmail}
                             onChange={e => setFriendEmail(e.target.value)}
                             placeholder='ENTER AN EMAIL'
-                            className='w-full lg:w-1/4 p-4 outline-none rounded-xl  border-4 border-gray-500' type='email'
+                            className='w-full lg:w-1/4 p-4 outline-none rounded-xl  border-4 border-gray-400' type='email'
                         />
                         <button
                             type='submit'
                             onClick={sendFriendRequest}
-                            className='w-full md:w-auto mt-2 md:mt-0 md:ml-2 p-2 pt-4 pb-4 md:p-4 rounded-xl cursor-pointer bg-gray-300 hover:bg-gray-200 border-4 border-gray-500 '>
+                            className='w-full md:w-auto mt-2 md:mt-0 md:ml-2 p-2 pt-4 pb-4 md:p-4 rounded-xl cursor-pointer bg-gray-300 hover:bg-gray-200 border-4 border-gray-400 '>
                             SEND
                         </button>
                     </div>
                 </div>
             </div>
-            <div className='w-full p-5'>
+            <div className='w-full p-1 md:p-5'>
                 <div className='flex flex-col justify-center items-center'>
                     <h4 className='text-xl md:text-4xl font-bold p-5  border-b-8 border-gray-20 text-center w-full'>Partners</h4>
                     <div className='flex w-full justify-center items-center flex-wrap  '>
                         {friends.map((friend) => (
                             <React.Fragment key={friend._id}>
-                                <div className='p-2 md:p-5 m-2   border-4 border-gray-500 rounded-xl flex items-center '>
+                                <div className='w-full p-1  md:p-5 m-2   border-4 border-gray-400 rounded-xl flex items-center '>
 
                                     {friend.status === 'sent' ?
-                                        <div className='mr-2 text-sm md:text-4xl'><CiAirportSign1 className='text-yellow-500' /></div> :
-                                        <div className='mr-2 text-md md:text-4xl'><AiOutlineCheckCircle className='text-green-500' /></div>}
-                                    <div className='flex-grow text-md md:text-4xl'>{friend.friend_email === userData.email ? friend.email : friend.friend_email}</div>
+                                        <div className='w-1/6 flex justify-cente text-md md:text-4xl'><CiAirportSign1 className='text-yellow-500' /></div> :
+                                        <div className='w-1/6 flex justify-center text-md md:text-4xl'><AiOutlineCheckCircle className='text-green-500' /></div>}
+                                    <div className=' flex flex-grow  justify-start text-xs md:text-2xl lg:text-4xl'>{friend.friend_email === userData.email ? friend.email : friend.friend_email}</div>
                                     {friend.status === 'sent' && friend.friend_email === userData.email ?
-                                        <FcCheckmark onClick={() => acceptFriend(friend._id)} className='text-green-400 m-2 md:text-5xl hover:text-green-800 cursor-pointer' /> : null
+                                        <FcCheckmark onClick={() => acceptFriend(friend._id)} className='w-1/6 flex justify-center text-green-400 md:text-3xl hover:text-green-800 cursor-pointer' /> : null
                                     }
-                                    <MdOutlineCancel onClick={() => deleteFriend(friend._id)} className='text-red-400 m-2 hover:text-red-800 md:text-5xl cursor-pointer' />
+                                    <button onClick={() => deleteFriend(friend._id)} className='p-2 rounded-lg flex justify-end text-red-400 bg-red-100 text-xxs hover:bg-red-300 md:text-3xl cursor-pointer' > remove</button>
                                 </div>
                             </React.Fragment>
                         ))}

@@ -11,7 +11,7 @@ const NameCard = ({ namekey, item, actionType, friendActions, toggleActionStatus
                 } overflow-hidden`} // Adjusted for overflow and removed fixed heights
         >
             <div className='flex w-full justify-around items-center'> {/* Added padding */}
-                <div className='w-1/2 text-2xl flex justify-center'>{item.name}</div>
+                <div className='flex-grow  text-sm flex justify-start'>{item.name}</div>
                 <div className='w-1/5 flex justify-around'>
                     {friendActions && friendActions.length > 0
                         ? friendActions.map((friend) =>
@@ -31,16 +31,19 @@ const NameCard = ({ namekey, item, actionType, friendActions, toggleActionStatus
                 <div className='w-1/4 flex justify-around'>
                     <button
                         onClick={() => toggleActionStatus(item.nameid, actionType)}
-                        className={`cursor-pointer  rounded-lg`}
+                        className="group cursor-pointer rounded-lg relative p-2"
                     >
-                        {actionType === 'dislike' ? (
-                            <FaHeartBroken className='text-red-300 text-2xl hover:text-red-600' />
-
-                        ) : (
-                            <FaHeart className='text-red-300 text-2xl  hover:text-red-600' />
-
-                        )}
+                        <FaHeart
+                            className={`absolute inset-0 text-red-300 text-2xl transition-opacity duration-200 ease-in-out ${actionType === 'like' ? 'opacity-0 group-hover:opacity-100' : 'opacity-100 group-hover:opacity-0'
+                                }`}
+                        />
+                        <FaHeartBroken
+                            className={`absolute inset-0 text-red-300 text-2xl transition-opacity duration-200 ease-in-out ${actionType === 'like' ? 'opacity-100 group-hover:opacity-0' : 'opacity-0 group-hover:opacity-100'
+                                }`}
+                        />
                     </button>
+
+
                 </div>
 
 

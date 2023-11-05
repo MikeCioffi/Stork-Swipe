@@ -1,6 +1,6 @@
 // ActionZone.js
 import { useDrop } from 'react-dnd';
-import { SlLike, SlDislike } from 'react-icons/sl'
+import { FaHeart, FaHeartBroken } from 'react-icons/fa';
 
 
 const ActionZone = ({ listKey, newNameIndex, girlList, boyList, handleNameAction, actionType }) => {
@@ -21,7 +21,7 @@ const ActionZone = ({ listKey, newNameIndex, girlList, boyList, handleNameAction
     const bordecolor = actionType === 'dislike' ? 'border-red-500' : 'border-green-500'
     const backgroundColor = isOver ? (hoverColor) : (actionType === 'like' ? 'bg-green-100' : 'bg-red-100');
     const actionColor = actionType === 'like' ? 'text-green-500' : 'text-red-500';
-    const Icon = actionType === 'like' ? SlLike : SlDislike;
+    const Icon = actionType === 'like' ? FaHeart : FaHeartBroken;
 
     return (
         <div
@@ -31,9 +31,9 @@ const ActionZone = ({ listKey, newNameIndex, girlList, boyList, handleNameAction
                 actionType,
                 listKey
             )}
-            className={`w-1/4 h-full border-8 ${bordecolor} transition-all md:1/12 items-center justify-center ${actionColor} rounded-full flex flex-col cursor-pointer hover:${hoverColor} ${isOver ? hoverColor : backgroundColor}`}
+            className={`w-1/4 h-full border-2  ${bordecolor} transition-all md:1/12 items-center justify-center ${actionColor} rounded-full flex flex-col cursor-pointer hover:${hoverColor} ${isOver ? hoverColor : backgroundColor}`}
         >
-            <Icon className='text-5xl' />
+            <Icon className=' text-2xl md:text-5xl' />
         </div>
     );
 };

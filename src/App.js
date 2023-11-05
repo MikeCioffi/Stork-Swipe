@@ -197,6 +197,8 @@ function App() {
       })
   }
   const acceptFriend = async (acceptID) => {
+
+    console.log(acceptID)
     await axios
       .patch(`${apiurl}/friend/accept/${acceptID}`, {
         status: 'accept',

@@ -26,18 +26,18 @@ const LoginPage = ({ setUserData, getListIndexs, setIsLoggedIn }) => {
     // ...
 
     return (
-        <div className="flex w-full flex-col items-center justify-center h-screen bg-gradient-to-br from-blue-400 to-red-200">
+        <div className="flex w-full flex-col items-center justify-start md:justify-center h-screen bg-gradient-to-br from-blue-400 to-red-200">
             {/* Split container */}
-            <div className="flex flex-col lg:flex-row w-11/12 md:w-1/2 xl:w-1/2 mt-12 bg-white rounded-lg shadow-xl ">
+            <div className="flex flex-col lg:flex-row w-11/12 md:w-1/2 xl:w-1/2 m-auto bg-white rounded-lg shadow-xl ">
                 {/* Left side: Image */}
                 <div className="w-full lg:w-1/2 flex justify-center items-center bg-transparent">
-                    <img src={main} alt="Cool Graphic" className="rounded-l-lg max-w-full h-auto object-cover" />
+                    <img src={main} alt="Cool Graphic" className="rounded-lg max-w-full h-auto object-cover" />
                 </div>
 
                 {/* Right side: Welcome Message and Login */}
                 <div className="w-full lg:w-1/2  flex flex-col justify-center p-6">
                     <div>
-                        <h1 className="text-xl md:text-3xl xl:text-7xl text-center font-bold text-gray-700">Welcome To Stork Swipe</h1>
+                        <h1 className="text-xl lg:text-3xl xl:text-3xl text-center font-bold text-gray-700">Welcome To Stork Swipe</h1>
                         <h3 className="text-lg text-center text-gray-500 px-4 m-10">Log in with your Google account to find your favorite names!</h3>
                     </div>
                     <div className="flex justify-center">
