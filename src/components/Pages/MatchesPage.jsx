@@ -6,7 +6,7 @@ import { SlLike, SlDislike } from 'react-icons/sl'
 const MatchesPage = ({
     likedData, disLikedData, friendLikes, friendDisLikes, toggleActionStatus, userData
 }) => (
-    <div className="m-2 w-5/6 rounded-xl border-4 border-gray-400  bg-gray-50 flex-col min-h-1/4 flex   justify-center ">
+    <div className="w-11/12 m-2 md:w-5/6 rounded-xl border-2 border-gray-400  bg-gray-50 flex-col min-h-1/4 flex   justify-center ">
 
         <NamesSection
             title="Liked"
@@ -27,6 +27,7 @@ const MatchesPage = ({
             icon={<SlDislike className='mr-2 text-red-500' />}
             userData={userData}
         />
+
 
     </div>
 );

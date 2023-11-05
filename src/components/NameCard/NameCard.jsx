@@ -5,7 +5,7 @@ const NameCard = ({ namekey, item, actionType, friendActions, toggleActionStatus
 
     return (item &&
         <div key={namekey}
-            className={`flex min-h-fit w-full p-3 md:w-1/6 m-2 rounded-full border-8 ${item.gender === 'boy'
+            className={`flex min-h-fit w-full p-3 md:w-1/4 xl:w-1/6 m-2 rounded-full border-4 ${item.gender === 'boy'
                 ? 'bg-french-pass-50 border-french-pass-600'
                 : 'bg-pastel-pink-50 border-pastel-pink-600'
                 } overflow-hidden`} // Adjusted for overflow and removed fixed heights
@@ -18,7 +18,7 @@ const NameCard = ({ namekey, item, actionType, friendActions, toggleActionStatus
                             friend.data.map(action => {
                                 if (action === item.name && friend.email !== userData.email) {
                                     return (
-                                        <div key={friend.email} className='flex justify-center items-center '> {/* Added key */}
+                                        <div key={friend.email} className='flex justify-center items-center '>
                                             <img className='h-6 w-6 rounded-full' src={friend.url} alt={friend.email} />
                                         </div>
                                     );

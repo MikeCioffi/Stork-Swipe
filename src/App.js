@@ -312,6 +312,7 @@ function App() {
           const response = await axios.get(`${apiurl}/user/getOne/${userData.email}`);
           // If user doesn't exist, create new user
           if (response.data.length === 0) {
+            console.log('user being created')
             await createUser();
           } else {
             // If user exists, maybe you want to do something with the existing user

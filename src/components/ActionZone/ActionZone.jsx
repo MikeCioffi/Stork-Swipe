@@ -31,7 +31,7 @@ const ActionZone = ({ listKey, newNameIndex, girlList, boyList, handleNameAction
                 actionType,
                 listKey
             )}
-            className={`w-1/4 h-full border-2  ${bordecolor} transition-all md:1/12 items-center justify-center ${actionColor} rounded-full flex flex-col cursor-pointer hover:${hoverColor} ${isOver ? hoverColor : backgroundColor}`}
+            className={`w-1/4 h-full border-2  ${bordecolor} transition-all md:1/12 items-center justify-center ${actionColor} rounded-xl flex flex-col cursor-pointer hover:${hoverColor} ${isOver ? hoverColor : backgroundColor}`}
         >
             <Icon className=' text-2xl md:text-5xl' />
         </div>

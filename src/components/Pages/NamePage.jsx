@@ -11,7 +11,7 @@ const NamesPage = ({
     const upperListkey = listKey.toUpperCase();
 
     return (
-        <div className="m-2 w-11/12 md:w-5/6 p-5 flex flex-col justify-around items-center rounded-xl border-4 border-gray-400  bg-gray-50">
+        <div className="m-2 w-11/12 md:w-5/6 p-5 flex flex-col justify-around items-center rounded-xl border-2 border-gray-400  bg-gray-50">
 
             <h3 className="text-3xl font-bold">Select Gender</h3>
 

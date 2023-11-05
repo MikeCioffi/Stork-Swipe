@@ -12,7 +12,7 @@ const GenderButton = ({ gender, setListKey, listKey }) => {
     const inactiveClass = isBoy ? 'bg-french-pass-50 hover:bg-french-pass-300 text-white' : 'text-pink-600 bg-pastel-pink-100 hover:bg-pastel-pink-300';
 
     return (
-        <button onClick={() => setListKey(gender)} className={`p-4 m-4 rounded-full ${listKey === gender ? activeClass : inactiveClass}`}>
+        <button onClick={() => setListKey(gender)} className={`p-1 m-4 rounded-full ${listKey === gender ? activeClass : inactiveClass}`}>
             {icon}
         </button>
     );
