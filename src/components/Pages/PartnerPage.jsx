@@ -38,7 +38,7 @@ const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendReques
                                 <div className='w-full p-1  md:p-5 m-2   border-4 border-gray-400 rounded-xl flex items-center '>
 
                                     {friend.status === 'sent' ?
-                                        <div className='w-1/6 flex justify-cente text-md md:text-4xl'><CiAirportSign1 className='text-yellow-500' /></div> :
+                                        <div className='w-1/6 flex justify-center text-md md:text-4xl'><CiAirportSign1 className='text-yellow-500' /></div> :
                                         <div className='w-1/6 flex justify-center text-md md:text-4xl'><AiOutlineCheckCircle className='text-green-500' /></div>}
                                     <div className=' flex flex-grow  justify-start text-xs md:text-2xl lg:text-4xl'>{friend.friend_email === userData.email ? friend.email : friend.friend_email}</div>
                                     {friend.status === 'sent' && friend.friend_email === userData.email ?
