@@ -304,7 +304,16 @@ function App() {
         console.log(error);
       });
   };
+
+
+
   useEffect(() => {
+    async function fetchListIndexes() {
+      if (userData.email) {
+        getListIndexs(userData.email);
+      }
+    }
+
     const initializeUser = async () => {
       // Check if userData is populated and email has a value
       if (userData?.email) {
@@ -339,10 +348,24 @@ function App() {
       } catch (error) {
         console.error('Error in creating user:', error);
       }
+      await fetchListIndexes();
+
     };
 
+
     initializeUser();
-  }, [userData, apiurl, getListIndexs]); // Only re-run the effect if userData or apiurl changes
+    // This effect should only run when `userData` is set or changed
+  }, [userData, getListIndexs]);
+
+  // Use another `useEffect` to set the user as logged in
+  useEffect(() => {
+    if (userData?.email) {
+      setIsLoggedIn(true);
+    }
+  }, [userData]);
+
+
+
 
 
 

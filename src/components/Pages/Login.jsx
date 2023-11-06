@@ -1,8 +1,23 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import main from '../../images/main.png'
+import fake from '../../images/2.png'
 
 const LoginPage = ({ setUserData, getListIndexs, setIsLoggedIn }) => {
+
+    const handleTryItOut = () => {
+        // Set the mock user data
+        setUserData({
+            email: "fakeuser@storkswipe.com",
+            first_name: "Fake",
+            last_name: "User",
+            image_url: fake // You can add a default image URL if you have one
+        });
+        // You can call getListIndexs with the fake email if needed
+        getListIndexs("fakeuser@storkswipe.com");
+        // Set logged in state to true
+        setIsLoggedIn(true);
+    };
     const parseJwt = (token) => {
         try {
             // Split the JWT into its three parts and take the payload (the second part)
@@ -40,7 +55,7 @@ const LoginPage = ({ setUserData, getListIndexs, setIsLoggedIn }) => {
                         <h1 className="text-xl lg:text-3xl xl:text-3xl text-center font-bold text-gray-700">Welcome To Stork Swipe</h1>
                         <h3 className="text-lg text-center text-gray-500 px-4 m-10">Log in with your Google account to find your favorite names!</h3>
                     </div>
-                    <div className="flex justify-center">
+                    <div className="flex  flex-col items-center justify-center">
                         <GoogleLogin
                             className="auto_select"
                             onSuccess={credentialResponse => {
@@ -51,13 +66,18 @@ const LoginPage = ({ setUserData, getListIndexs, setIsLoggedIn }) => {
                                     "last_name": tempUserData.family_name,
                                     "image_url": tempUserData.picture
                                 });
-                                getListIndexs(tempUserData.email);
-                                setIsLoggedIn(true);
+
                             }}
                             onError={() => {
                                 console.log('Login Failed');
                             }}
                         />
+                        <button
+                            onClick={handleTryItOut}
+                            className="mt-4 bg-gradient-to-br from-blue-400 to-red-200 hover:opacity-75 text-white font-bold py-2 px-4 rounded-lg"
+                        >
+                            Try it out
+                        </button>
                     </div>
                 </div>
             </div>
