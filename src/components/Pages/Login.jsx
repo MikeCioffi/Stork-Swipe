@@ -6,17 +6,13 @@ import fake from '../../images/2.png'
 const LoginPage = ({ setUserData, getListIndexs, setIsLoggedIn }) => {
 
     const handleTryItOut = () => {
-        // Set the mock user data
         setUserData({
             email: "fakeuser@storkswipe.com",
             first_name: "Fake",
             last_name: "User",
-            image_url: fake // You can add a default image URL if you have one
+            image_url: fake
         });
-        // You can call getListIndexs with the fake email if needed
-        getListIndexs("fakeuser@storkswipe.com");
-        // Set logged in state to true
-        setIsLoggedIn(true);
+
     };
     const parseJwt = (token) => {
         try {
@@ -74,7 +70,9 @@ const LoginPage = ({ setUserData, getListIndexs, setIsLoggedIn }) => {
                         />
                         <button
                             onClick={handleTryItOut}
-                            className="mt-4 bg-gradient-to-br from-blue-400 to-red-200 hover:opacity-75 text-white font-bold py-2 px-4 rounded-lg"
+                            className="mt-4 bg-gradient-to-br
+                             from-blue-400 to-red-200 hover:opacity-75
+                              text-white font-bold py-2 px-4 rounded-lg"
                         >
                             Try it out
                         </button>
