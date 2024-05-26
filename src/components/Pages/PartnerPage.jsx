@@ -19,7 +19,7 @@ const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendReques
     if (!isLoggedIn) return null;
 
     return (
-        <div className="m-4 w-11/12 md:w-5/6 p-6 flex flex-col justify-around items-center rounded-xl shadow-lg bg-white animate-fade-in">
+        <div className="m-4 w-11/12 md:w-5/6 p-2 md:p-6 flex flex-col justify-around items-center rounded-xl shadow-lg bg-white animate-fade-in">
             <div className='border-b-2 border-gray-100 p-4 w-full'>
                 <div className='flex flex-col justify-center items-center m-auto'>
                     <h4 className='text-xl md:text-4xl font-bold w-full text-center p-5'>Send an Invite</h4>

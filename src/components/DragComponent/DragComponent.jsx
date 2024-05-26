@@ -15,11 +15,11 @@ const DragComponent = ({ listKey, newNameIndex, girlList, boyList }) => {
         newNameIndex && girlList && boyList &&
             girlList.length > newNameIndex.girlIndex && boyList.length > newNameIndex.boyIndex ? (
             listKey === 'girl' ?
-                <h3 ref={ref} className='text-3xl md:text-6xl cursor-pointer'>
+                <h3 ref={ref} className='text-3xl md:text-6xl cursor-pointer w-full text-center break-words'>
                     {capitalizeWords(girlList[newNameIndex.girlIndex]?.name)}
                 </h3>
                 :
-                <h3 ref={ref} className='text-3xl md:text-6xl cursor-pointer'>
+                <h3 ref={ref} className='text-3xl md:text-6xl cursor-pointer w-full text-center break-words'>
                     {capitalizeWords(boyList[newNameIndex.boyIndex]?.name)}
                 </h3>
         ) : (

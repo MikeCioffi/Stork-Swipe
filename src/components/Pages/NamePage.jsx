@@ -24,7 +24,7 @@ const NamePage = ({
     const upperListkey = listKey.toUpperCase();
 
     return (
-        <div className="m-4 w-11/12 md:w-5/6 p-6 flex flex-col justify-around items-center rounded-xl shadow-lg bg-white animate-fade-in">
+        <div className="m-4 w-11/12 md:w-5/6 p-2 md:p-6 flex flex-col justify-around items-center rounded-xl shadow-lg bg-white animate-fade-in">
             <h3 className="text-3xl font-bold">Select Gender</h3>
 
             <div className="flex justify-center w-full p-5 text-center text-gray-500">
@@ -45,8 +45,8 @@ const NamePage = ({
                         handleNameAction={handleNameActionWithAnimation}
                     />
 
-                    <div className="md:w-1/2 xl:w-1/2 xl:h-64 rounded-lg flex justify-center flex-row flex-wrap">
-                        <div className={`w-2/3 md:10/12 justify-center items-center flex flex-col ${animationTrigger ? 'animate-bounce' : ''}`}>
+                    <div className="w-1/2 xl:h-64 rounded-lg flex justify-center flex-row flex-wrap">
+                        <div className={`w-full justify-center items-center flex flex-col ${animationTrigger ? 'animate-bounce' : ''}`}>
                             <h3>{upperListkey}</h3>
                             <DragComponent
                                 listKey={listKey}
