@@ -4,6 +4,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import GenderButton from '../Buttons/GenderButton';
 import ActionZone from '../ActionZone/ActionZone';
 import DragComponent from '../DragComponent/DragComponent';
+import Divider from '../Utils/Divider';
+
 const NamesPage = ({
     setListKey, listKey, newNameIndex, girlList, boyList, handleNameAction
 }) => {
@@ -11,17 +13,18 @@ const NamesPage = ({
     const upperListkey = listKey.toUpperCase();
 
     return (
-        <div className="m-2 w-11/12 md:w-5/6 p-5 flex flex-col justify-around items-center rounded-xl border-2 border-gray-400  bg-gray-50">
+        <div className="m-4 w-11/12 md:w-5/6 p-6 flex flex-col justify-around items-center rounded-xl shadow-lg bg-white">
 
             <h3 className="text-3xl font-bold">Select Gender</h3>
 
 
-            <div className="flex justify-center  w-full p-5 text-center text-gray-500  border-b-8 border-gray-20">
+            <div className="flex justify-center  w-full p-5 text-center text-gray-500">
                 {/* Pass 'boy' or 'girl' to switch between genders */}
                 <GenderButton gender='boy' listKey={listKey} setListKey={setListKey} />
                 <GenderButton gender='girl' listKey={listKey} setListKey={setListKey} />
             </div>
 
+            <Divider />
 
             <div className={`flex w-full mt-10 justify-around items-center ${backgroundcolor}`}>
 

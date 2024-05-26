@@ -7,10 +7,10 @@ const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendReques
     if (!isLoggedIn) return null;
 
     return (
-        <div className="m-2 p-0 md:p-5 w-11/12  md:w-5/6 rounded-xl border-2 border-gray-400  bg-gray-50 flex-col min-h-1/4 flex   justify-center ">
+        <div className="m-4 w-11/12 md:w-5/6 p-6 flex flex-col justify-around items-center rounded-xl shadow-lg bg-white">
             <div className='border-b-2 border-gray-100 p-4 w-full'>
                 <div className='flex flex-col jusify-center items-center m-auto'>
-                    <h4 className='text-xl md:text-4xl font-bold  border-b-8 border-gray-20 w-full text-center p-5'>Send an Invite</h4>
+                    <h4 className='text-xl md:text-4xl font-bold   w-full text-center p-5'>Send an Invite</h4>
                     <div className="flex flex-col md:flex-row justify-center items-center  w-full p-5  text-center text-gray-500 ">
                         <BsSearch className='opacity-0 md:opacity-100 mr-4 text-3xl font-bold' />
                         <input
@@ -30,7 +30,7 @@ const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendReques
             </div>
             <div className='w-full p-1 md:p-5'>
                 <div className='flex flex-col justify-center items-center'>
-                    <h4 className='text-xl md:text-4xl font-bold p-5  border-b-8 border-gray-20 text-center w-full'>Partners</h4>
+                    <h4 className='text-xl md:text-4xl font-bold p-5  text-center w-full'>Partners</h4>
                     <div className='flex w-full justify-center items-center flex-wrap  '>
                         {friends.map((friend) => (
                             <React.Fragment key={friend._id}>
