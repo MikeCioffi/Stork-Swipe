@@ -35,7 +35,7 @@ const LoginPage = ({ setUserData, getListIndexs, setIsLoggedIn }) => {
     return (
         <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-400 to-red-200">
             <div className="flex flex-col lg:flex-row items-center justify-center w-full  max-h-screen md:w-1/2 bg-white rounded-xl shadow-xl overflow-hidden">
-                <div className="w-full lg:w-1/2 flex justify-center items-center bg-transparent p-4">
+                <div className="w-full lg:w-1/2 flex justify-center items-center bg-transparent">
                     <img src={main} alt="Cool Graphic" className="rounded-lg max-w-full max-h-full object-contain" />
                 </div>
                 <div className="w-full lg:w-1/2 flex flex-col justify-center p-6">
