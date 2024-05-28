@@ -1,15 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import NameCard from '../NameCard/NameCard';
 import './NameSection.css'; // Import the CSS file for animations and styles
 
-const NamesSection = ({ title, data, friendsData, actionType, toggleActionStatus, userData }) => {
-    const [isLoaded, setIsLoaded] = useState(false);
-
-    useEffect(() => {
-        if (data.length > 0) {
-            setIsLoaded(true);
-        }
-    }, [data]);
+const NamesSection = ({ title, data = [], friendsData, actionType, toggleActionStatus, userData }) => {
+    const [isLoaded] = useState(data.length > 0);
 
     const boysData = data.filter(item => item.gender === 'boy');
     const girlsData = data.filter(item => item.gender === 'girl');
@@ -21,7 +15,7 @@ const NamesSection = ({ title, data, friendsData, actionType, toggleActionStatus
                 <div className='text-2xl font-semibold p-3'>Boys</div>
                 <div className='flex h-auto justify-start w-full items-center flex-row flex-wrap'>
                     {boysData.map((item, index) => (
-                        <div key={item.nameid} className={`w-full md:w-1/4 xl:w-1/6 p-2 ${isLoaded ? `animate-slide-in delay-${index}` : ''}`}>
+                        <div key={item.nameid} className={`w-full md:w-1/4 xl:w-1/6 p-2 '}`}>
                             <NameCard
                                 namekey={item.nameid}
                                 item={item}
@@ -38,7 +32,7 @@ const NamesSection = ({ title, data, friendsData, actionType, toggleActionStatus
                 <div className='text-2xl font-semibold p-3'>Girls</div>
                 <div className='flex h-auto justify-start w-full items-center flex-row flex-wrap'>
                     {girlsData.map((item, index) => (
-                        <div key={item.nameid} className={`w-full md:w-1/4 xl:w-1/6 p-2 ${isLoaded ? `animate-slide-in delay-${index}` : ''}`}>
+                        <div key={item.nameid} className={`w-full md:w-1/4 xl:w-1/6 p-2 '}`}>
                             <NameCard
                                 namekey={item.nameid}
                                 item={item}
