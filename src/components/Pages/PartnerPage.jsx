@@ -6,6 +6,7 @@ import './PartnerPage.css'; // Import the CSS file for animations
 
 const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendRequest, friends, userData, acceptFriend, deleteFriend }) => {
     const [isEmailValid, setIsEmailValid] = useState(false);
+    const [hasAnimated, setHasAnimated] = useState(false);
 
     useEffect(() => {
         const validateEmail = (email) => {
@@ -16,10 +17,16 @@ const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendReques
         setIsEmailValid(validateEmail(friendEmail));
     }, [friendEmail]);
 
+    useEffect(() => {
+        if (isLoggedIn && !hasAnimated) {
+            setHasAnimated(true);
+        }
+    }, [isLoggedIn, hasAnimated]);
+
     if (!isLoggedIn) return null;
 
     return (
-        <div className="m-4 w-11/12 md:w-5/6 p-2 md:p-6 flex flex-col justify-around items-center rounded-xl shadow-lg bg-white animate-fade-in">
+        <div className="m-4 w-11/12 md:w-5/6 p-2 md:p-6 flex flex-col justify-around items-center rounded-xl shadow-lg bg-white">
             <div className='border-b-2 border-gray-100 p-4 w-full'>
                 <div className='flex flex-col justify-center items-center m-auto'>
                     <h4 className='text-xl md:text-4xl font-bold w-full text-center p-5'>Send an Invite</h4>
@@ -48,7 +55,7 @@ const PartnerPage = ({ isLoggedIn, friendEmail, setFriendEmail, sendFriendReques
                     <div className='flex w-full justify-center items-center flex-wrap'>
                         {friends.map((friend, index) => (
                             <React.Fragment key={friend._id}>
-                                <div className={`w-full p-1 md:p-5 m-2 shadow-lg rounded-xl flex items-center bg-white animate-slide-in delay-${index}`}>
+                                <div className={`w-full p-1 md:p-5 m-2 shadow-lg rounded-xl flex items-center bg-white ${hasAnimated ? '' : `animate-slide-in delay-${index}`}`}>
                                     {friend.status === 'sent' ?
                                         <div className='w-1/6 flex justify-center text-md md:text-4xl'><CiAirportSign1 className='text-yellow-500' /></div> :
                                         <div className='w-1/6 flex justify-center text-md md:text-4xl'><AiOutlineCheckCircle className='text-green-500' /></div>}
