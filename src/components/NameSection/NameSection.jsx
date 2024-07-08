@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import NameCard from '../NameCard/NameCard';
 import './NameSection.css'; // Import the CSS file for animations and styles
+import Spinner from '../Utils/Spinner'; // Assuming you have a Spinner component
+
 
 const NamesSection = ({ title, data = [], friendsData, actionType, toggleActionStatus, userData }) => {
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [matches, setMatches] = useState([]);
-    const [nonMatches, setNonMatches] = useState([]);
+    // Ensure the data and friendsData are loaded
+    const isDataReady = data.length > 0 && friendsData && friendsData.length > 0;
 
-    console.log("friendData:", friendsData);
-    console.log("data:", data);
+    const getMatchesAndNonMatches = () => {
+        if (!isDataReady) return { matches: [], nonMatches: [] };
 
-    // This will run synchronously and update state immediately
-    if (data.length > 0 && friendsData && friendsData.length > 0 && !isLoaded) {
-        const matchResults = data.filter(item =>
+        const matches = data.filter(item =>
             friendsData.some(friendGroup =>
                 friendGroup.data.some(friendItem => friendItem === item.name)
             )
         );
-        const nonMatchResults = data.filter(item =>
+        const nonMatches = data.filter(item =>
             !friendsData.some(friendGroup =>
                 friendGroup.data.some(friendItem => friendItem === item.name)
             )
         );
-        setMatches(matchResults);
-        setNonMatches(nonMatchResults);
-        setIsLoaded(true);
-    }
+
+        return { matches, nonMatches };
+    };
+
+    const { matches, nonMatches } = getMatchesAndNonMatches();
 
     const renderSection = (sectionTitle, sectionData) => (
         <div className='w-full'>
@@ -47,20 +47,19 @@ const NamesSection = ({ title, data = [], friendsData, actionType, toggleActionS
         </div>
     );
 
+    if (!isDataReady) {
+        return (
+            <div className='h-full flex text-center'>
+                <Spinner />
+            </div>
+        );
+    }
+
     return (
-        <div className={`min-h-1/4 w-full items-center m-auto p-5 rounded-xl shadow-lg bg-white mb-10 ${isLoaded ? 'animate-fade-in' : ''}`}>
+        <div className={`min-h-1/4 w-full items-center m-auto p-5 rounded-xl shadow-lg bg-white mb-10 animate-fade-in`}>
             <div className='text-3xl font-bold w-full text-center p-5'>{title}</div>
-            {isLoaded ? (
-                <>
-                    {matches.length > 0 && renderSection('Matches', matches)}
-                    {nonMatches.length > 0 && renderSection('Non Matches', nonMatches)}
-                </>
-            ) : (
-                <div className='text-center'>
-                    <div className='spinner'></div> {/* Replace with your spinner component or styling */}
-                    <p>Loading...</p>
-                </div>
-            )}
+            {matches.length > 0 && renderSection('Matches', matches)}
+            {nonMatches.length > 0 && renderSection('Non Matches', nonMatches)}
         </div>
     );
 };
