@@ -56,7 +56,7 @@ const NamesSection = ({ title, data = [], friendsData, actionType, toggleActionS
     }
 
     return (
-        <div className={`min-h-1/4 w-full items-center m-auto p-5 rounded-xl shadow-lg bg-white mb-10 animate-fade-in`}>
+        <div className={`min-h-1/4 w-full items-center m-auto p-5 rounded-xl  bg-white mb-10 animate-fade-in`}>
             <div className='text-3xl font-bold w-full text-center p-5'>{title}</div>
             {matches.length > 0 && renderSection('Matches', matches)}
             {nonMatches.length > 0 && renderSection('Non Matches', nonMatches)}

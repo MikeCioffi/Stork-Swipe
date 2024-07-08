@@ -2,6 +2,7 @@ import React from 'react';
 import NamesSection from '../NameSection/NameSection';
 import { SlLike, SlDislike } from 'react-icons/sl';
 import Spinner from '../Utils/Spinner'; // Import the spinner component
+import Divider from '../Utils/Divider';
 
 
 const MatchesPage = ({
@@ -33,7 +34,7 @@ const MatchesPage = ({
     }
 
     return (
-        <div className="w-11/12 flex flex-col justify-around items-center bg-white">
+        <div className="w-full flex flex-col justify-around items-center bg-white">
             <NamesSection
                 title="Liked"
                 data={sortedLikedData}
@@ -43,6 +44,8 @@ const MatchesPage = ({
                 icon={<SlLike className='mr-2 text-green-500' />}
                 userData={userData}
             />
+            <Divider />
+
             <NamesSection
                 title="Disliked"
                 data={sortedDisLikedData}

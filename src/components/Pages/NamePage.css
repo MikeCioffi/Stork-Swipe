@@ -1,44 +1,45 @@
-@keyframes fade-in {
-    from {
-        opacity: 0;
+/* Add these styles to your CSS file, e.g., NamePage.css */
+
+/* Like animation */
+@keyframes likeAnimation {
+    0% {
+        transform: scale(1);
+        opacity: 1;
     }
 
-    to {
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
         opacity: 1;
     }
 }
 
-@keyframes bounce {
+.animate-like {
+    animation: likeAnimation 1s ease-in-out;
+}
 
-    0%,
-    20%,
-    50%,
-    80%,
+/* Dislike animation */
+@keyframes dislikeAnimation {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(0.8);
+        opacity: 0.8;
+    }
+
     100% {
-        transform: translateY(0);
-    }
-
-    40% {
-        transform: translateY(-30px);
-    }
-
-    60% {
-        transform: translateY(-15px);
+        transform: scale(1);
+        opacity: 1;
     }
 }
 
-.animate-fade-in {
-    animation: fade-in 0.5s ease-in-out;
-}
-
-.animate-bounce {
-    animation: bounce 0.5s ease-in-out;
-}
-
-.name-container {
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
+.animate-dislike {
+    animation: dislikeAnimation 1s ease-in-out;
 }
